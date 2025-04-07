@@ -12,7 +12,7 @@
 
 #include "../../minishel.h"
 
-char *ft_find_home(char **envp)
+char	*ft_find_home(char **envp)
 {
 	int	i;
 
@@ -20,7 +20,7 @@ char *ft_find_home(char **envp)
 	while (envp[i])
 	{
 		if (!ft_strncmp(envp[i], "HOME=", 5))
-			return(envp[i] + 5);
+			return (envp[i] + 5);
 		i++;
 	}
 	return (NULL);
@@ -30,12 +30,12 @@ void	ft_cd(char *path, char **envp)
 {
 	if (!path)
 	{
-		printf("%s", ft_find_home(envp));
 		chdir(ft_find_home(envp));
+		ft_pwd();
 	}
 	else
 	{
-		printf("%s", ft_find_home(envp));
 		chdir(path);
+		ft_pwd();
 	}
 }

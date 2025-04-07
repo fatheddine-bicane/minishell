@@ -12,10 +12,31 @@
 
 #include "../../minishel.h"
 
-void	ft_echo(bool _n, char *str)
+void	ft_echo(bool _n, char **arr)
 {
+	int	i;
+
 	if (_n)
-		printf("%s", str);
+	{
+		i = 2;
+		while (arr[i])
+		{
+			printf("%s", arr[i]);
+			if (arr[i + 1])
+				printf(" ");
+			i++;
+		}
+	}
 	else
-		printf("%s\n", str);
+	{
+		i = 1;
+		while (arr[i])
+		{
+			printf("%s", arr[i]);
+			if (arr[i + 1])
+				printf(" ");
+			i++;
+		}
+		printf("\n");
+	}
 }

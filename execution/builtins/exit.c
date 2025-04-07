@@ -1,22 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/06 21:38:34 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/06 21:42:47 by fbicane          ###   ########.fr       */
+/*   Created: 2025/04/07 11:29:01 by fbicane           #+#    #+#             */
+/*   Updated: 2025/04/07 11:29:36 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-void	ft_pwd(void)
+void	ft_exit(void)
 {
-	char	path[PATH_MAX];
-	if (getcwd(path, sizeof(path)))
-		printf("%s\n", path);
-	else
-		perror("getcwd() error");
+	exit(0);
 }

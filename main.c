@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 21:54:56 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/06 21:54:58 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/07 11:30:26 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,35 @@ int main(int argc, char **argv, char **envp)
 	{
 		char *rl = NULL;
 		rl = readline("shell_dyal_dri > ");
-		if (!strncmp("cd", rl, 2))
+		if (!ft_strncmp("cd", rl, 2))
 		{
-			ft_cd(NULL, envp);
+			char **arr = ft_split(rl, ' ');
+			if (!arr[1])
+				ft_cd(NULL, envp);
+			else
+				ft_cd(arr[1], envp);
 		}
-		else if (!strncmp("pwd", rl, 3))
+		else if (!ft_strncmp("pwd", rl, 3))
+		{
 			ft_pwd();
-		printf("%s\n", rl);
+		}
+		else if (!ft_strncmp("env", rl, 3))
+		{
+			ft_env(envp);
+		}
+		else if (!ft_strncmp("echo", rl, 4))
+		{
+			char **arr = ft_split(rl, ' ');
+			if (!ft_strncmp(arr[1], "-n", 2))
+				ft_echo(true, arr);
+			else
+				ft_echo(false, arr);
+		}
+		else if (!ft_strncmp("exit", rl, 4))
+		{
+			ft_exit();
+		}
+		add_history(rl);
 	}
     return (0);
 }

@@ -1,22 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/06 21:38:34 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/06 21:42:47 by fbicane          ###   ########.fr       */
+/*   Created: 2025/04/07 10:04:08 by fbicane           #+#    #+#             */
+/*   Updated: 2025/04/07 10:14:16 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-void	ft_pwd(void)
+void	ft_env(char **envp)
 {
-	char	path[PATH_MAX];
-	if (getcwd(path, sizeof(path)))
-		printf("%s\n", path);
-	else
-		perror("getcwd() error");
+	int	i;
+
+	i = 0;
+	while (envp[i])
+	{
+		printf("%s\n", envp[i]);
+		i++;
+	}
 }
