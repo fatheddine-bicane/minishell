@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 21:54:56 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/07 11:30:26 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/09 15:55:18 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,15 @@ int main(int argc, char **argv, char **envp)
 	{
 		char *rl = NULL;
 		rl = readline("shell_dyal_dri > ");
+		if (!ft_strncmp("test", rl, 4))
+			perror(strerror(-1));
 		if (!ft_strncmp("cd", rl, 2))
 		{
 			char **arr = ft_split(rl, ' ');
 			if (!arr[1])
-				ft_cd(NULL, envp);
+				ft_cd(NULL);
 			else
-				ft_cd(arr[1], envp);
+				ft_cd(arr[1]);
 		}
 		else if (!ft_strncmp("pwd", rl, 3))
 		{
@@ -48,6 +50,12 @@ int main(int argc, char **argv, char **envp)
 		{
 			ft_exit();
 		}
+		else if (!ft_strncmp("export", rl, 6))
+		{
+			ft_export(envp);
+		}
+		if (errno != 0)
+			perror(strerror(errno));
 		add_history(rl);
 	}
     return (0);

@@ -1,32 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/06 18:45:52 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/06 19:08:18 by fbicane          ###   ########.fr       */
+/*   Created: 2025/04/09 15:27:43 by fbicane           #+#    #+#             */
+/*   Updated: 2025/04/09 15:55:29 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-
-void	ft_cd(char *path)
+void	ft_export(char **envp)
 {
-	if (!path)
-	{
-		errno = chdir(getenv("HOME"));
-		if (errno == -1)
-			errno = ENOENT;
-		ft_pwd();
-	}
-	else
-	{
-		errno = chdir(path);
-		if (errno == -1)
-			errno = ENOENT;
-		ft_pwd();
-	}
+	envp = ft_split("test1 test2 test3 test4 test5", ' ');
+	ft_env(envp);
 }

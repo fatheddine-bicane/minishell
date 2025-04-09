@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/07 11:29:50 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/09 15:40:27 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define MINISHEL_H
 
 # include "./my_library/my_library.h"
+# include <errno.h>
 # include <stdlib.h>
 # include <limits.h>
 # include <stdbool.h>
@@ -25,10 +26,11 @@
 #include <readline/history.h>
 #include <string.h>
 
-void	ft_cd(char *path, char **envp);
+void	ft_cd(char *path);
 void	ft_pwd(void);
 void	ft_env(char **envp);
 void	ft_echo(bool _n, char **arr);
 void	ft_exit(void);
+void	ft_export(char **envp);
 
 #endif
