@@ -1,19 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
+/*   set_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/09 15:27:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/10 17:20:54 by fbicane          ###   ########.fr       */
+/*   Created: 2025/04/10 16:48:49 by fbicane           #+#    #+#             */
+/*   Updated: 2025/04/10 17:24:58 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-void	ft_export(char **envp)
+t_list *ft_set_env(char **envp)
 {
-	envp = ft_split("test1 test2 test3 test4 test5", ' ');
-	ft_env(envp);
+	t_list	*c_envp;
+	int		i;
+
+	i = 0;
+	while (envp[i])
+	{
+		ft_lstadd_back(&c_envp, ft_lstnew((char *)envp[i]));
+		i++;
+	}
+	return (c_envp);
 }

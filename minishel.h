@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/09 15:40:27 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/10 17:20:31 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,7 @@ void	ft_env(char **envp);
 void	ft_echo(bool _n, char **arr);
 void	ft_exit(void);
 void	ft_export(char **envp);
+
+t_list *ft_set_env(char **envp);
 
 #endif

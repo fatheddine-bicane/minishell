@@ -1,19 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
+/*   check_env.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/09 15:27:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/10 17:20:54 by fbicane          ###   ########.fr       */
+/*   Created: 2025/04/10 20:25:53 by fbicane           #+#    #+#             */
+/*   Updated: 2025/04/10 20:30:58 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-void	ft_export(char **envp)
+bool	ft_strcmp(char *value, char *envp_l)
 {
-	envp = ft_split("test1 test2 test3 test4 test5", ' ');
-	ft_env(envp);
+	int (i) = 0;
+
+	while (envp_l[i] != '=')
+		i++;
+	char (str[i]);
+	i = 0;
+	while (envp_l[i] != '=')
+		str[i] = envp_l[i];
+	str[i] = '\0';
+	if (!ft_strncmp(value, str, ft_strlen(value)))
+		return (true);
+	else
+		return (false);
+}
+
+void	ft_check_env(t_list **envp, char *value)
+{
+	
 }

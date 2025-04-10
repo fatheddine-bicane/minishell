@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 21:54:56 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/09 15:55:18 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/10 17:21:11 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int main(int argc, char **argv, char **envp)
 	(void)argv;
 	while (1)
 	{
+		ft_set_env(envp);
 		char *rl = NULL;
 		rl = readline("shell_dyal_dri > ");
 		if (!ft_strncmp("test", rl, 4))
