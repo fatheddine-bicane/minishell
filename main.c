@@ -14,11 +14,15 @@
 
 int main(int argc, char **argv, char **envp)
 {
+	/*t_list *my_envp;*/
+	t_array *my_envp;
+
 	(void)argc;
 	(void)argv;
 	while (1)
 	{
-		ft_set_env(envp);
+		/*my_envp = ft_set_env(envp);*/
+		my_envp = ft_set_env_(envp);
 		char *rl = NULL;
 		rl = readline("shell_dyal_dri > ");
 		if (!ft_strncmp("test", rl, 4))
@@ -37,7 +41,7 @@ int main(int argc, char **argv, char **envp)
 		}
 		else if (!ft_strncmp("env", rl, 3))
 		{
-			ft_env(envp);
+			ft_env(my_envp);
 		}
 		else if (!ft_strncmp("echo", rl, 4))
 		{

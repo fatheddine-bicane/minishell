@@ -12,10 +12,9 @@
 
 #include "../../minishel.h"
 
-bool	ft_strcmp(char *value, char *envp_l)
+bool	ft_envpcmp(char *value, char *envp_l)
 {
 	int (i) = 0;
-
 	while (envp_l[i] != '=')
 		i++;
 	char (str[i]);
@@ -29,7 +28,16 @@ bool	ft_strcmp(char *value, char *envp_l)
 		return (false);
 }
 
-void	ft_check_env(t_list **envp, char *value)
+bool	ft_check_env(t_array *my_envp, char *variable)
 {
-	
+	int	i;
+
+	i = 0;
+	while (my_envp->array[i])
+	{
+		if (ft_envpcmp(my_envp->array[i], variable))
+			return (true);
+		i++;
+	}
+	return (false);
 }

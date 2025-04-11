@@ -12,8 +12,7 @@
 
 #include "../../minishel.h"
 
-void	ft_export(char **envp)
+void	ft_export(t_array **my_envp, char *variable)
 {
-	envp = ft_split("test1 test2 test3 test4 test5", ' ');
-	ft_env(envp);
+	
 }
