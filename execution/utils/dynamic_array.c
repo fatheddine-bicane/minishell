@@ -21,7 +21,7 @@ t_array	*ft_init_arr(void)
 		return (NULL);
 	arr->capacity = 5;
 	arr->len = 0;
-	arr->array = malloc(sizeof(char *) * 20);
+	arr->array = malloc(sizeof(char *) * 30);
 	if (NULL == arr->array)
 		return (free(arr), NULL);
 	return (arr);

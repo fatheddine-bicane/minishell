@@ -12,7 +12,7 @@
 
 #include "../../minishel.h"
 
-void	ft_export(t_array **my_envp, char *variable)
+void	ft_export(char **envp)
 {
-	
+	(void)envp;
 }

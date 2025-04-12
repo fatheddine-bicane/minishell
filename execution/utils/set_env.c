@@ -12,20 +12,6 @@
 
 #include "../../minishel.h"
 
-t_list *ft_set_env(char **envp)
-{
-	t_list	*c_envp;
-	int		i;
-
-	i = 0;
-	while (envp[i])
-	{
-		ft_lstadd_back(&c_envp, ft_lstnew((char *)envp[i]));
-		i++;
-	}
-	return (c_envp);
-}
-
 t_array	*ft_set_env_(char **envp)
 {
 	t_array *my_envp;

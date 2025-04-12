@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 21:54:56 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/10 17:21:11 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/12 16:17:12 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,17 @@ int main(int argc, char **argv, char **envp)
 	(void)argv;
 	while (1)
 	{
-		/*my_envp = ft_set_env(envp);*/
 		my_envp = ft_set_env_(envp);
 		char *rl = NULL;
-		rl = readline("shell_dyal_dri > ");
-		if (!ft_strncmp("test", rl, 4))
+		rl = readline("====> ");
+		if (!ft_strncmp("unset", rl, 5))
+		{
+			ft_unset(&my_envp, NULL);
+			/*printf("%s------\n", rl + 6);*/
+		}
+		else if (!ft_strncmp("test", rl, 4))
 			perror(strerror(-1));
-		if (!ft_strncmp("cd", rl, 2))
+		else if (!ft_strncmp("cd", rl, 2))
 		{
 			char **arr = ft_split(rl, ' ');
 			if (!arr[1])
@@ -63,5 +67,6 @@ int main(int argc, char **argv, char **envp)
 			perror(strerror(errno));
 		add_history(rl);
 	}
+	write(1, "no seg here\n", 12);
     return (0);
 }

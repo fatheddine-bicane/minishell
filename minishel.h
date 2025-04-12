@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/10 17:20:31 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/12 16:10:45 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	ft_env(t_array *my_envp);
 void	ft_echo(bool _n, char **arr);
 void	ft_exit(void);
 void	ft_export(char **envp);
+void	ft_unset(t_array **my_envp, char *variable);
 
 bool	ft_check_env(t_array *my_envp, char *variable);
 
