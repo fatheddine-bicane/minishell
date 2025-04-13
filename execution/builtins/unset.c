@@ -69,6 +69,7 @@ void	ft_unset(t_array **my_envp, char *variable)
 	/*index = ft_find_variable((*my_envp), variable);*/
 	/*printf("%d\n", index);*/
 	ft_free((*my_envp)->array);
+	(*my_envp)->array = malloc(sizeof(char *) * 3);
 	(*my_envp)->array[0] = ft_strdup("test\n");
 	(*my_envp)->array[1] = ft_strdup("");
 	(*my_envp)->len = 2;
