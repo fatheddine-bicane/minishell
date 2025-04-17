@@ -30,16 +30,16 @@ int	ft_strncmp_(const char *s1, const char *s2, size_t n)
 	return (0);
 }
 
-int	ft_find_variable(t_array *my_envp, char *variable)
+int	ft_find_variable(char **envp, char *variable)
 {
 	int	i;
 	int	len;
 
 	len = ft_strlen(variable);
 	i = 0;
-	while (my_envp->array[i])
+	while (envp[i])
 	{
-		if (!ft_strncmp_(my_envp->array[i], variable, len))
+		if (!ft_strncmp_(envp[i], variable, len))
 			return (i);
 		i++;
 	}
@@ -61,18 +61,22 @@ static void	ft_free(char **arr_s)
 	free (arr_s);
 }
 
-void	ft_unset(t_array **my_envp, char *variable)
+char **ft_unset(char **en, char *variable)
 {
 	(void)variable;
 	/*int	index;*/
+	char **envp;
 
 	/*index = ft_find_variable((*my_envp), variable);*/
 	/*printf("%d\n", index);*/
-	ft_free((*my_envp)->array);
-	(*my_envp)->array = malloc(sizeof(char *) * 3);
-	(*my_envp)->array[0] = ft_strdup("test\n");
-	(*my_envp)->array[1] = ft_strdup("");
-	(*my_envp)->len = 2;
+	ft_free(en);
+	envp = malloc(sizeof(char *) * 4);
+	envp[0] = ft_strdup("tdasjdasjd");
+	envp[1] = ft_strdup("haaa");
+	envp[2] = ft_strdup("hahahsjsjs");
+	envp[3] = NULL;
+	return (envp);
+
 	/*free((*my_envp)->array[index]);*/
 	/*(*my_envp)->array[index] = ft_strdup("waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");*/
 	/*(*my_envp)->len--;*/

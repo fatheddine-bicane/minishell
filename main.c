@@ -15,22 +15,21 @@
 int main(int argc, char **argv, char **envp)
 {
 	/*t_list *my_envp;*/
-	t_array *my_envp;
+	/*t_array *my_envp;*/
 
 	(void)argc;
 	(void)argv;
 	while (1)
 	{
-		my_envp = ft_set_env_(envp);
+		/*my_envp = ft_set_env_(envp);*/
+		envp = ft_set_my_envp(envp);
 		char *rl = NULL;
 		rl = readline("====> ");
 		if (!ft_strncmp("unset", rl, 5))
 		{
-			ft_unset(&my_envp, NULL);
+			envp = ft_unset(envp, NULL);
 			/*printf("%s------\n", rl + 6);*/
 		}
-		else if (!ft_strncmp("test", rl, 4))
-			perror(strerror(-1));
 		else if (!ft_strncmp("cd", rl, 2))
 		{
 			char **arr = ft_split(rl, ' ');
@@ -45,7 +44,7 @@ int main(int argc, char **argv, char **envp)
 		}
 		else if (!ft_strncmp("env", rl, 3))
 		{
-			ft_env(my_envp);
+			ft_env(envp);
 		}
 		else if (!ft_strncmp("echo", rl, 4))
 		{

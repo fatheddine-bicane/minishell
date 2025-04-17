@@ -36,16 +36,18 @@ typedef struct s_array
 
 void	ft_cd(char *path);
 void	ft_pwd(void);
-void	ft_env(t_array *my_envp);
+void	ft_env(char **envp);
 void	ft_echo(bool _n, char **arr);
 void	ft_exit(void);
 void	ft_export(char **envp);
-void	ft_unset(t_array **my_envp, char *variable);
+char	**ft_unset(char **envp, char *variable);
 
 bool	ft_check_env(t_array *my_envp, char *variable);
 
-t_array	*ft_set_env_(char **envp);
 
+char	**ft_set_my_envp(char **envp);
+
+t_array	*ft_set_env_(char **envp);
 t_array	*ft_init_arr(void);
 t_array	*ft_resize(t_array **array);
 
