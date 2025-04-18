@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/12 16:10:45 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/18 21:41:39 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,30 +26,19 @@
 #include <readline/history.h>
 #include <string.h>
 
-typedef struct s_array
-{
-	unsigned int	len;
-	unsigned int	capacity;
-	char			**array;
-}	t_array;
-
-
 void	ft_cd(char *path);
 void	ft_pwd(void);
-void	ft_env(char **envp);
-void	ft_echo(bool _n, char **arr);
+void	ft_env(t_list *my_envp);
+void	ft_echo(char *rl);
 void	ft_exit(void);
+
 void	ft_export(char **envp);
 char	**ft_unset(char **envp, char *variable);
 
-bool	ft_check_env(t_array *my_envp, char *variable);
+t_list *ft_set_env(char **envp);
 
 
-char	**ft_set_my_envp(char **envp);
-
-t_array	*ft_set_env_(char **envp);
-t_array	*ft_init_arr(void);
-t_array	*ft_resize(t_array **array);
-
+void	ft_check_bultins(char *rl, t_list **my_envp);
+void	ft_free_arr(char **arr_s);
 
 #endif

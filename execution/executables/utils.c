@@ -6,13 +6,14 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 19:02:31 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/13 19:03:45 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/18 18:07:39 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-void	ft_executable(char *command)
+void	ft_executable(char *rl)
 {
+	char **arr = ft_split(rl, 32);
 	
 }

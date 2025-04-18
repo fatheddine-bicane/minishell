@@ -46,20 +46,20 @@ int	ft_find_variable(char **envp, char *variable)
 	return (-1);
 }
 
-static void	ft_free(char **arr_s)
-{
-	int	i;
-
-	i = 0;
-	if (!arr_s)
-		return ;
-	while (arr_s[i] != 0)
-	{
-		free(arr_s[i]);
-		i++;
-	}
-	free (arr_s);
-}
+/*static void	ft_free(char **arr_s)*/
+/*{*/
+/*	int	i;*/
+/**/
+/*	i = 0;*/
+/*	if (!arr_s)*/
+/*		return ;*/
+/*	while (arr_s[i])*/
+/*	{*/
+/*		free(arr_s[i]);*/
+/*		i++;*/
+/*	}*/
+/*	free (arr_s);*/
+/*}*/
 
 char **ft_unset(char **en, char *variable)
 {
@@ -69,7 +69,8 @@ char **ft_unset(char **en, char *variable)
 
 	/*index = ft_find_variable((*my_envp), variable);*/
 	/*printf("%d\n", index);*/
-	ft_free(en);
+	/*ft_free(en);*/
+	(void)en;
 	envp = malloc(sizeof(char *) * 4);
 	envp[0] = ft_strdup("tdasjdasjd");
 	envp[1] = ft_strdup("haaa");

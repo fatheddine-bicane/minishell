@@ -12,14 +12,26 @@
 
 #include "../../minishel.h"
 
-void	ft_env(char **envp)
+/*void	ft_env(char **envp)*/
+/*{*/
+/*	int	i;*/
+/**/
+/*	i = 0;*/
+/*	while (envp[i])*/
+/*	{*/
+/*		printf("%s\n", envp[i]);*/
+/*		i++;*/
+/*	}*/
+/*}*/
+
+ void	ft_env(t_list *my_envp)
 {
 	int	i;
 
 	i = 0;
-	while (envp[i])
+	while (my_envp)
 	{
-		printf("%s\n", envp[i]);
-		i++;
+		printf("%s\n", (char *)my_envp->content);
+		my_envp = my_envp->next;
 	}
 }

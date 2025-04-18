@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 20:25:53 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/10 20:30:58 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/18 21:41:21 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,16 @@ bool	ft_envpcmp(char *value, char *envp_l)
 		return (false);
 }
 
-bool	ft_check_env(t_array *my_envp, char *variable)
-{
-	int	i;
-
-	i = 0;
-	while (my_envp->array[i])
-	{
-		if (ft_envpcmp(my_envp->array[i], variable))
-			return (true);
-		i++;
-	}
-	return (false);
-}
+/*bool	ft_check_env(t_array *my_envp, char *variable)*/
+/*{*/
+/*	int	i;*/
+/**/
+/*	i = 0;*/
+/*	while (my_envp->array[i])*/
+/*	{*/
+/*		if (ft_envpcmp(my_envp->array[i], variable))*/
+/*			return (true);*/
+/*		i++;*/
+/*	}*/
+/*	return (false);*/
+/*}*/

@@ -18,9 +18,9 @@ void	ft_lstadd_back(t_list **lst, t_list *new_)
 
 	if (!new_)
 		return ;
-	if (!*lst)
+	if (!(*lst))
 	{
-		*lst = new_;
+		(*lst) = new_;
 		return ;
 	}
 	lst_clone = ft_lstlast(*lst);

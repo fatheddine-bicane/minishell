@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   set_env.c                                          :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 16:48:49 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/10 17:24:58 by fbicane          ###   ########.fr       */
+/*   Created: 2025/04/18 16:43:14 by fbicane           #+#    #+#             */
+/*   Updated: 2025/04/18 16:43:41 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-t_list *ft_set_env(char **envp)
+void	ft_free_arr(char **arr_s)
 {
-	t_list	*c_envp = NULL;
-	int		i;
+	int	i;
 
 	i = 0;
-	while (envp[i])
+	if (!arr_s)
+		return ;
+	while (arr_s[i] != 0)
 	{
-		ft_lstadd_back(&c_envp, ft_lstnew((char *)envp[i]));
+		free(arr_s[i]);
 		i++;
 	}
-	return (c_envp);
+	free (arr_s);
 }
