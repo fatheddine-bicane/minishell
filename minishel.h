@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/18 21:41:39 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/19 16:28:17 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ char	**ft_unset(char **envp, char *variable);
 
 t_list *ft_set_env(char **envp);
 
+void	ft_apply_comm(char *rl, t_list *my_envp);
 
 void	ft_check_bultins(char *rl, t_list **my_envp);
 void	ft_free_arr(char **arr_s);

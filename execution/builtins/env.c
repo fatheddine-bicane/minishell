@@ -26,9 +26,6 @@
 
  void	ft_env(t_list *my_envp)
 {
-	int	i;
-
-	i = 0;
 	while (my_envp)
 	{
 		printf("%s\n", (char *)my_envp->content);

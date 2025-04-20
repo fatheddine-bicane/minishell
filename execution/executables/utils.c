@@ -12,8 +12,8 @@
 
 #include "../../minishel.h"
 
-void	ft_executable(char *rl)
-{
-	char **arr = ft_split(rl, 32);
-	
-}
+/*void	ft_executable(char *rl)*/
+/*{*/
+/*	char **arr = ft_split(rl, 32);*/
+/**/
+/*}*/

@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:37:37 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/18 21:42:15 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/19 16:58:49 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@ void	ft_check_bultins(char *rl, t_list **my_envp)
 {
 	if (!ft_strncmp("unset", rl, 5))
 	{
-		char **arr = ft_unset(NULL, NULL);
+		printf("test");
+		/*char **arr = ft_unset(NULL, NULL);*/
+		/*(void)arr;*/
 		/*printf("%s------\n", rl + 6);*/
 	}
 	else if (!ft_strncmp("cd", rl, 2))
