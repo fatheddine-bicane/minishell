@@ -24,10 +24,17 @@ int main(int argc, char **argv, char **envp)
 	{
 		char *rl = NULL;
 		rl = readline("====> ");
-		ft_check_bultins(rl, &my_envp);
+		/*printf("no seg here");*/
+		/*printf("--%s--", rl);*/
+		if (ft_check_bultins(rl, &my_envp))
+		{
+			continue ;
+			add_history(rl);
+		}
+		ft_here_doc(rl);
 		ft_apply_comm(rl, my_envp); //infinite loop maybe
-		if (errno != 0)
-			perror(strerror(errno));
+		/*if (errno != 0)*/
+		/*	perror(strerror(errno));*/
 		add_history(rl);
 	}
     return (0);

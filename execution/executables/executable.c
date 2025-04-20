@@ -58,9 +58,9 @@ void	ft_apply_comm(char *rl, t_list *my_envp)
 
 	if (!access(command[0], F_OK | X_OK))
 	{
-		if (!pid)
+		if (0 == pid)
 			execv(command[0], command);
-		else
+		else if (0 != pid)
 			wait(NULL);
 	}
 	else
@@ -72,11 +72,11 @@ void	ft_apply_comm(char *rl, t_list *my_envp)
 			{
 				free(command[0]);
 				command[0] = path;
-				if (!pid)
+				if (0 == pid)
 				{
 					execv(command[0], command);
 				}
-				else
+				else if (0 != pid)
 					wait(NULL);
 			}
 			i++;

@@ -20,6 +20,7 @@
 # include <stdbool.h>
 # include <unistd.h>
 # include <fcntl.h>
+#include <sys/wait.h>
 
 #include <stdio.h>
 #include <readline/readline.h>
@@ -38,8 +39,9 @@ char	**ft_unset(char **envp, char *variable);
 t_list *ft_set_env(char **envp);
 
 void	ft_apply_comm(char *rl, t_list *my_envp);
+void	ft_here_doc(char *rl);
 
-void	ft_check_bultins(char *rl, t_list **my_envp);
+int	ft_check_bultins(char *rl, t_list **my_envp);
 void	ft_free_arr(char **arr_s);
 
 #endif

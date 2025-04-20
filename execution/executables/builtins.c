@@ -12,7 +12,7 @@
 
 #include "../../minishel.h"
 
-void	ft_check_bultins(char *rl, t_list **my_envp)
+int	ft_check_bultins(char *rl, t_list **my_envp)
 {
 	if (!ft_strncmp("unset", rl, 5))
 	{
@@ -20,6 +20,7 @@ void	ft_check_bultins(char *rl, t_list **my_envp)
 		/*char **arr = ft_unset(NULL, NULL);*/
 		/*(void)arr;*/
 		/*printf("%s------\n", rl + 6);*/
+		return (1);
 	}
 	else if (!ft_strncmp("cd", rl, 2))
 	{
@@ -28,14 +29,17 @@ void	ft_check_bultins(char *rl, t_list **my_envp)
 			ft_cd(NULL);
 		else
 			ft_cd(arr[1]);
+		return (1);
 	}
 	else if (!ft_strncmp("pwd", rl, 3))
 	{
 		ft_pwd();
+		return (1);
 	}
 	else if (!ft_strncmp("env", rl, 3))
 	{
 		ft_env((*my_envp));
+		return (1);
 	}
 	else if (!ft_strncmp("echo", rl, 4))
 	{
@@ -45,13 +49,17 @@ void	ft_check_bultins(char *rl, t_list **my_envp)
 		/*	ft_echo(true, arr);*/
 		/*else*/
 		/*	ft_echo(false, arr);*/
+		return (1);
 	}
 	else if (!ft_strncmp("exit", rl, 4))
 	{
 		ft_exit();
+		return (1);
 	}
 	else if (!ft_strncmp("export", rl, 6))
 	{
 		ft_export(NULL);
+		return (1);
 	}
+	return (0);
 }
