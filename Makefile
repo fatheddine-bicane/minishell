@@ -19,6 +19,7 @@ SRCS = 	$(shell ls ./my_library/libft/*.c) \
 		$(shell ls ./execution/builtins/*c) \
 		$(shell ls ./execution/utils/*c) \
 		$(shell ls ./execution/executables/*c) \
+		$(shell ls ./execution/redirections/*c) \
 		./main.c \
 
 
