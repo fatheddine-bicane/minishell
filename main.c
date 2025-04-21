@@ -12,6 +12,14 @@
 
 #include "minishel.h"
 
+/*t_data create_data()*/
+/*{*/
+/*	static t_data data;*/
+/**/
+/*	data.dsdsa = 232;*/
+/*	return data;*/
+/*}*/
+
 int main(int argc, char **argv, char **envp)
 {
 	t_list *my_envp;

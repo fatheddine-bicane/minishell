@@ -26,7 +26,6 @@ char	**ft_find_path(t_list *my_envp)
 	}
 	char **(paths) = ft_split(path_var, ':');
 	return (paths);
-	/*execv()*/
 }
 
 static char	*ft_concat_path(char *arr2, char *command)
@@ -59,7 +58,7 @@ void	ft_apply_comm(char *rl, t_list *my_envp)
 	if (!access(command[0], F_OK | X_OK))
 	{
 		if (0 == pid)
-			execv(command[0], command);
+			execve(command[0], command, ft_prep_envp(my_envp));
 		else if (0 != pid)
 			wait(NULL);
 	}
@@ -74,7 +73,7 @@ void	ft_apply_comm(char *rl, t_list *my_envp)
 				command[0] = path;
 				if (0 == pid)
 				{
-					execv(command[0], command);
+					execve(command[0], command, ft_prep_envp(my_envp));
 				}
 				else if (0 != pid)
 					wait(NULL);

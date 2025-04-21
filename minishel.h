@@ -44,4 +44,6 @@ void	ft_here_doc(char *rl);
 int	ft_check_bultins(char *rl, t_list **my_envp);
 void	ft_free_arr(char **arr_s);
 
+char **ft_prep_envp(t_list *my_envp);
+
 #endif
