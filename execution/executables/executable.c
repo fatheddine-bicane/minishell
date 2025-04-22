@@ -74,6 +74,7 @@ void	ft_apply_comm(char *rl, t_list *my_envp)
 				if (0 == pid)
 				{
 					execve(command[0], command, ft_prep_envp(my_envp));
+					/*execv(command[0], command);*/
 				}
 				else if (0 != pid)
 					wait(NULL);

@@ -61,24 +61,68 @@ int	ft_find_variable(char **envp, char *variable)
 /*	free (arr_s);*/
 /*}*/
 
-char **ft_unset(char **en, char *variable)
+bool	ft_find_var(t_list *my_envp, char *variable)
 {
-	(void)variable;
-	/*int	index;*/
-	char **envp;
+	int	i;
+	char *env_ptr;
 
-	/*index = ft_find_variable((*my_envp), variable);*/
-	/*printf("%d\n", index);*/
-	/*ft_free(en);*/
-	(void)en;
-	envp = malloc(sizeof(char *) * 4);
-	envp[0] = ft_strdup("tdasjdasjd");
-	envp[1] = ft_strdup("haaa");
-	envp[2] = ft_strdup("hahahsjsjs");
-	envp[3] = NULL;
-	return (envp);
+	/*printf("not here\n");*/
+	while (my_envp)
+	{
+		i = 0;
+		env_ptr = (char *)my_envp->content;
+		while (env_ptr[i] != '=' && env_ptr[i])
+			i++;
+		char	str[i];
+		i = 0;
+		while (env_ptr[i] != '=' && env_ptr[i])
+		{
+			str[i] = env_ptr[i];
+			i++;
+		}
+		str[i] = '\0';
+		if (!ft_strncmp(str, variable, ft_strlen(variable)))
+			return (true);
+		my_envp = my_envp->next;
+	}
+	return (false);
+}
 
-	/*free((*my_envp)->array[index]);*/
-	/*(*my_envp)->array[index] = ft_strdup("waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");*/
-	/*(*my_envp)->len--;*/
+void	ft_unset(t_list **my_envp, char *variable)
+{
+	t_list	*env_to_del;
+	t_list	*tmp_envp = (*my_envp);
+
+	if (NULL == variable)
+		return;
+
+	/*printf("%s\n", variable);*/
+	if (ft_find_var((*my_envp), variable)) //remove this ur checking the intire list not the head only
+	{
+		printf("hna ?\n");
+		env_to_del = (*my_envp);
+		(*my_envp)->next = (*my_envp)->next->next;
+		/*(*my_envp) = (*my_envp)->next;*/
+		/*env_to_del->next = NULL;*/
+		/*free(env_to_del->content);*/
+		/*free(env_to_del);*/
+		(*my_envp) = tmp_envp;
+		return ;
+	}
+	while ((*my_envp))
+	{
+		if (ft_find_var((*my_envp)->next, variable))
+		{
+			env_to_del = (*my_envp)->next;
+			printf("test");
+			printf("%s\n", (char *)env_to_del->content);
+			(*my_envp)->next = (*my_envp)->next->next;
+			/*env_to_del->next = NULL;*/
+			/*free(env_to_del->content);*/
+			/*free(env_to_del);*/
+			(*my_envp) = tmp_envp;
+			return ;
+		}
+		(*my_envp) = (*my_envp)->next;
+	}
 }

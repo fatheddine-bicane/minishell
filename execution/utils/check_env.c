@@ -39,7 +39,7 @@ bool	ft_variable_exist(t_list *my_envp, char *variable)
 	return (false);
 }
 
-char	*ft_find_var(char *variable, t_list *my_vars)
+static char	*ft_find_var(char *variable, t_list *my_vars)
 {
 	int	i;
 

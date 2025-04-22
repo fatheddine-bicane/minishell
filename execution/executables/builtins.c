@@ -16,7 +16,9 @@ int	ft_check_bultins(char *rl, t_list **my_envp)
 {
 	if (!ft_strncmp("unset", rl, 5))
 	{
-		printf("test");
+		char **str = ft_split(rl, 32);
+		ft_unset(my_envp, str[1]);
+		/*printf("test");*/
 		/*char **arr = ft_unset(NULL, NULL);*/
 		/*(void)arr;*/
 		/*printf("%s------\n", rl + 6);*/

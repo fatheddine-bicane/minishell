@@ -34,7 +34,7 @@ void	ft_echo(char *rl);
 void	ft_exit(void);
 
 void	ft_export(char **envp);
-char	**ft_unset(char **envp, char *variable);
+void	ft_unset(t_list **my_envp, char *variable);
 
 t_list *ft_set_env(char **envp);
 
