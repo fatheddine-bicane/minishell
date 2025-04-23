@@ -14,7 +14,8 @@
 
 char	**ft_find_path(t_list *my_envp)
 {
-	char	*path_var;
+	char	*path_var = NULL;
+
 	while (my_envp)
 	{
 		if (!ft_strncmp((char *)my_envp->content, "PATH=", 5))
@@ -24,6 +25,8 @@ char	**ft_find_path(t_list *my_envp)
 		}
 		my_envp = my_envp->next;
 	}
+	if (NULL == path_var)
+		return (NULL);
 	char **(paths) = ft_split(path_var, ':');
 	return (paths);
 }
@@ -53,6 +56,10 @@ void	ft_apply_comm(char *rl, t_list *my_envp)
 	int	i = 0;
 	char	*path;
 	char	**paths = ft_find_path(my_envp);
+
+	if (NULL == paths)
+		return;
+
 	int	pid = fork();
 
 	if (!access(command[0], F_OK | X_OK))

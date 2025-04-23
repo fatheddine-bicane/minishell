@@ -30,7 +30,7 @@
 void	ft_cd(char *path);
 void	ft_pwd(void);
 void	ft_env(t_list *my_envp);
-void	ft_echo(char *rl);
+void	ft_echo(char *rl, t_list *my_envp);
 void	ft_exit(void);
 
 void	ft_export(char **envp);

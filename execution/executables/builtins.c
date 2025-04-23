@@ -18,10 +18,7 @@ int	ft_check_bultins(char *rl, t_list **my_envp)
 	{
 		char **str = ft_split(rl, 32);
 		ft_unset(my_envp, str[1]);
-		/*printf("test");*/
-		/*char **arr = ft_unset(NULL, NULL);*/
-		/*(void)arr;*/
-		/*printf("%s------\n", rl + 6);*/
+		add_history(rl);
 		return (1);
 	}
 	else if (!ft_strncmp("cd", rl, 2))
@@ -31,36 +28,37 @@ int	ft_check_bultins(char *rl, t_list **my_envp)
 			ft_cd(NULL);
 		else
 			ft_cd(arr[1]);
+		add_history(rl);
 		return (1);
 	}
 	else if (!ft_strncmp("pwd", rl, 3))
 	{
 		ft_pwd();
+		add_history(rl);
 		return (1);
 	}
 	else if (!ft_strncmp("env", rl, 3))
 	{
 		ft_env((*my_envp));
+		add_history(rl);
 		return (1);
 	}
 	else if (!ft_strncmp("echo", rl, 4))
 	{
-		ft_echo(rl);
-		/*char **arr = ft_split(rl, ' ');*/
-		/*if (!ft_strncmp(arr[1], "-n", 2))*/
-		/*	ft_echo(true, arr);*/
-		/*else*/
-		/*	ft_echo(false, arr);*/
+		ft_echo(rl, *my_envp);
+		add_history(rl);
 		return (1);
 	}
 	else if (!ft_strncmp("exit", rl, 4))
 	{
 		ft_exit();
+		add_history(rl);
 		return (1);
 	}
 	else if (!ft_strncmp("export", rl, 6))
 	{
 		ft_export(NULL);
+		add_history(rl);
 		return (1);
 	}
 	return (0);

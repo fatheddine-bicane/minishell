@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 21:54:56 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/23 18:32:03 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/19 16:59:20 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,25 +32,17 @@ int main(int argc, char **argv, char **envp)
 	{
 		char *rl = NULL;
 		rl = readline("====> ");
-
-		printf("hahahah");
-
-		char **arr = ft_split(rl, 32);
-		for (int i = 0; arr[i]; i++)
-			printf("this is line %d--%s\n", i, arr[i]);
-
+		/*printf("no seg here");*/
+		/*printf("--%s--", rl);*/
 		if (ft_check_bultins(rl, &my_envp))
 		{
 			continue ;
 			add_history(rl);
 		}
-
 		ft_here_doc(rl);
 		ft_apply_comm(rl, my_envp); //infinite loop maybe
-
 		/*if (errno != 0)*/
 		/*	perror(strerror(errno));*/
-
 		add_history(rl);
 	}
     return (0);
