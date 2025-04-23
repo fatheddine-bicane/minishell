@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 15:55:55 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/12 16:24:36 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/23 09:46:51 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,33 +96,43 @@ void	ft_unset(t_list **my_envp, char *variable)
 	if (NULL == variable)
 		return;
 
-	/*printf("%s\n", variable);*/
-	if (ft_find_var((*my_envp), variable)) //remove this ur checking the intire list not the head only
+	char	*env_cont = (char *)(*my_envp)->content;
+	int	i = 0;
+
+	while (env_cont[i] && env_cont[i] != '=')
+		i++;
+
+	if (!ft_strncmp(env_cont, variable, i))
 	{
-		printf("hna ?\n");
 		env_to_del = (*my_envp);
-		(*my_envp)->next = (*my_envp)->next->next;
-		/*(*my_envp) = (*my_envp)->next;*/
-		/*env_to_del->next = NULL;*/
+		(*my_envp) = (*my_envp)->next;
+		(void)env_to_del;
 		/*free(env_to_del->content);*/
-		/*free(env_to_del);*/
-		(*my_envp) = tmp_envp;
+		free(env_to_del);
 		return ;
 	}
-	while ((*my_envp))
+
+	while (tmp_envp)
 	{
-		if (ft_find_var((*my_envp)->next, variable))
+		if (NULL == tmp_envp->next)
+			return;
+
+		env_cont = (char *)tmp_envp->next->content;
+		i = 0;
+
+		while (env_cont[i] && env_cont[i] != '=')
+			i++;
+
+		if (!ft_strncmp(env_cont, variable, i))
 		{
-			env_to_del = (*my_envp)->next;
-			printf("test");
-			printf("%s\n", (char *)env_to_del->content);
-			(*my_envp)->next = (*my_envp)->next->next;
-			/*env_to_del->next = NULL;*/
+			env_to_del = tmp_envp->next;
+			tmp_envp->next = tmp_envp->next->next;
+			(void)env_to_del;
 			/*free(env_to_del->content);*/
-			/*free(env_to_del);*/
-			(*my_envp) = tmp_envp;
+			free(env_to_del);
 			return ;
 		}
-		(*my_envp) = (*my_envp)->next;
+
+		tmp_envp = tmp_envp->next;
 	}
 }
