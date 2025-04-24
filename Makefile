@@ -1,8 +1,8 @@
 CC = cc
 FLAGS = -Wall -Wextra -Werror -g
 EXTRA_FLAGS = -lreadline
-NAME = minishel
-BNAME = so_long_bonus
+NAME = minishell
+BNAME = minishell_bonus
 
 # Colors
 GREEN = \033[0;32m
