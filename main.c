@@ -30,14 +30,14 @@ int main(int argc, char **argv, char **envp)
 	my_envp = ft_set_env(envp);
 	while (1)
 	{
-		char *rl = NULL;
+		char *rl = "test";
 		rl = readline("====> ");
 
-		printf("hahahah");
+		/*printf("hahahah");*/
 
-		char **arr = ft_split(rl, 32);
-		for (int i = 0; arr[i]; i++)
-			printf("this is line %d--%s\n", i, arr[i]);
+		/*char **arr = ft_split(rl, 32);*/
+		/*for (int i = 0; arr[i]; i++)*/
+		/*	printf("this is line %d--%s\n", i + 1, arr[i]);*/
 
 		if (ft_check_bultins(rl, &my_envp))
 		{

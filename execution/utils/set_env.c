@@ -20,7 +20,7 @@ t_list *ft_set_env(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		ft_lstadd_back(&c_envp, ft_lstnew((char *)envp[i]));
+		ft_lstadd_back(&c_envp, ft_lstnew(ft_strdup((char *)envp[i])));
 		i++;
 	}
 	return (c_envp);

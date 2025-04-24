@@ -27,6 +27,8 @@ char **ft_prep_envp(t_list *my_envp)
 	{
 		arr_envp[i] = ft_strdup((char *)my_envp->content);
 		my_envp = my_envp->next;
+		i++;
 	}
+	arr_envp[i] = NULL;
 	return (arr_envp);
 }
