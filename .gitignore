@@ -2,5 +2,6 @@
 *.o
 # Binary
 minishell
+parse_test
 # lib archive
 *.a
