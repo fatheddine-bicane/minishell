@@ -12,6 +12,7 @@
 
 #include "../../minishel.h"
 
+//INFO: this functions set a custum envp in alinked list so it can be modified later
 t_list *ft_set_env(char **envp)
 {
 	t_list	*c_envp = NULL;

@@ -32,6 +32,7 @@ int main(int argc, char **argv, char **envp)
 	{
 		char *rl = "test";
 		rl = readline("====> ");
+		//BUG: if an empty line is set to rl there is segfault
 
 		/*printf("hahahah");*/
 

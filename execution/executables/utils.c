@@ -12,7 +12,7 @@
 
 #include "../../minishel.h"
 
-//this function will transform the envp from a linked list to an arr for the execve function
+//INFO: this function will transform the envp from a linked list to a cahr ** for the execve()
 char **ft_prep_envp(t_list *my_envp)
 {
 	int		i;
