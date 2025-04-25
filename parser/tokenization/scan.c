@@ -31,6 +31,8 @@ char	skip_space(char *src, size_t *current)
 	c = src[(*current)++];
 	while (c == ' ' || c == '\r' || c == '\t')
 		c = src[(*current)++];
+	if (!src[*current - 1])
+		*current -= 1;
 	return (c);
 }
 
@@ -39,8 +41,8 @@ t_token	*scan_token(char *src, size_t *current)
 	char	c;
 
 	c = skip_space(src, current);
-	if (c == '\n')
-		return (token_new(T_SKIPPABLE, "\n"));
+	if (c == '\n' || c == '\0')
+		return (token_new(T_SKIPPABLE, ""));
 	if (c == '(')
 		return (token_new(T_LEFT_PAREN, "("));
 	if (c == ')')
