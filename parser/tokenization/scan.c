@@ -67,6 +67,7 @@ t_token	*scan_token(char *src, size_t *current)
 	{
 		if (match(src, current, '<'))
 			return (token_new(T_HEREDOC, "<<"));
+		return (token_new(T_REDIRECT_IN, "<"));
 	}
 	return (token_new(T_UNKNOWN, sn_strndup(&src[*current - 1], 1)));
 }
