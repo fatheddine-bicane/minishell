@@ -34,9 +34,9 @@ int main(int argc, char **argv, char **envp)
 		rl = readline("====> ");
 		//BUG: if an empty line is set to rl there is segfault
 
-		ft_pipex(ft_split(rl, '|'), my_envp);
-		printf("pipes done");
-		break;
+		// INFO: to test pipes
+		/*ft_pipex(ft_split(rl, '|'), my_envp);*/
+		/*continue;*/
 
 		if (ft_check_bultins(rl, &my_envp))
 		{

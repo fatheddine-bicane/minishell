@@ -37,7 +37,7 @@ static char	**ft_find_path(t_list *my_envp)
 	}
 	if (NULL == path_var)
 		return (NULL);
-	char **(paths) = ft_split(path_var, ':');
+	char **(paths) = ft_split(path_var + 5, ':');
 	return (paths);
 }
 
@@ -98,12 +98,12 @@ void	ft_exevute_command(char *command, t_list *my_envp)
 
 void	ft_wait_pids(t_list *pids)
 {
-	pid_t	*pid;
+	pid_t	pid;
 
 	while (pids)
 	{
-		pid = (pid_t *)pids->content;
-		waitpid((*pid), NULL, 0);
+		pid = ft_atoi((char *)pids->content);
+		waitpid(pid, NULL, 0);
 		pids = pids->next;
 	}
 }
@@ -116,27 +116,23 @@ void	ft_pipex(char **commands, t_list *my_envp)
 	int		fd[2];
 	int		c_count; // INFO: commands count
 	char	**path = ft_find_path(my_envp);
-	t_list	*pids;
+	t_list	*pids = NULL;
 
-	for (int i = 0; commands[i]; i++)
-		printf("%s\n", commands[i]);
-	
 	if (NULL == path)
 		return ; // TODO: error mssg
 
 	c_i = 0;
 	c_count = ft_commands_count(commands);
-	printf("seg not here");
 
 	while (commands[c_i])
 	{
-		if (c_i < c_count)
+		if (c_i < c_count - 1)
 		{
 			if (-1 == pipe(fd))
 				return ; // TODO: error mssg
 		}
 		pid = fork();
-		ft_lstadd_back(&pids, ft_lstnew(&pid)); // INFO: save all pids
+		ft_lstadd_back(&pids, ft_lstnew(ft_itoa(pid))); // INFO: save all pids
 		if (0 == pid)
 		{
 			if (-1 != prev_pipe[0])
@@ -144,7 +140,7 @@ void	ft_pipex(char **commands, t_list *my_envp)
 				if (-1 == dup2(prev_pipe[0], STDIN_FILENO))
 					return; // TODO: error mssg
 			}
-			if (c_i < c_count)
+			if (c_i < c_count - 1)
 			{
 				if (-1 == dup2(fd[1], STDOUT_FILENO))
 					return; // TODO: error mssg
@@ -155,7 +151,7 @@ void	ft_pipex(char **commands, t_list *my_envp)
 			if (-1 != prev_pipe[1])
 				close(prev_pipe[1]);
 
-			if (c_i < c_count)
+			if (c_i < c_count - 1)
 			{
 				close(fd[0]);
 				close(fd[1]);
@@ -170,7 +166,7 @@ void	ft_pipex(char **commands, t_list *my_envp)
 			if (-1 != prev_pipe[1])
 				close(prev_pipe[1]);
 
-			if (c_i < c_count)
+			if (c_i < c_count - 1)
 			{
 				prev_pipe[0] = fd[0];
 				prev_pipe[1] = fd[1];
@@ -178,5 +174,5 @@ void	ft_pipex(char **commands, t_list *my_envp)
 		}
 		c_i++;
 	}
-	ft_wait_pids(pids);
+	ft_wait_pids(pids); // TODO: check if it waits for pids
 }

@@ -27,7 +27,7 @@ char	**ft_find_path(t_list *my_envp)
 	}
 	if (NULL == path_var)
 		return (NULL);
-	char **(paths) = ft_split(path_var, ':');
+	char **(paths) = ft_split(path_var + 5, ':');
 	return (paths);
 }
 
