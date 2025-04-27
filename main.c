@@ -34,11 +34,9 @@ int main(int argc, char **argv, char **envp)
 		rl = readline("====> ");
 		//BUG: if an empty line is set to rl there is segfault
 
-		/*printf("hahahah");*/
-
-		/*char **arr = ft_split(rl, 32);*/
-		/*for (int i = 0; arr[i]; i++)*/
-		/*	printf("this is line %d--%s\n", i + 1, arr[i]);*/
+		// INFO: to test pipes
+		/*ft_pipex(ft_split(rl, '|'), my_envp);*/
+		/*continue;*/
 
 		if (ft_check_bultins(rl, &my_envp))
 		{
@@ -47,7 +45,7 @@ int main(int argc, char **argv, char **envp)
 		}
 
 		ft_here_doc(rl);
-		ft_apply_comm(rl, my_envp); //infinite loop maybe
+		ft_apply_comm(rl, my_envp);
 
 		/*if (errno != 0)*/
 		/*	perror(strerror(errno));*/

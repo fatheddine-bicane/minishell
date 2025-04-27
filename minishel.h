@@ -46,4 +46,6 @@ void	ft_free_arr(char **arr_s);
 
 char **ft_prep_envp(t_list *my_envp);
 
+void	ft_pipex(char **commands, t_list *my_envp);
+
 #endif
