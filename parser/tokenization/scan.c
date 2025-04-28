@@ -64,6 +64,23 @@ t_token	*extract_str(char *src, size_t *current, bool single)
 	return (token_new(type, substr));
 }
 
+t_token	*extract_id_or_cmd(char *src, size_t *current)
+{
+	char	*substr;
+	size_t	start;
+
+	start = *current - 1;
+	while (src[*current] == '_' || sn_isalpha(src[*current])
+		|| sn_isdigit(src[*current]))
+		*current += 1;
+	substr = sn_substr(src, start, *current - start);
+	if (substr == NULL)
+		return (NULL);
+	if (src[*current] == '=')
+		return (token_new(T_IDENTIFIER, substr));
+	return (token_new(T_CMD, substr));
+}
+
 t_token	*scan_token(char *src, size_t *current)
 {
 	char	c;
@@ -101,6 +118,8 @@ t_token	*scan_token(char *src, size_t *current)
 	}
 	if (c == '\'' || c == '"')
 		return (extract_str(src, current, c == '\''));
+	if (sn_isalpha(c) || c == '_')
+		return (extract_id_or_cmd(src, current));
 	return (token_new(T_UNKNOWN, sn_strndup(&src[*current - 1], 1)));
 }
 

@@ -38,6 +38,8 @@ typedef enum e_token_type
 	T_PIPE,
 	T_AND,
 	T_OR,
+	T_IDENTIFIER,
+	T_CMD,
 	T_VAR,
 	T_VAR_STATUS,
 	T_WILDCARD,

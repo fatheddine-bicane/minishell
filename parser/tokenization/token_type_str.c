@@ -28,6 +28,8 @@ static const char	*token_type_str2(t_token_type type)
 		return ("T_VAR");
 	if (type == T_VAR_STATUS)
 		return ("T_VAR_STATUS");
+	if (type == T_IDENTIFIER)
+		return ("T_IDENTIFIER");
 	if (type == T_WILDCARD)
 		return ("T_WILDCARD");
 	if (type == T_SKIPPABLE)
@@ -45,6 +47,8 @@ const char	*token_type_str(t_token_type type)
 		return ("T_LEFT_PAREN");
 	if (type == T_RIGHT_PAREN)
 		return ("T_RIGHT_PAREN");
+	if (type == T_CMD)
+		return ("T_CMD");
 	if (type == T_EQUAL)
 		return ("T_EQUAL");
 	if (type == T_REDIRECT_IN)
