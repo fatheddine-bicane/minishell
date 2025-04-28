@@ -45,11 +45,14 @@ t_token	*token_new(t_token_type type, char *lexeme)
 
 void	token_free(t_token *t)
 {
+	t_token_type	type;
+
 	if (t == NULL)
 		return ;
+	type = t->type;
 	if (t->lexeme)
 		free(t->str);
-	if (t->type == T_UNKNOWN)
+	if (type == T_UNKNOWN || type == T_STRING_SINGLE || type == T_STRING_DOUBLE)
 		free(t->lexeme);
 	free(t);
 }

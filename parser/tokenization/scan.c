@@ -36,6 +36,34 @@ char	skip_space(char *src, size_t *current)
 	return (c);
 }
 
+t_token	*extract_str(char *src, size_t *current, bool single)
+{
+	size_t			start;
+	char			*substr;
+	char			quote;
+	t_token_type	type;
+
+	quote = '"';
+	type = T_STRING_DOUBLE;
+	if (single)
+	{
+		quote = '\'';
+		type = T_STRING_SINGLE;
+	}
+	start = *current;
+	while (src[*current] && src[*current] != quote)
+		*current += 1;
+	if (!src[*current])
+		return (sn_printf_fd(STDERR_FILENO,
+				"unexpected EOF while looking for matching `%c`\n", quote),
+			NULL);
+	substr = sn_substr(src, start, *current - start);
+	if (substr == NULL)
+		return (NULL);
+	*current += 1;
+	return (token_new(type, substr));
+}
+
 t_token	*scan_token(char *src, size_t *current)
 {
 	char	c;
@@ -71,6 +99,8 @@ t_token	*scan_token(char *src, size_t *current)
 			return (token_new(T_HEREDOC, "<<"));
 		return (token_new(T_REDIRECT_IN, "<"));
 	}
+	if (c == '\'' || c == '"')
+		return (extract_str(src, current, c == '\''));
 	return (token_new(T_UNKNOWN, sn_strndup(&src[*current - 1], 1)));
 }
 
