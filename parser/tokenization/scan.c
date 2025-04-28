@@ -82,6 +82,21 @@ t_token	*extract_id_cmd_val(char *src, size_t *current, bool isval)
 	return (token_new(T_CMD, substr));
 }
 
+
+t_token	*extract_var(char *src, size_t *current)
+{
+	char	*substr;
+	size_t	start;
+
+	start = *current - 1;
+	while (src[*current] == '_' || sn_isalphanum(src[*current]))
+		*current += 1;
+	substr = sn_substr(src, start, *current - start);
+	if (substr == NULL)
+		return (NULL);
+	return (token_new(T_VAR, substr));
+}
+
 t_token	*scan_token(char *src, size_t *current)
 {
 	char	c;
@@ -100,6 +115,13 @@ t_token	*scan_token(char *src, size_t *current)
 		if (src[*current] == '_' || sn_isalphanum(src[*current]))
 			return ((*current += 1), extract_id_cmd_val(src, current, true));
 		return (token_new(T_EQUAL, "="));
+	}
+	if (c == '$')
+	{
+		if (match(src, current, '?'))
+			return (token_new(T_VAR_STATUS, "$?"));
+		if (src[*current] == '_' || sn_isalphanum(src[*current]))
+			return ((*current += 1), extract_var(src, current));
 	}
 	if (c == '&' && match(src, current, '&'))
 		return (token_new(T_AND, "&&"));
