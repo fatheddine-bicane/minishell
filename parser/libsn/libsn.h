@@ -41,6 +41,7 @@ typedef struct s_str_builder
 int				sn_atoi(const char *nptr, int *valid);
 int				sn_isdigit(int c);
 int				sn_isalpha(int c);
+int				sn_isalphanum(int c);
 size_t			sn_strlen(const char *s);
 void			*sn_calloc(size_t nmemb, size_t size);
 void			sn_bzero(void *s, size_t n);

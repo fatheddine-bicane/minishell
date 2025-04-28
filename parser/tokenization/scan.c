@@ -64,18 +64,19 @@ t_token	*extract_str(char *src, size_t *current, bool single)
 	return (token_new(type, substr));
 }
 
-t_token	*extract_id_or_cmd(char *src, size_t *current)
+t_token	*extract_id_cmd_val(char *src, size_t *current, bool isval)
 {
 	char	*substr;
 	size_t	start;
 
 	start = *current - 1;
-	while (src[*current] == '_' || sn_isalpha(src[*current])
-		|| sn_isdigit(src[*current]))
+	while (src[*current] == '_' || sn_isalphanum(src[*current]))
 		*current += 1;
 	substr = sn_substr(src, start, *current - start);
 	if (substr == NULL)
 		return (NULL);
+	if (isval)
+		return ((*current += 1), token_new(T_VAR_VALUE, substr));
 	if (src[*current] == '=')
 		return (token_new(T_IDENTIFIER, substr));
 	return (token_new(T_CMD, substr));
@@ -85,8 +86,8 @@ t_token	*scan_token(char *src, size_t *current)
 {
 	char	c;
 
-	c = skip_space(src, current);
-	if (c == '\n' || c == '\0')
+	c = src[(*current)++];
+	if (c == '\n' || c == '\0' || c == ' ' || c == '\r' || c == '\t')
 		return (token_new(T_SKIPPABLE, ""));
 	if (c == '(')
 		return (token_new(T_LEFT_PAREN, "("));
@@ -95,7 +96,11 @@ t_token	*scan_token(char *src, size_t *current)
 	if (c == '*')
 		return (token_new(T_WILDCARD, "*"));
 	if (c == '=')
+	{
+		if (src[*current] == '_' || sn_isalphanum(src[*current]))
+			return ((*current += 1), extract_id_cmd_val(src, current, true));
 		return (token_new(T_EQUAL, "="));
+	}
 	if (c == '&' && match(src, current, '&'))
 		return (token_new(T_AND, "&&"));
 	if (c == '|')
@@ -119,7 +124,7 @@ t_token	*scan_token(char *src, size_t *current)
 	if (c == '\'' || c == '"')
 		return (extract_str(src, current, c == '\''));
 	if (sn_isalpha(c) || c == '_')
-		return (extract_id_or_cmd(src, current));
+		return (extract_id_cmd_val(src, current, false));
 	return (token_new(T_UNKNOWN, sn_strndup(&src[*current - 1], 1)));
 }
 

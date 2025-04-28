@@ -41,6 +41,7 @@ typedef enum e_token_type
 	T_IDENTIFIER,
 	T_CMD,
 	T_VAR,
+	T_VAR_VALUE,
 	T_VAR_STATUS,
 	T_WILDCARD,
 	T_SKIPPABLE,

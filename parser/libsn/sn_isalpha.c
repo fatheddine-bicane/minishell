@@ -10,7 +10,19 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libsn.h"
+
 int	sn_isalpha(int c)
 {
 	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
+}
+
+int	sn_isdigit(int c)
+{
+	return (c >= '0' && c <= '9');
+}
+
+int	sn_isalphanum(int c)
+{
+	return (sn_isalpha(c) || sn_isdigit(c));
 }
