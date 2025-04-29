@@ -21,6 +21,7 @@ void	ft_redirect_out(char *ouf_name)
 		return ;
 	if (-1 == dup2(ouf, STDOUT_FILENO))
 		return ;
+	// TODO: close ouf
 }
 
 void	ft_redirect_inf(char *inf_file)
@@ -32,4 +33,5 @@ void	ft_redirect_inf(char *inf_file)
 		return ;
 	if (-1 == dup2(inf, STDIN_FILENO))
 		return ;
+	// TODO: close inf
 }

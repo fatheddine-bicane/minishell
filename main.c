@@ -31,7 +31,8 @@ int main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		char *rl = "test";
-		rl = readline("====> ");
+		/*rl = readline("====> ");*/
+		rl = readline("╭─ minishell \n╰─> ");
 		//BUG: if an empty line is set to rl there is segfault
 
 		// INFO: to test pipes
@@ -44,13 +45,14 @@ int main(int argc, char **argv, char **envp)
 			add_history(rl);
 		}
 
-		ft_here_doc(rl);
+		/*ft_here_doc(rl);*/
 		ft_apply_comm(rl, my_envp);
 
 		/*if (errno != 0)*/
 		/*	perror(strerror(errno));*/
 
 		add_history(rl);
+		printf("\n");
 	}
     return (0);
 }

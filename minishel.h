@@ -27,25 +27,27 @@
 #include <readline/history.h>
 #include <string.h>
 
+// INFO: builtin command
 void	ft_cd(char *path);
 void	ft_pwd(void);
 void	ft_env(t_list *my_envp);
 void	ft_echo(char *rl, t_list *my_envp);
 void	ft_exit(void);
-
 void	ft_export(char **envp);
 void	ft_unset(t_list **my_envp, char *variable);
 
-t_list *ft_set_env(char **envp);
+t_list *ft_set_env(char **envp); //INFO: creat custum envp
 
-void	ft_apply_comm(char *rl, t_list *my_envp);
+void	ft_apply_comm(char *rl, t_list *my_envp); //INFO: apply commands
 void	ft_here_doc(char *rl);
 
 int	ft_check_bultins(char *rl, t_list **my_envp);
 void	ft_free_arr(char **arr_s);
 
-char **ft_prep_envp(t_list *my_envp);
+char **ft_prep_envp(t_list *my_envp); //INFO: transform the envp to char **
 
-void	ft_pipex(char **commands, t_list *my_envp);
+void	ft_pipex(char **commands, t_list *my_envp); //INFO: handle pipes
+
+void	ft_here_doc(char *rl); //INFO: creat here_doc input
 
 #endif
