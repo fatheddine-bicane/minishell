@@ -46,27 +46,11 @@ int	ft_find_variable(char **envp, char *variable)
 	return (-1);
 }
 
-/*static void	ft_free(char **arr_s)*/
-/*{*/
-/*	int	i;*/
-/**/
-/*	i = 0;*/
-/*	if (!arr_s)*/
-/*		return ;*/
-/*	while (arr_s[i])*/
-/*	{*/
-/*		free(arr_s[i]);*/
-/*		i++;*/
-/*	}*/
-/*	free (arr_s);*/
-/*}*/
-
 bool	ft_find_var(t_list *my_envp, char *variable)
 {
 	int	i;
 	char *env_ptr;
 
-	/*printf("not here\n");*/
 	while (my_envp)
 	{
 		i = 0;
@@ -88,51 +72,134 @@ bool	ft_find_var(t_list *my_envp, char *variable)
 	return (false);
 }
 
-void	ft_unset(t_list **my_envp, char *variable)
+bool	ft_first_node(t_unset *unset, t_list **my_envp, char **variables)
 {
-	t_list	*env_to_del;
-	t_list	*tmp_envp = (*my_envp);
+	// INFO: check first node
+	unset->env_cont = (char *)(*my_envp)->content;
+	unset->i = 0;
+	while (unset->env_cont[unset->i] && unset->env_cont[unset->i] != '=')
+		unset->i++;
 
-	if (NULL == variable)
+	if (!ft_strncmp(unset->env_cont, variables[unset->v_i], unset->i))
+	{
+		unset->env_to_del = (*my_envp);
+		(*my_envp) = (*my_envp)->next;
+		(void)unset->env_to_del;
+		// TODO: free env_to_del content
+		free(unset->env_to_del);
+		return (true);
+	}
+	return (false);
+}
+
+int	ft_rest_nodes(t_unset *unset, t_list **my_envp, char **variables)
+{
+	// INFO: check the rest nodes
+	unset->tmp_envp = (*my_envp);
+	while (unset->tmp_envp)
+	{
+		if (NULL == unset->tmp_envp->next)
+			return (0);
+		unset->env_cont = (char *)unset->tmp_envp->next->content;
+		unset->i = 0;
+		while (unset->env_cont[unset->i] && unset->env_cont[unset->i] != '=')
+			unset->i++;
+		if (!ft_strncmp(unset->env_cont, variables[unset->v_i], unset->i))
+		{
+			unset->env_to_del = unset->tmp_envp->next;
+			unset->tmp_envp->next = unset->tmp_envp->next->next;
+			(void)unset->env_to_del;
+			// TODO: free env_to_del content
+			free(unset->env_to_del);
+			unset->skip_loop = true;
+			break ;
+		}
+		unset->tmp_envp = unset->tmp_envp->next;
+	}
+	/*if (unset->skip_loop)*/
+	/*{*/
+	/*	unset->skip_loop = false;*/
+	/*	unset->v_i++;*/
+	/*	return (1);*/
+	/*}*/
+	return (2);
+}
+
+void	ft_unset(t_list **my_envp, char **variables)
+{
+	/*t_list	*env_to_del;*/
+	/*t_list	*tmp_envp;*/
+	/*char	*env_cont;*/
+	/*int		i;*/
+	/*int		v_i; // INFO: variables index*/
+	/*bool	skip_loop;*/
+	t_unset	unset;
+	int		check;
+
+	if (NULL == variables)
 		return;
 
-	char	*env_cont = (char *)(*my_envp)->content;
-	int	i = 0;
+	unset.v_i = 1;
+	unset.skip_loop = false;
 
-	while (env_cont[i] && env_cont[i] != '=')
-		i++;
-
-	if (!ft_strncmp(env_cont, variable, i))
+	while (variables[unset.v_i])
 	{
-		env_to_del = (*my_envp);
-		(*my_envp) = (*my_envp)->next;
-		(void)env_to_del;
-		/*free(env_to_del->content);*/
-		free(env_to_del);
-		return ;
-	}
+		/*// INFO: check first node*/
+		/*unset.env_cont = (char *)(*my_envp)->content;*/
+		/*unset.i = 0;*/
+		/**/
+		/*while (unset.env_cont[unset.i] && unset.env_cont[unset.i] != '=')*/
+		/*	unset.i++;*/
+		/**/
+		/*if (!ft_strncmp(unset.env_cont, variables[unset.v_i], unset.i))*/
+		/*{*/
+		/*	unset.env_to_del = (*my_envp);*/
+		/*	(*my_envp) = (*my_envp)->next;*/
+		/*	(void)unset.env_to_del;*/
+		/*	//free(env_to_del->content);*/
+		/*	free(unset.env_to_del);*/
+		/*	continue ;*/
+		/*}*/
+		if (ft_first_node(&unset, my_envp, variables))
+			continue ;
 
-	while (tmp_envp)
-	{
-		if (NULL == tmp_envp->next)
-			return;
-
-		env_cont = (char *)tmp_envp->next->content;
-		i = 0;
-
-		while (env_cont[i] && env_cont[i] != '=')
-			i++;
-
-		if (!ft_strncmp(env_cont, variable, i))
-		{
-			env_to_del = tmp_envp->next;
-			tmp_envp->next = tmp_envp->next->next;
-			(void)env_to_del;
-			/*free(env_to_del->content);*/
-			free(env_to_del);
+		/*// INFO: check the rest nodes*/
+		/*unset.tmp_envp = (*my_envp);*/
+		/*while (unset.tmp_envp)*/
+		/*{*/
+		/*	if (NULL == unset.tmp_envp->next)*/
+		/*		return;*/
+		/**/
+		/*	unset.env_cont = (char *)unset.tmp_envp->next->content;*/
+		/*	unset.i = 0;*/
+		/**/
+		/*	while (unset.env_cont[unset.i] && unset.env_cont[unset.i] != '=')*/
+		/*		unset.i++;*/
+		/**/
+		/*	if (!ft_strncmp(unset.env_cont, variables[unset.v_i], unset.i))*/
+		/*	{*/
+		/*		unset.env_to_del = unset.tmp_envp->next;*/
+		/*		unset.tmp_envp->next = unset.tmp_envp->next->next;*/
+		/*		(void)unset.env_to_del;*/
+		/*		//free(env_to_del->content);*/
+		/*		free(unset.env_to_del);*/
+		/*		unset.skip_loop = true;*/
+		/*		break ;*/
+		/*	}*/
+		/**/
+		/*	unset.tmp_envp = unset.tmp_envp->next;*/
+		/*}*/
+		check = ft_rest_nodes(&unset, my_envp, variables);
+		if (0 == check)
 			return ;
+		/*else if (1 == check)*/
+		/*	continue ;*/
+		if (unset.skip_loop)
+		{
+			unset.skip_loop = false;
+			unset.v_i++;
+			continue ;
 		}
-
-		tmp_envp = tmp_envp->next;
+		unset.v_i++;
 	}
 }
