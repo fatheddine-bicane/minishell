@@ -36,7 +36,7 @@ int main(int argc, char **argv, char **envp)
 		//BUG: if an empty line is set to rl there is segfault
 
 		// INFO: to test pipes
-		/*ft_pipex(ft_split(rl, '|'), my_envp);*/
+		/*ft_pipex(ft_split(rl, '|'), &my_envp);*/
 		/*continue;*/
 
 		if (ft_check_bultins(rl, &my_envp))
