@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/19 16:28:17 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/30 11:43:13 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	ft_free_arr(char **arr_s);
 char **ft_prep_envp(t_list *my_envp); //INFO: transform the envp to char **
 
 void	ft_pipex(char **commands, t_list *my_envp); //INFO: handle pipes
+bool	ft_is_builtin(char *command);
 
 void	ft_here_doc(char *rl); //INFO: creat here_doc input
 
