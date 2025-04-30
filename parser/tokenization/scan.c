@@ -148,7 +148,7 @@ t_token	*scan_token(char *src, size_t *current)
 		return (extract_str(src, current, c == '\''));
 	if (sn_isalpha(c) || c == '_')
 		return (extract_id_cmd_val(src, current, false));
-	return (token_new(T_UNKNOWN, sn_strndup(&src[*current - 1], 1)));
+	return (token_new(T_CMD, sn_strndup(&src[*current - 1], 1)));
 }
 
 t_token	*tokens_scan(char *src)
