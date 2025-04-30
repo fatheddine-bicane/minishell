@@ -51,6 +51,8 @@ const char	*token_type_str(t_token_type type)
 		return ("T_CMD");
 	if (type == T_EQUAL)
 		return ("T_EQUAL");
+	if (type == T_APPEND)
+		return ("T_APPEND");
 	if (type == T_REDIRECT_IN)
 		return ("T_REDIRECT_IN");
 	if (type == T_REDIRECT_OUT)

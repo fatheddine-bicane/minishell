@@ -109,6 +109,8 @@ t_token	*scan_token(char *src, size_t *current)
 		return (token_new(T_RIGHT_PAREN, ")"));
 	if (c == '*')
 		return (token_new(T_WILDCARD, "*"));
+	if (c == '+' && match(src, current, '='))
+		return (token_new(T_APPEND, "+="));
 	if (c == '=')
 	{
 		if (src[*current] == '_' || sn_isalphanum(src[*current]))
