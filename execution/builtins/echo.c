@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:34:38 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/18 16:57:09 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/04/30 18:54:20 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,36 +74,29 @@ void	ft_handl_ds(char *str)
 	}
 }
 
-void	ft_echo(char *rl, t_list *my_envp)
+void	ft_echo(char **echo_arg, t_list *my_envp)
 {
-	char **arr;
-	/*int	i;*/
-	int	j;
+	int		i;
 	bool	new_line;
 
-	arr = ft_split(rl, 32);
-	j = 1;
+	i = 1;
 	new_line = true;
-
-	ft_handl_n(arr, &j, &new_line);
-
-	while (arr[j])
+	ft_handl_n(echo_arg, &i, &new_line);
+	while (echo_arg[i])
 	{
-		if ('$' == arr[j][0])
+		if ('$' == echo_arg[i][0])
 		{
-			ft_expand_var(arr[j], &j, my_envp);
-			if (arr[j + 1])
+			ft_expand_var(echo_arg[i], &i, my_envp);
+			if (echo_arg[i + 1])
 				printf(" ");
 			continue ;
 		}
-		printf("%s", arr[j]);
-		if (arr[j + 1])
+		printf("%s", echo_arg[i]);
+		if (echo_arg[i + 1])
 			printf(" ");
-		j++;
+		i++;
 	}
-
 	if (new_line)
 		printf("\n");
-
-	ft_free_arr(arr);
+	ft_free_arr(echo_arg);
 }
