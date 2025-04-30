@@ -31,3 +31,46 @@ bool	ft_is_builtin(char *command)
 	else
 		return (false);
 }
+
+
+void	ft_exec_built_ins(char **command_arg, t_list **my_envp)
+{
+	if (0 == ft_strncmp(command_arg[0], "echo", 4))
+	{
+		ft_echo(command_arg, (*my_envp));
+		/*exit(1);*/
+		if (-1 == execve(NULL, NULL, NULL))
+			printf("failed\n");
+	}
+	else if (0 == ft_strncmp(command_arg[0], "cd", 2))
+	{
+		ft_cd(command_arg[1]);
+		exit(1);
+	}
+	else if (0 == ft_strncmp(command_arg[0], "pwd", 3))
+	{
+		ft_pwd();
+		exit(1);
+	}
+	else if (0 == ft_strncmp(command_arg[0], "export", 6))
+	{
+		ft_export(NULL); // TODO: pass the original pointer
+		exit(1);
+	}
+	else if (0 == ft_strncmp(command_arg[0], "unset", 5))
+	{
+		ft_unset(my_envp, command_arg); // TODO: check argument 0
+		exit(1);
+	}
+	else if (0 == ft_strncmp(command_arg[0], "env", 3))
+	{
+		ft_env(*my_envp);
+		exit(1);
+	}
+	else if (0 == ft_strncmp(command_arg[0], "exit", 4))
+	{
+		ft_exit();
+		exit(1);
+	}
+	// TODO: free used memory (no execve to clean)
+}

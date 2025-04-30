@@ -60,23 +60,27 @@ static char	*ft_concat_path(char *arr2, char *command)
 	return (str);
 }
 
-void	ft_exevute_command(char *command, t_list *my_envp)
+void	ft_exevute_command(char *command, t_list **my_envp)
 {
 	char	**command_arg;
 	char	**paths;
 	char	*path;
 	int		i;
 
-	command_arg = ft_split(command, 32);
+	command_arg = ft_split(command, 32); // INFO: comand and its arguments
 	// TODO: protect command_arg from NULL
-	paths = ft_find_path(my_envp);
+
+	ft_exec_built_ins(command_arg, my_envp); // TODO: pass the original my_envp
+
+	paths = ft_find_path(*my_envp);
 	// TODO: protect paths from NULL
+
 	path = NULL;
 	i = 0;
 
 	if (0 == access(command_arg[0], F_OK | X_OK))
 	{
-		execve(command_arg[0], command_arg, ft_prep_envp(my_envp));
+		execve(command_arg[0], command_arg, ft_prep_envp(*my_envp));
 		// TODO: protect execve
 	}
 	else
@@ -88,7 +92,7 @@ void	ft_exevute_command(char *command, t_list *my_envp)
 			{
 				free(command_arg[0]);
 				command_arg[0] = path;
-				execve(command_arg[0], command_arg, ft_prep_envp(my_envp));
+				execve(command_arg[0], command_arg, ft_prep_envp(*my_envp));
 				// TODO: protect execve
 			}
 			i++;
@@ -108,14 +112,14 @@ void	ft_wait_pids(t_list *pids)
 	}
 }
 
-void	ft_pipex(char **commands, t_list *my_envp)
+void	ft_pipex(char **commands, t_list **my_envp)
 {
 	pid_t	pid;
 	int		c_i; // INFO: commands_index
 	int		prev_pipe[2] = {-1, -1}; // INFO: hold pipes fds
 	int		fd[2];
 	int		c_count; // INFO: commands count
-	char	**path = ft_find_path(my_envp);
+	char	**path = ft_find_path(*my_envp);
 	t_list	*pids = NULL;
 
 	if (NULL == path)
