@@ -38,31 +38,43 @@ static int	process(va_list args, t_str_builder *sb, char specifier)
 	return (sb->len - bytes);
 }
 
-static int	handle_specifier(va_list args, t_str_builder *sb, const char *s,
-		size_t *i)
+static int	parse(va_list ap, t_str_builder *sb, const char *s, size_t *i)
 {
 	char	*specifier;
-	int		r;
+	int		specifier_bytes;
 	int		bytes;
 
 	bytes = 0;
+	if (!s[*i])
+		return (bytes);
 	specifier = sn_strchr("cspdiuxX%", s[*i + 1]);
 	if (!specifier)
 	{
 		if (!sb_append_char(sb, '%'))
 			return (-1);
 		bytes++;
-		s++;
 	}
 	else
 	{
-		r = process(args, sb, *specifier);
-		if (r == -1)
+		specifier_bytes = process(ap, sb, *specifier);
+		if (specifier_bytes == -1)
 			return (-1);
 		*i += 2;
-		bytes += r;
+		bytes += specifier_bytes;
 	}
 	return (bytes);
+}
+
+static t_str_builder	*inner_buff_init(char **buff, const char *fmt)
+{
+	t_str_builder	*sb;
+
+	if (!buff || !fmt)
+		return (NULL);
+	sb = sb_create(sn_strlen(fmt));
+	if (sb == NULL)
+		return (NULL);
+	return (sb);
 }
 
 int	sn_vsprintf(va_list args, char **buff, const char *fmt, ...)
@@ -70,22 +82,23 @@ int	sn_vsprintf(va_list args, char **buff, const char *fmt, ...)
 	int				bytes;
 	int				r;
 	size_t			i;
+	size_t			start;
 	t_str_builder	*sb;
 
-	sb = sb_create(sn_strlen(fmt));
-	if (!fmt || !buff || sb == NULL)
+	sb = inner_buff_init(buff, fmt);
+	if (sb == NULL)
 		return (sb_free(sb), -1);
 	bytes = 0;
 	i = 0;
 	while (fmt[i])
 	{
-		if (fmt[i] != '%' && ++bytes)
-		{
-			if (!sb_append_char(sb, fmt[i++]))
-				return (*buff = NULL, sb_free(sb), -1);
-			continue ;
-		}
-		r = handle_specifier(args, sb, fmt, &i);
+		start = i;
+		while (fmt[i] && fmt[i] != '%')
+			i++;
+		if (i - start > 0 && !sb_append_str(sb, fmt + start, i - start))
+			return (*buff = NULL, sb_free(sb), -1);
+		bytes += i - start;
+		r = parse(args, sb, fmt, &i);
 		if (r == -1)
 			return (*buff = NULL, sb_free(sb), -1);
 		bytes += r;

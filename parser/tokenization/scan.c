@@ -82,7 +82,6 @@ t_token	*extract_id_cmd_val(char *src, size_t *current, bool isval)
 	return (token_new(T_CMD, substr));
 }
 
-
 t_token	*extract_var(char *src, size_t *current)
 {
 	char	*substr;
