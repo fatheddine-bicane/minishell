@@ -32,6 +32,8 @@ t_token	*token_new(t_token_type type, char *lexeme)
 {
 	t_token	*token;
 
+	if (lexeme == NULL)
+		return (NULL);
 	token = malloc(sizeof(t_token));
 	if (token == NULL)
 		return (NULL);
@@ -54,8 +56,7 @@ void	token_free(t_token *t)
 		free(t->str);
 	if (type == T_UNKNOWN || type == T_STRING_SINGLE || type == T_STRING_DOUBLE)
 		free(t->lexeme);
-	if (type == T_CMD || type == T_IDENTIFIER || type == T_VAR
-		|| type == T_VAR_VALUE)
+	if (type == T_WORD || type == T_IDENTIFIER)
 		free(t->lexeme);
 	free(t);
 }

@@ -33,18 +33,16 @@ typedef enum e_token_type
 	T_REDIRECT_OUT,
 	T_REDIRECT_OUT_APPEND,
 	T_HEREDOC,
-	T_HEREDOC_DELIMITER,
 	T_STRING_SINGLE,
 	T_STRING_DOUBLE,
 	T_PIPE,
 	T_AND,
 	T_OR,
-	T_IDENTIFIER,
-	T_CMD,
-	T_VAR,
-	T_VAR_VALUE,
-	T_VAR_STATUS,
 	T_WILDCARD,
+	T_BLANK,
+	T_WORD,
+	T_IDENTIFIER,
+	T_VAR,
 	T_SKIPPABLE,
 	T_EOF,
 	T_UNKNOWN
@@ -65,5 +63,13 @@ void				tokens_free(t_token *token);
 void				token_str(t_token *t, bool nl, bool all);
 const char			*token_type_str(t_token_type type);
 t_token				*tokens_scan(char *src);
+
+bool				is_metachar(char *src, size_t current);
+bool				match_char(char *src, size_t *current, char expected);
+bool				match_word(char *src, size_t *current);
+bool				match_identifier(char *src, size_t *current);
+t_token				*extract_str(char *src, size_t *current, bool single);
+char				*extract_word(char *src, size_t *current);
+t_token				*extract_identifier(char *src, size_t *current);
 
 #endif

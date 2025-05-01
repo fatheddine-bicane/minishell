@@ -24,16 +24,10 @@ static const char	*token_type_str2(t_token_type type)
 		return ("T_AND");
 	if (type == T_OR)
 		return ("T_OR");
-	if (type == T_VAR)
-		return ("T_VAR");
-	if (type == T_VAR_VALUE)
-		return ("T_VAR_VALUE");
-	if (type == T_VAR_STATUS)
-		return ("T_VAR_STATUS");
-	if (type == T_IDENTIFIER)
-		return ("T_IDENTIFIER");
 	if (type == T_WILDCARD)
 		return ("T_WILDCARD");
+	if (type == T_SKIPPABLE)
+		return ("T_SKIPPABLE");
 	if (type == T_EOF)
 		return ("T_EOF");
 	if (type == T_UNKNOWN)
@@ -47,8 +41,6 @@ const char	*token_type_str(t_token_type type)
 		return ("T_LEFT_PAREN");
 	if (type == T_RIGHT_PAREN)
 		return ("T_RIGHT_PAREN");
-	if (type == T_CMD)
-		return ("T_CMD");
 	if (type == T_EQUAL)
 		return ("T_EQUAL");
 	if (type == T_APPEND)
@@ -61,9 +53,13 @@ const char	*token_type_str(t_token_type type)
 		return ("T_REDIRECT_OUT_APPEND");
 	if (type == T_HEREDOC)
 		return ("T_HEREDOC");
-	if (type == T_HEREDOC_DELIMITER)
-		return ("T_HEREDOC_DELIMITER");
-	if (type == T_SKIPPABLE)
-		return ("T_SKIPPABLE");
+	if (type == T_BLANK)
+		return ("T_BLANK");
+	if (type == T_WORD)
+		return ("T_WORD");
+	if (type == T_IDENTIFIER)
+		return ("T_IDENTIFIER");
+	if (type == T_VAR)
+		return ("T_VAR");
 	return (token_type_str2(type));
 }
