@@ -78,9 +78,9 @@ bool	match_identifier(char *src, size_t *current)
 		return (found);
 	while (sn_isalphanum(src[*current]) || src[*current] == '_')
 		*current += 1;
-	if (src[start - 1] == '=')
+	if (start >= 1 && src[start - 1] == '=')
 		found = true;
-	if (src[start - 2] == '+' && src[start - 1] == '=')
+	if (start >= 2 && src[start - 2] == '+' && src[start - 1] == '=')
 		found = true;
 	if (match_char(src, current, '='))
 		found = true;
