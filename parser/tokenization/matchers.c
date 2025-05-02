@@ -30,7 +30,7 @@ bool	is_metachar(char *src, size_t current)
 		return (false);
 	if (src[current] == '\'' || src[current] == '"')
 		return (true);
-	if (src[current] == ' ' || src[current] == '\t')
+	if (src[current] == ' ' || src[current] == '\t' || src[current] == '\n')
 		return (true);
 	if (src[current] == '|' || src[current] == '&')
 		return (true);
