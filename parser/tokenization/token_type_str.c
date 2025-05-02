@@ -30,8 +30,6 @@ static const char	*token_type_str2(t_token_type type)
 		return ("T_SKIPPABLE");
 	if (type == T_EOF)
 		return ("T_EOF");
-	if (type == T_UNKNOWN)
-		return ("T_UNKNOWN");
 	return (NULL);
 }
 

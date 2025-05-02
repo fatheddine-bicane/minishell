@@ -45,7 +45,6 @@ typedef enum e_token_type
 	T_VAR,
 	T_SKIPPABLE,
 	T_EOF,
-	T_UNKNOWN
 }					t_token_type;
 
 typedef struct s_token
