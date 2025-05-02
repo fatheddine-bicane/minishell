@@ -24,6 +24,11 @@ bool	match_char(char *src, size_t *current, char expected)
 	return (false);
 }
 
+bool	is_name(char *src, size_t current)
+{
+	return (sn_isalpha(src[current]) || src[current] == '_');
+}
+
 bool	is_metachar(char *src, size_t current)
 {
 	if (!src[current])
@@ -58,7 +63,7 @@ bool	match_var(char *src, size_t *current)
 	found = false;
 	if (src[*current] == '?')
 		found = true;
-	if (sn_isalpha(src[*current]) || src[*current] == '_')
+	if (is_name(src, *current))
 		found = true;
 	if (found)
 		*current += 1;
@@ -72,14 +77,10 @@ bool	match_identifier(char *src, size_t *current)
 
 	found = false;
 	start = *current - 1;
-	if (!sn_isalpha(src[*current]) && src[*current] != '_')
+	if (!is_name(src, *current))
 		return (found);
-	while (sn_isalphanum(src[*current]) || src[*current] == '_')
+	while (is_name(src, *current))
 		*current += 1;
-	if (start >= 1 && src[start - 1] == '=')
-		found = true;
-	if (start >= 2 && src[start - 2] == '+' && src[start - 1] == '=')
-		found = true;
 	if (match_char(src, current, '='))
 		found = true;
 	if (match_char(src, current, '+') && match_char(src, current, '='))

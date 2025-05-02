@@ -42,19 +42,15 @@ t_token	*extract_str(char *src, size_t *current, bool single)
 
 char	*extract_word(char *src, size_t *current)
 {
-	char	*substr;
 	size_t	start;
 
 	start = *current - 1;
 	if (match_word(src, current))
 	{
-		while (src[*current] && match_word(src, current))
+		while (match_word(src, current))
 			continue ;
 	}
-	substr = sn_substr(src, start, *current - start);
-	if (substr == NULL)
-		return (NULL);
-	return (substr);
+	return (sn_substr(src, start, *current - start));
 }
 
 t_token	*extract_identifier(char *src, size_t *current)
@@ -63,12 +59,12 @@ t_token	*extract_identifier(char *src, size_t *current)
 	char	*substr;
 
 	start = *current - 1;
-	while (sn_isalphanum(src[*current]) || src[*current] == '_')
+	while (is_name(src, *current))
 		*current += 1;
 	substr = sn_substr(src, start, *current - start);
 	if (substr == NULL)
 		return (NULL);
-	return (token_new(T_IDENTIFIER, substr));
+	return (token_new(T_WORD, substr));
 }
 
 t_token	*extract_var(char *src, size_t *current)
@@ -77,7 +73,7 @@ t_token	*extract_var(char *src, size_t *current)
 	char	*substr;
 
 	start = *current - 1;
-	while (sn_isalpha(src[*current]) || src[*current] == '_')
+	while (is_name(src, *current))
 		*current += 1;
 	substr = sn_substr(src, start, *current - start);
 	if (substr == NULL)

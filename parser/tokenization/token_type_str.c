@@ -39,10 +39,6 @@ const char	*token_type_str(t_token_type type)
 		return ("T_LEFT_PAREN");
 	if (type == T_RIGHT_PAREN)
 		return ("T_RIGHT_PAREN");
-	if (type == T_EQUAL)
-		return ("T_EQUAL");
-	if (type == T_APPEND)
-		return ("T_APPEND");
 	if (type == T_REDIRECT_IN)
 		return ("T_REDIRECT_IN");
 	if (type == T_REDIRECT_OUT)
@@ -55,8 +51,6 @@ const char	*token_type_str(t_token_type type)
 		return ("T_BLANK");
 	if (type == T_WORD)
 		return ("T_WORD");
-	if (type == T_IDENTIFIER)
-		return ("T_IDENTIFIER");
 	if (type == T_VAR)
 		return ("T_VAR");
 	return (token_type_str2(type));

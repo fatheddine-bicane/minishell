@@ -29,10 +29,6 @@ t_token	*token_identify(char *src, size_t *current)
 		return (token_new(T_RIGHT_PAREN, ")"));
 	if (c == '*')
 		return (token_new(T_WILDCARD, "*"));
-	if (c == '=')
-		return (token_new(T_EQUAL, "="));
-	if (c == '+' && match_char(src, current, '='))
-		return (token_new(T_APPEND, "+="));
 	if (c == '&' && match_char(src, current, '&'))
 		return (token_new(T_AND, "&&"));
 	if (c == '|')
@@ -60,8 +56,6 @@ t_token	*token_identify(char *src, size_t *current)
 		if (match_var(src, current))
 			return (extract_var(src, current));
 	}
-	if (match_identifier(src, current))
-		return (extract_identifier(src, current));
 	return (token_new(T_WORD, extract_word(src, current)));
 }
 
