@@ -12,19 +12,6 @@
 
 #include "../parser.h"
 
-static bool	consume_word(char *src, size_t *current)
-{
-	if (!src[*current])
-		return (false);
-	if (match_word(src, current))
-	{
-		while (src[*current] && match_word(src, current))
-			continue ;
-		return (true);
-	}
-	return (false);
-}
-
 t_token	*extract_str(char *src, size_t *current, bool single)
 {
 	size_t			start;
@@ -59,7 +46,11 @@ char	*extract_word(char *src, size_t *current)
 	size_t	start;
 
 	start = *current - 1;
-	consume_word(src, current);
+	if (match_word(src, current))
+	{
+		while (src[*current] && match_word(src, current))
+			continue ;
+	}
 	substr = sn_substr(src, start, *current - start);
 	if (substr == NULL)
 		return (NULL);
@@ -78,4 +69,11 @@ t_token	*extract_identifier(char *src, size_t *current)
 	if (substr == NULL)
 		return (NULL);
 	return (token_new(T_IDENTIFIER, substr));
+}
+
+t_token	*extract_blank(char *src, size_t *current)
+{
+	while (src[*current] && (src[*current] == ' ' || src[*current] == '\t'))
+		*current += 1;
+	return (token_new(T_BLANK, " "));
 }

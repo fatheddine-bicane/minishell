@@ -20,7 +20,9 @@ t_token	*token_identify(char *src, size_t *current)
 	if (c == '\n' || c == '\0')
 		return (token_new(T_SKIPPABLE, ""));
 	if (c == ' ' || c == '\t')
-		return (token_new(T_BLANK, " "));
+		return (extract_blank(src, current));
+	if (c == '\'' || c == '"')
+		return (extract_str(src, current, c == '\''));
 	if (c == '(')
 		return (token_new(T_LEFT_PAREN, "("));
 	if (c == ')')
@@ -31,13 +33,6 @@ t_token	*token_identify(char *src, size_t *current)
 		return (token_new(T_EQUAL, "="));
 	if (c == '+' && match_char(src, current, '='))
 		return (token_new(T_APPEND, "+="));
-	if (c == '$')
-	{
-		if (match_char(src, current, '?'))
-			return (token_new(T_VAR, sn_strdup("$?")));
-		if (match_word(src, current))
-			return (token_new(T_VAR, extract_word(src, current)));
-	}
 	if (c == '&' && match_char(src, current, '&'))
 		return (token_new(T_AND, "&&"));
 	if (c == '|')
@@ -58,8 +53,13 @@ t_token	*token_identify(char *src, size_t *current)
 			return (token_new(T_HEREDOC, "<<"));
 		return (token_new(T_REDIRECT_IN, "<"));
 	}
-	if (c == '\'' || c == '"')
-		return (extract_str(src, current, c == '\''));
+	if (c == '$')
+	{
+		if (match_char(src, current, '?'))
+			return (token_new(T_VAR, sn_strdup("?")));
+		if (match_var(src, current))
+			return (token_new(T_VAR, extract_word(src, current)));
+	}
 	if (match_identifier(src, current))
 		return (extract_identifier(src, current));
 	return (token_new(T_WORD, extract_word(src, current)));

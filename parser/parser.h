@@ -68,8 +68,10 @@ bool				is_metachar(char *src, size_t current);
 bool				match_char(char *src, size_t *current, char expected);
 bool				match_word(char *src, size_t *current);
 bool				match_identifier(char *src, size_t *current);
-t_token				*extract_str(char *src, size_t *current, bool single);
+bool				match_var(char *src, size_t *current);
 char				*extract_word(char *src, size_t *current);
+t_token				*extract_str(char *src, size_t *current, bool single);
 t_token				*extract_identifier(char *src, size_t *current);
+t_token				*extract_blank(char *src, size_t *current);
 
 #endif

@@ -53,6 +53,20 @@ bool	match_word(char *src, size_t *current)
 	return (true);
 }
 
+bool	match_var(char *src, size_t *current)
+{
+	bool	found;
+
+	found = false;
+	if (src[*current] == '?')
+		found = true;
+	if (sn_isalpha(src[*current]) || src[*current] == '_')
+		found = true;
+	if (found)
+		*current += 1;
+	return (found);
+}
+
 bool	match_identifier(char *src, size_t *current)
 {
 	size_t	start;
