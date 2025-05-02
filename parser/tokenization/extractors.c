@@ -71,6 +71,20 @@ t_token	*extract_identifier(char *src, size_t *current)
 	return (token_new(T_IDENTIFIER, substr));
 }
 
+t_token	*extract_var(char *src, size_t *current)
+{
+	size_t	start;
+	char	*substr;
+
+	start = *current - 1;
+	while (sn_isalpha(src[*current]) || src[*current] == '_')
+		*current += 1;
+	substr = sn_substr(src, start, *current - start);
+	if (substr == NULL)
+		return (NULL);
+	return (token_new(T_VAR, substr));
+}
+
 t_token	*extract_blank(char *src, size_t *current)
 {
 	while (src[*current] && (src[*current] == ' ' || src[*current] == '\t'))

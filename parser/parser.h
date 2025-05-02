@@ -71,6 +71,7 @@ bool				match_var(char *src, size_t *current);
 char				*extract_word(char *src, size_t *current);
 t_token				*extract_str(char *src, size_t *current, bool single);
 t_token				*extract_identifier(char *src, size_t *current);
+t_token				*extract_var(char *src, size_t *current);
 t_token				*extract_blank(char *src, size_t *current);
 
 #endif

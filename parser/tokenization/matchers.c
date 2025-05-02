@@ -28,8 +28,6 @@ bool	is_metachar(char *src, size_t current)
 {
 	if (!src[current])
 		return (false);
-	if (src[current] == '$')
-		return (true);
 	if (src[current] == '\'' || src[current] == '"')
 		return (true);
 	if (src[current] == ' ' || src[current] == '\t')

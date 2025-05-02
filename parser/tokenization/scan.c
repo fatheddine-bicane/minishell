@@ -58,7 +58,7 @@ t_token	*token_identify(char *src, size_t *current)
 		if (match_char(src, current, '?'))
 			return (token_new(T_VAR, sn_strdup("?")));
 		if (match_var(src, current))
-			return (token_new(T_VAR, extract_word(src, current)));
+			return (extract_var(src, current));
 	}
 	if (match_identifier(src, current))
 		return (extract_identifier(src, current));
