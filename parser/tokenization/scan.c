@@ -12,6 +12,31 @@
 
 #include "../parser.h"
 
+t_token	*token_identify_multi(char *src, size_t *current, char c)
+{
+	if (c == '|')
+	{
+		if (match_char(src, current, '|'))
+			return (token_new(T_OR, "||"));
+		return (token_new(T_PIPE, "|"));
+	}
+	if (c == '>')
+	{
+		if (match_char(src, current, '>'))
+			return (token_new(T_REDIRECT_OUT_APPEND, ">>"));
+		return (token_new(T_REDIRECT_OUT, ">"));
+	}
+	if (c == '<')
+	{
+		if (match_char(src, current, '<'))
+			return (token_new(T_HEREDOC, "<<"));
+		return (token_new(T_REDIRECT_IN, "<"));
+	}
+	if (c == '$' && match_var(src, current))
+		return (extract_var(src, current));
+	return (token_new(T_WORD, extract_word(src, current)));
+}
+
 t_token	*token_identify(char *src, size_t *current)
 {
 	char	c;
@@ -31,32 +56,7 @@ t_token	*token_identify(char *src, size_t *current)
 		return (token_new(T_WILDCARD, "*"));
 	if (c == '&' && match_char(src, current, '&'))
 		return (token_new(T_AND, "&&"));
-	if (c == '|')
-	{
-		if (match_char(src, current, '|'))
-			return (token_new(T_OR, "||"));
-		return (token_new(T_PIPE, "|"));
-	}
-	if (c == '>')
-	{
-		if (match_char(src, current, '>'))
-			return (token_new(T_REDIRECT_OUT_APPEND, ">>"));
-		return (token_new(T_REDIRECT_OUT, ">"));
-	}
-	if (c == '<')
-	{
-		if (match_char(src, current, '<'))
-			return (token_new(T_HEREDOC, "<<"));
-		return (token_new(T_REDIRECT_IN, "<"));
-	}
-	if (c == '$')
-	{
-		if (match_char(src, current, '?'))
-			return (token_new(T_VAR, sn_strdup("?")));
-		if (match_var(src, current))
-			return (extract_var(src, current));
-	}
-	return (token_new(T_WORD, extract_word(src, current)));
+	return (token_identify_multi(src, current, c));
 }
 
 t_token	*tokens_scan(char *src)

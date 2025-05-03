@@ -69,22 +69,3 @@ bool	match_var(char *src, size_t *current)
 		*current += 1;
 	return (found);
 }
-
-bool	match_identifier(char *src, size_t *current)
-{
-	size_t	start;
-	bool	found;
-
-	found = false;
-	start = *current - 1;
-	if (!is_name(src, *current))
-		return (found);
-	while (is_name(src, *current))
-		*current += 1;
-	if (match_char(src, current, '='))
-		found = true;
-	if (match_char(src, current, '+') && match_char(src, current, '='))
-		found = true;
-	*current = start + 1;
-	return (found);
-}

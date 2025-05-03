@@ -72,9 +72,14 @@ t_token	*extract_var(char *src, size_t *current)
 	size_t	start;
 	char	*substr;
 
+	if (match_char(src, current, '?'))
+		return (token_new(T_VAR, sn_strdup("?")));
 	start = *current - 1;
-	while (is_name(src, *current))
-		*current += 1;
+	if (is_name(src, *current - 1))
+	{
+		while (is_name(src, *current) || sn_isalphanum(src[*current]))
+			*current += 1;
+	}
 	substr = sn_substr(src, start, *current - start);
 	if (substr == NULL)
 		return (NULL);
