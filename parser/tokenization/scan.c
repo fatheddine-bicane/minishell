@@ -12,101 +12,82 @@
 
 #include "../parser.h"
 
-t_token	*token_identify_multi(char *src, size_t *current, char c)
+t_token	*token_end(t_token *head, t_token *tail)
 {
-	if (c == '|')
+	if (head == NULL)
+		head = token_new(T_EOF, "");
+	else
 	{
-		if (match_char(src, current, '|'))
-			return (token_new(T_OR, "||"));
-		return (token_new(T_PIPE, "|"));
+		tail->next = token_new(T_EOF, "");
+		if (tail->next == NULL)
+			return (tokens_free(head), NULL);
+		tail->next->prev = tail;
 	}
-	if (c == '>')
-	{
-		if (match_char(src, current, '>'))
-			return (token_new(T_REDIRECT_OUT_APPEND, ">>"));
-		return (token_new(T_REDIRECT_OUT, ">"));
-	}
-	if (c == '<')
-	{
-		if (match_char(src, current, '<'))
-			return (token_new(T_HEREDOC, "<<"));
-		return (token_new(T_REDIRECT_IN, "<"));
-	}
-	if (c == '$' && match_var(src, current))
-		return (extract_var(src, current));
-	return (token_new(T_WORD, extract_word(src, current)));
+	return (head);
 }
 
-t_token	*token_identify(char *src, size_t *current)
+bool	token_head(t_token **phead, char *src, size_t *current)
 {
-	char	c;
+	t_token	*head;
 
-	c = src[(*current)++];
-	if (c == '\n' || c == '\0')
-		return (token_new(T_SKIPPABLE, ""));
-	if (c == ' ' || c == '\t')
-		return (extract_blank(src, current));
-	if (c == '\'' || c == '"')
-		return (extract_str(src, current, c == '\''));
-	if (c == '(')
-		return (token_new(T_LEFT_PAREN, "("));
-	if (c == ')')
-		return (token_new(T_RIGHT_PAREN, ")"));
-	if (c == '*')
-		return (token_new(T_WILDCARD, "*"));
-	if (c == '&' && match_char(src, current, '&'))
-		return (token_new(T_AND, "&&"));
-	return (token_identify_multi(src, current, c));
+	head = token_identify(src, current);
+	if (head == NULL)
+		return (false);
+	if (head->type == T_SKIPPABLE)
+	{
+		token_free(head);
+		head = NULL;
+		return (true);
+	}
+	*phead = head;
+	return (true);
+}
+
+bool	token_tail(t_token **ptail, char *src, size_t *current)
+{
+	t_token	*tail;
+	t_token	*tmp;
+
+	if (ptail == NULL || *ptail == NULL)
+		return (false);
+	tail = *ptail;
+	tail->next = token_identify(src, current);
+	if (tail->next == NULL)
+		return (false);
+	if (tail->next->type == T_SKIPPABLE)
+	{
+		token_free(tail->next);
+		tail->next = NULL;
+		return (true);
+	}
+	tmp = tail;
+	*ptail = tail->next;
+	tail->prev = tmp;
+	return (true);
 }
 
 t_token	*tokens_scan(char *src)
 {
 	size_t	current;
 	t_token	*head;
-	t_token	*last;
-	t_token	*tmp;
+	t_token	*tail;
 
-	current = 0;
 	head = NULL;
+	tail = NULL;
+	current = 0;
 	while (src[current])
 	{
 		if (head == NULL)
 		{
-			head = token_identify(src, &current);
-			if (head == NULL)
+			if (!token_head(&head, src, &current))
 				return (NULL);
-			if (head->type == T_SKIPPABLE)
-			{
-				token_free(head);
-				head = NULL;
-				continue ;
-			}
-			last = head;
+			tail = head;
 		}
 		else
 		{
-			last->next = token_identify(src, &current);
-			if (last->next == NULL)
-				return (tokens_free(head), NULL);
-			if (last->next->type == T_SKIPPABLE)
-			{
-				token_free(last->next);
-				last->next = NULL;
-				continue ;
-			}
-			tmp = last;
-			last = last->next;
-			last->prev = tmp;
+			if (!token_tail(&tail, src, &current))
+				return (token_free(head), NULL);
 		}
 	}
-	if (head == NULL)
-		head = token_new(T_EOF, "");
-	else
-	{
-		last->next = token_new(T_EOF, "");
-		if (last->next == NULL)
-			return (tokens_free(head), NULL);
-		last->next->prev = last;
-	}
-	return (head);
+	return (token_end(head, tail));
 }
