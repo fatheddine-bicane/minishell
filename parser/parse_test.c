@@ -12,6 +12,17 @@
 
 #include "parser.h"
 
+volatile sig_atomic_t	g_sig;
+
+void	catch_int(int sig)
+{
+	g_sig = sig;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
+}
+
 int	run(char *src)
 {
 	t_token	*tokens;
@@ -32,19 +43,32 @@ void	run_prompt(void)
 		line = readline("shell> ");
 		if (line == NULL)
 		{
+			write(STDOUT_FILENO, "exit\n", 5);
 			rl_clear_history();
-			printf("exit\n");
 			break ;
 		}
-		run(line);
 		if (*line)
+		{
 			add_history(line);
+			run(line);
+		}
 		free(line);
 	}
 }
 
 int	main(void)
 {
+	struct sigaction	sa;
+
+	g_sig = 0;
+	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = catch_int;
+	if (sigaction(SIGINT, &sa, NULL) == -1)
+	{
+		perror("sigaction");
+		exit(EXIT_FAILURE);
+	}
 	run_prompt();
 	return (EXIT_SUCCESS);
 }
