@@ -14,6 +14,7 @@
 # define PARSER_H
 
 # include "libsn/libsn.h"
+# include <errno.h>
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -22,6 +23,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include <sysexits.h>
 
 typedef enum e_token_type
@@ -54,6 +57,36 @@ typedef struct s_token
 	struct s_token	*prev;
 }					t_token;
 
+typedef struct s_basic_cmd
+{
+	char *name;
+	char *args[];
+} t_basic_cmd;
+
+typedef struct s_pipe
+{
+	t_basic_cmd	*left;
+	t_basic_cmd	*right;
+} t_pipe;
+
+
+typedef enum e_cmd_type
+{
+	C_CMD,
+	C_PIPE,
+	C_REDIRECT,
+} t_cmd_type;
+
+typedef struct s_cmd
+{
+	t_cmd_type			type;
+	union
+	{
+		t_basic_cmd cmd;
+		t_pipe pipe;
+	} u_as;
+}						t_expr;
+
 t_token				*token_new(t_token_type type, char *lexeme);
 void				token_free(t_token *token);
 void				tokens_free(t_token *token);
@@ -73,5 +106,7 @@ t_token				*extract_str(char *src, size_t *current, bool single);
 t_token				*extract_identifier(char *src, size_t *current);
 t_token				*extract_var(char *src, size_t *current);
 t_token				*extract_blank(char *src, size_t *current);
+
+int					exec_cmd(char *program, char *args[], char *envp[]);
 
 #endif
