@@ -57,16 +57,26 @@ typedef struct s_token
 	struct s_token	*prev;
 }					t_token;
 
+
+typedef struct s_cmd t_cmd;
+
 typedef struct s_basic_cmd
 {
 	char *name;
 	char *args[];
 } t_basic_cmd;
 
+typedef struct s_redirect
+{
+	char *type;
+	char *file;
+	t_basic_cmd *cmd;
+} t_redirect;
+
 typedef struct s_pipe
 {
-	t_basic_cmd	*left;
-	t_basic_cmd	*right;
+	t_basic_cmd *left;
+	t_cmd *right;
 } t_pipe;
 
 
