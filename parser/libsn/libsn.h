@@ -75,7 +75,6 @@ int				sn_putunbr(unsigned int n, int fd);
 int				sn_putnbr_hex(unsigned long num, int uppercase, int fd);
 int				sn_putptr(void *num, int fd);
 
-ssize_t			get_next_line(int fd, char **receiver);
 ssize_t			sn_istrchr(const char *s, char c);
 
 t_str_builder	*sb_create(size_t cap);
