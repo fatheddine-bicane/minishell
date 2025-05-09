@@ -44,7 +44,7 @@ void	ft_pwd(void);
 void	ft_env(t_list *my_envp);
 void	ft_echo(char **echo_arg, t_list *my_envp);
 void	ft_exit(void);
-void	ft_export(char **envp);
+void	ft_export(t_list **my_envp, char **variables);
 void	ft_unset(t_list **my_envp, char **variables);
 
 t_list *ft_set_env(char **envp); //INFO: creat custum envp

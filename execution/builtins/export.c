@@ -6,79 +6,72 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/10 17:20:54 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/09 19:41:07 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-bool	ft_envpcmp(char *variable, char *envp_l)
+bool	ft_variable_exist(t_list *my_envp, char *varaible)
 {
-	int (i) = 0;
-	while (envp_l[i] != '=')
-		i++;
-	char (str[i]);
-	i = 0;
-	while (envp_l[i] != '=')
-		str[i] = envp_l[i];
-	str[i] = '\0';
-	if (!ft_strncmp(variable, str, ft_strlen(variable)))
-		return (true);
-	else
-		return (false);
-}
+	int		i;
 
-bool	ft_variable_exist(t_list *my_envp, char *variable)
-{
+	i = 0;
+	while (varaible[i] && '=' != varaible[i])
+		i++;
+
 	while (my_envp)
 	{
-		if (ft_envpcmp(variable, my_envp->content))
+		if (!ft_strncmp(my_envp->content, varaible, i))
 			return (true);
 		my_envp = my_envp->next;
 	}
 	return (false);
 }
 
-static char	*ft_find_var(char *variable, t_list *my_vars)
+void	ft_var_exist(t_list **my_envp, char *variable)
 {
-	int	i;
+	t_list	*tmp_ptr;
+	int		i;
 
-	while (my_vars)
-	{
-		i = 0;
-		while (variable[i] != '=' && variable[i])
-			i++;
-		char	str[i];
-		i = 0;
-		while (variable[i] != '=' && variable[i])
-		{
-			str[i] = variable[i];
-			i++;
-		}
-		str[i] = '\0';
-		if (!ft_strncmp(variable, str, ft_strlen(variable)))
-		{
-			return ((char *)my_vars->content);
-		}
-		my_vars = my_vars->next;
-	}
-	return (NULL);
-}
+	i = 0;
+	while (variable[i] && '=' != variable[i])
+		i++;
 
-void	ft_export_util(t_list **my_envp, char *variable, t_list *my_vars)
-{
-	if (!ft_variable_exist((*my_envp), variable))
+	tmp_ptr = *my_envp;
+	while (tmp_ptr)
 	{
-		char (*var_to_export) = ft_find_var(variable, my_vars);
-		if (!var_to_export)
+		if (!ft_strncmp(tmp_ptr->content, variable, i))
 		{
+			free(tmp_ptr->content);
+			tmp_ptr->content = ft_strdup(variable);
 			return ;
 		}
-		ft_lstadd_back(my_envp, ft_lstnew(var_to_export));
+		tmp_ptr = tmp_ptr->next;
 	}
 }
 
-void	ft_export(char **envp)
+void	ft_export(t_list **my_envp, char **variables)
 {
-	(void)envp;
+	int		vars_i; // INFO: variables_index
+
+	if (!variables[1])
+	{
+		ft_env(*my_envp);
+		// TODO: print envp in alphabetical order
+	}
+	else
+	{
+		vars_i = 1;
+		while (variables[vars_i])
+		{
+			if (ft_variable_exist(*my_envp, variables[vars_i]))
+			{
+				ft_var_exist(my_envp, variables[vars_i]);
+			}
+			else
+				ft_lstadd_back(my_envp, ft_lstnew(variables[vars_i]));
+			vars_i++;
+		}
+	}
 }

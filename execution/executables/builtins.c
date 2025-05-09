@@ -58,7 +58,7 @@ int	ft_check_bultins(char *rl, t_list **my_envp)
 	}
 	else if (!ft_strncmp("export", rl, 6))
 	{
-		ft_export(NULL);
+		ft_export(my_envp, ft_split(rl, 32));
 		add_history(rl);
 		return (1);
 	}
