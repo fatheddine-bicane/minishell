@@ -39,7 +39,7 @@ typedef struct s_unset
 }	t_unset;
 
 // INFO: builtin command
-void	ft_cd(char *path);
+void	ft_cd(char *path, t_list **my_envp);
 void	ft_pwd(void);
 void	ft_env(t_list *my_envp);
 void	ft_echo(char **echo_arg, t_list *my_envp);

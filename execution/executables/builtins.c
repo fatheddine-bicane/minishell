@@ -25,9 +25,9 @@ int	ft_check_bultins(char *rl, t_list **my_envp)
 	{
 		char **arr = ft_split(rl, ' ');
 		if (!arr[1])
-			ft_cd(NULL);
+			ft_cd(NULL, my_envp);
 		else
-			ft_cd(arr[1]);
+			ft_cd(arr[1], my_envp);
 		add_history(rl);
 		return (1);
 	}
