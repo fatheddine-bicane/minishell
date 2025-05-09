@@ -44,7 +44,7 @@ void	ft_exec_built_ins(char **command_arg, t_list **my_envp)
 	}
 	else if (0 == ft_strncmp(command_arg[0], "cd", 2))
 	{
-		ft_cd(command_arg[1]);
+		ft_cd(command_arg[1], my_envp);
 		exit(1);
 	}
 	else if (0 == ft_strncmp(command_arg[0], "pwd", 3))
@@ -54,7 +54,7 @@ void	ft_exec_built_ins(char **command_arg, t_list **my_envp)
 	}
 	else if (0 == ft_strncmp(command_arg[0], "export", 6))
 	{
-		ft_export(NULL); // TODO: pass the original pointer
+		ft_export(NULL, NULL); // TODO: pass the original pointer
 		exit(1);
 	}
 	else if (0 == ft_strncmp(command_arg[0], "unset", 5))
