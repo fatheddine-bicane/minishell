@@ -62,6 +62,20 @@ void	ft_apply_comm(char *rl, t_list *my_envp)
 
 	int	pid = fork();
 
+	if ('.' == command[0][0])
+	{
+		if (!access(command[0], F_OK | X_OK))
+		{
+			if (0 == pid)
+			{
+				execve(command[0], command, ft_prep_envp(my_envp));
+				exit(127);
+			}
+			else if (0 != pid)
+				wait(NULL);
+		}
+			printf("test\n");
+	}
 	if (!access(command[0], F_OK | X_OK))
 	{
 		if (0 == pid)
@@ -88,5 +102,7 @@ void	ft_apply_comm(char *rl, t_list *my_envp)
 			}
 			i++;
 		}
+		if (0 == pid)
+			exit(1);
 	}
 }
