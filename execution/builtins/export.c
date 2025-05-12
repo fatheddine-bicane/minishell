@@ -51,13 +51,43 @@ void	ft_var_exist(t_list **my_envp, char *variable)
 	}
 }
 
+void	ft_sort_myenvp(t_list *my_envp)
+{
+	char	**envp_sort;
+	char	*tmp;
+	int		i;
+
+	envp_sort = ft_prep_envp(my_envp);
+	i = 0;
+	while(envp_sort[i])
+	{
+		int (j) = i + 1;
+		while (envp_sort[j])
+		{
+			if (0 < ft_strncmp(envp_sort[i], envp_sort[j], ft_strlen(envp_sort[i])))
+			{
+				tmp = envp_sort[i];
+				envp_sort[i] = envp_sort[j];
+				envp_sort[j] = tmp;
+			}
+			j++;
+		}
+		i++;
+	}
+	i = -1;
+	while (envp_sort[++i])
+		printf("%s\n", envp_sort[i]);
+	ft_free_arr(envp_sort);
+}
+
 void	ft_export(t_list **my_envp, char **variables)
 {
 	int		vars_i; // INFO: variables_index
 
 	if (!variables[1])
 	{
-		ft_env(*my_envp);
+		ft_sort_myenvp(*my_envp);
+		/*ft_env(*my_envp);*/
 		// TODO: print envp in alphabetical order
 	}
 	else
