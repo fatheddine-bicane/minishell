@@ -21,6 +21,11 @@ t_list *ft_set_env(char **envp)
 	i = 0;
 	while (envp[i])
 	{
+		if (!ft_strncmp(envp[i], "OLDPWD=", 7))
+		{
+			i++;
+			continue ;
+		}
 		ft_lstadd_back(&c_envp, ft_lstnew(ft_strdup((char *)envp[i])));
 		i++;
 	}

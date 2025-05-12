@@ -23,43 +23,78 @@ char	*ft_home_path(t_list *my_envp)
 	return (NULL);
 }
 
-/*void	ft_change_pwd(t_list **my_envp)*/
-/*{*/
-/*	char	**pwd_to_del;*/
-/**/
-/*	pwd_to_del = malloc(sizeof(char *) * 2);*/
-/*	if (!pwd_to_del)*/
-/*	{*/
-/*		// TODO: error mssg*/
-/*	}*/
-/*	pwd_to_del[0] = ft_strdup("PWD");*/
-/*	pwd_to_del[1] = ft_strdup("");*/
-/*	ft_unset(my_envp, pwd_to_del);*/
-/*	ft_export()*/
-/*}*/
+void	ft_change_oldpwd(t_list **my_envp, char *oldpwd)
+{
+	t_list	*tmp;
+
+	tmp = (*my_envp);
+	while (tmp)
+	{
+		if (!ft_strncmp(tmp->content, "OLDPWD=", 7))
+		{
+			free(tmp->content);
+			tmp->content = oldpwd;
+			return;
+		}
+		tmp = tmp->next;
+	}
+	if (NULL == tmp)
+		ft_lstadd_back(my_envp, ft_lstnew(oldpwd));
+}
+
+char	*ft_set_oldpwd(void)
+{
+	char	oldpwd[PATH_MAX];
+
+	if (getcwd(oldpwd, sizeof(oldpwd)))
+	{
+		return (ft_strjoin("OLDPWD=", oldpwd));
+	}
+	else
+	{
+		perror("getcwd() error");
+		// TODO: exit
+	}
+	return (NULL);
+
+}
 
 void	ft_cd(char *path, t_list **my_envp)
 {
 	char	*home_path;
+	char	*oldpwd;
 
 	home_path = ft_home_path(*my_envp);
+	oldpwd = ft_set_oldpwd();
 	if (!path)
 	{
 		if (!home_path)
 		{
 			perror("minishell: cd: HOME not set\n");
+			free(home_path);
+			free(oldpwd);
 			return ;
 		}
 		if (-1 == chdir(home_path))
 		{
-			// TODO: error mssg and free()
+			perror("minishell: chdir() error\n");
+			free(home_path);
+			free(oldpwd);
+			return ;
 		}
+		ft_change_oldpwd(my_envp, oldpwd);
 	}
 	else
 	{
-		errno = chdir(path);
-		if (errno == -1)
-			errno = ENOENT;
-		ft_pwd();
+		if (-1 == chdir(path))
+		{
+			perror("minishell: cd: ");
+			perror(path);
+			perror(": No such file or directory\n");
+			free(home_path);
+			free(oldpwd);
+			return;
+		}
+		ft_change_oldpwd(my_envp, oldpwd);
 	}
 }
