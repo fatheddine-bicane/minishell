@@ -46,77 +46,88 @@ typedef enum e_token_type
 	T_VAR,
 	T_SKIPPABLE,
 	T_EOF,
-}					t_token_type;
+}						t_token_type;
 
 typedef struct s_token
 {
-	t_token_type	type;
-	char			*lexeme;
-	char			*str;
-	struct s_token	*next;
-	struct s_token	*prev;
-}					t_token;
+	t_token_type		type;
+	char				*lexeme;
+	char				*str;
+	struct s_token		*next;
+	struct s_token		*prev;
+}						t_token;
 
+typedef struct s_cmd	t_cmd;
 
-typedef struct s_cmd t_cmd;
-
-typedef struct s_basic_cmd
+typedef struct s_exec
 {
-	char *name;
-	char *args[];
-} t_basic_cmd;
+	char				*argv[];
+}						t_exec;
+
+typedef enum e_redirect_type
+{
+	R_REDIRECT_IN,
+	R_REDIRECT_OUT,
+	R_REDIRECT_OUT_APPEND,
+	R_HEREDOC,
+}						t_redirect_type;
 
 typedef struct s_redirect
 {
-	char *type;
-	char *file;
-	t_basic_cmd *cmd;
-} t_redirect;
+	t_redirect_type		type;
+	char				*file;
+	t_cmd				*cmd;
+}						t_redirect;
 
 typedef struct s_pipe
 {
-	t_basic_cmd *left;
-	t_cmd *right;
-} t_pipe;
+	t_cmd				*left;
+	t_cmd				*right;
+}						t_pipe;
 
+typedef struct s_group
+{
+	t_cmd				*cmd;
+}						t_group;
 
 typedef enum e_cmd_type
 {
-	C_CMD,
+	C_EXEC,
 	C_PIPE,
 	C_REDIRECT,
-} t_cmd_type;
+	C_GROUP,
+}						t_cmd_type;
 
 typedef struct s_cmd
 {
 	t_cmd_type			type;
 	union
 	{
-		t_basic_cmd cmd;
-		t_pipe pipe;
+		t_exec			exec;
+		t_redirect	redirect;
+		t_pipe			pipe;
+		t_group			group;
 	} u_as;
-}						t_expr;
+}						t_cmd;
 
-t_token				*token_new(t_token_type type, char *lexeme);
-void				token_free(t_token *token);
-void				tokens_free(t_token *token);
-void				token_str(t_token *t, bool nl, bool all);
-const char			*token_type_str(t_token_type type);
-t_token				*tokens_scan(char *src);
+t_token					*token_new(t_token_type type, char *lexeme);
+void					token_free(t_token *token);
+void					tokens_free(t_token *token);
+void					token_str(t_token *t, bool nl, bool all);
+const char				*token_type_str(t_token_type type);
+t_token					*tokens_scan(char *src);
 
-bool				is_metachar(char *src, size_t current);
-bool				is_name(char *src, size_t current);
-bool				match_char(char *src, size_t *current, char expected);
-bool				match_word(char *src, size_t *current);
-bool				match_identifier(char *src, size_t *current);
-bool				match_var(char *src, size_t *current);
-char				*extract_word(char *src, size_t *current);
-t_token				*token_identify(char *src, size_t *current);
-t_token				*extract_str(char *src, size_t *current, bool single);
-t_token				*extract_identifier(char *src, size_t *current);
-t_token				*extract_var(char *src, size_t *current);
-t_token				*extract_blank(char *src, size_t *current);
-
-int					exec_cmd(char *program, char *args[], char *envp[]);
+bool					is_metachar(char *src, size_t current);
+bool					is_name(char *src, size_t current);
+bool					match_char(char *src, size_t *current, char expected);
+bool					match_word(char *src, size_t *current);
+bool					match_identifier(char *src, size_t *current);
+bool					match_var(char *src, size_t *current);
+char					*extract_word(char *src, size_t *current);
+t_token					*token_identify(char *src, size_t *current);
+t_token					*extract_str(char *src, size_t *current, bool single);
+t_token					*extract_identifier(char *src, size_t *current);
+t_token					*extract_var(char *src, size_t *current);
+t_token					*extract_blank(char *src, size_t *current);
 
 #endif
