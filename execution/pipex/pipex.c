@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 13:25:58 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/30 12:32:06 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/13 16:46:41 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,84 +20,6 @@ int	ft_commands_count(char **commands)
 	while(commands[i])
 		i++;
 	return (i);
-}
-
-static char	**ft_find_path(t_list *my_envp)
-{
-	char	*path_var = NULL;
-
-	while (my_envp)
-	{
-		if (!ft_strncmp((char *)my_envp->content, "PATH=", 5))
-		{
-			path_var = (char *)my_envp->content;
-			break;
-		}
-		my_envp = my_envp->next;
-	}
-	if (NULL == path_var)
-		return (NULL);
-	char **(paths) = ft_split(path_var + 5, ':');
-	return (paths);
-}
-
-static char	*ft_concat_path(char *arr2, char *command)
-{
-	int		i;
-	int		j;
-	char	*str;
-
-	i = 0;
-	j = 0;
-	str = malloc(ft_strlen(arr2) + ft_strlen(command) + 2);
-	while (arr2[i])
-		str[j++] = arr2[i++];
-	i = 0;
-	str[j++] = '/';
-	while (command[i])
-		str[j++] = command[i++];
-	str[j] = '\0';
-	return (str);
-}
-
-void	ft_exevute_command(char *command, t_list **my_envp)
-{
-	char	**command_arg;
-	char	**paths;
-	char	*path;
-	int		i;
-
-	command_arg = ft_split(command, 32); // INFO: comand and its arguments
-	// TODO: protect command_arg from NULL
-
-	ft_exec_built_ins(command_arg, my_envp); // TODO: pass the original my_envp
-
-	paths = ft_find_path(*my_envp);
-	// TODO: protect paths from NULL
-
-	path = NULL;
-	i = 0;
-
-	if (0 == access(command_arg[0], F_OK | X_OK))
-	{
-		execve(command_arg[0], command_arg, ft_prep_envp(*my_envp));
-		// TODO: protect execve
-	}
-	else
-	{
-		while (paths[i])
-		{
-			path = ft_concat_path(paths[i], command_arg[0]);
-			if (0 == access(path, F_OK | X_OK))
-			{
-				free(command_arg[0]);
-				command_arg[0] = path;
-				execve(command_arg[0], command_arg, ft_prep_envp(*my_envp));
-				// TODO: protect execve
-			}
-			i++;
-		}
-	}
 }
 
 void	ft_wait_pids(t_list *pids)
@@ -119,11 +41,7 @@ void	ft_pipex(char **commands, t_list **my_envp)
 	int		prev_pipe[2] = {-1, -1}; // INFO: hold pipes fds
 	int		fd[2];
 	int		c_count; // INFO: commands count
-	char	**path = ft_find_path(*my_envp);
 	t_list	*pids = NULL;
-
-	if (NULL == path)
-		return ; // TODO: error mssg
 
 	c_i = 0;
 	c_count = ft_commands_count(commands);
@@ -161,7 +79,8 @@ void	ft_pipex(char **commands, t_list **my_envp)
 				close(fd[1]);
 			}
 
-			ft_exevute_command(commands[c_i], my_envp);
+			ft_exec_builtins(ft_split(commands[c_i], 32), my_envp);
+			ft_executable(commands[c_i], *my_envp, pid, false);
 		}
 		else
 		{
