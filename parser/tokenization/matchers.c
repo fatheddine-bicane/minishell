@@ -24,28 +24,6 @@ bool	match_char(char *src, size_t *current, char expected)
 	return (false);
 }
 
-bool	is_name(char *src, size_t current)
-{
-	return (sn_isalpha(src[current]) || src[current] == '_');
-}
-
-bool	is_metachar(char *src, size_t current)
-{
-	if (!src[current])
-		return (false);
-	if (src[current] == '\'' || src[current] == '"')
-		return (true);
-	if (src[current] == ' ' || src[current] == '\t' || src[current] == '\n')
-		return (true);
-	if (src[current] == '|' || src[current] == '&')
-		return (true);
-	if (src[current] == '(' || src[current] == ')')
-		return (true);
-	if (src[current] == '<' || src[current] == '>')
-		return (true);
-	return (false);
-}
-
 bool	match_word(char *src, size_t *current)
 {
 	if (!src[*current])
@@ -68,4 +46,57 @@ bool	match_var(char *src, size_t *current)
 	if (found)
 		*current += 1;
 	return (found);
+}
+
+bool	match_token(t_token **head, size_t count, ...)
+{
+	t_token			*current;
+	va_list			args;
+	t_token_type	type;
+
+	if (head == NULL || *head == NULL)
+		return (false);
+	current = *head;
+	if (current->type == T_EOF)
+		return (va_end(args), false);
+	va_start(args, count);
+	while (count--)
+	{
+		type = va_arg(args, int);
+		if (current->type == type)
+		{
+			*head = current->next;
+			return (va_end(args), true);
+		}
+	}
+	return (va_end(args), false);
+}
+
+bool	match_tokens(t_token **head, size_t count, ...)
+{
+	t_token			*current;
+	va_list			args;
+	t_token_type	type;
+	bool			matches;
+
+	if (head == NULL || *head == NULL)
+		return (false);
+	current = *head;
+	if (current->type == T_EOF)
+		return (va_end(args), false);
+	matches = true;
+	va_start(args, count);
+	while (count--)
+	{
+		type = va_arg(args, int);
+		if (current->type != type)
+		{
+			matches = false;
+			break ;
+		}
+		current = current->next;
+	}
+	if (matches)
+		*head = current;
+	return (va_end(args), matches);
 }
