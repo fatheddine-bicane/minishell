@@ -64,8 +64,8 @@ void	ft_executable(char *command, t_list *my_envp, pid_t pid, bool to_wait)
 	{
 		if (0 == pid)
 			execve(command_args[0], command_args, ft_prep_envp(my_envp));
-		else if (0 != pid)
-			wait(NULL);
+		else if ((0 != pid) && to_wait)
+			waitpid(pid, NULL, 0);
 	}
 	else
 	{
