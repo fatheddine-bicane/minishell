@@ -62,7 +62,7 @@ bool	token_tail(t_token **ptail, char *src, size_t *current)
 	}
 	tmp = tail;
 	*ptail = tail->next;
-	tail->prev = tmp;
+	tail->next->prev = tmp;
 	return (true);
 }
 
