@@ -61,7 +61,7 @@ typedef struct s_cmd	t_cmd;
 
 typedef struct s_exec
 {
-	char				*argv[];
+	char				**argv;
 }						t_exec;
 
 typedef enum e_redirect_type
@@ -76,7 +76,7 @@ typedef struct s_redirect
 {
 	t_redirect_type		type;
 	char				*file;
-	t_cmd				*cmd;
+	t_cmd				*next;
 }						t_redirect;
 
 typedef struct s_pipe
@@ -104,7 +104,7 @@ typedef struct s_cmd
 	union
 	{
 		t_exec			exec;
-		t_redirect	redirect;
+		t_redirect		redirect;
 		t_pipe			pipe;
 		t_group			group;
 	} u_as;
@@ -123,11 +123,23 @@ bool					match_char(char *src, size_t *current, char expected);
 bool					match_word(char *src, size_t *current);
 bool					match_identifier(char *src, size_t *current);
 bool					match_var(char *src, size_t *current);
+bool					match_token(t_token **head, size_t count, ...);
+bool					match_tokens(t_token **head, size_t count, ...);
 char					*extract_word(char *src, size_t *current);
 t_token					*token_identify(char *src, size_t *current);
 t_token					*extract_str(char *src, size_t *current, bool single);
 t_token					*extract_identifier(char *src, size_t *current);
 t_token					*extract_var(char *src, size_t *current);
 t_token					*extract_blank(char *src, size_t *current);
+
+t_cmd					*cmd_exec_init(char **argv);
+t_cmd					*cmd_redirect_init(t_redirect_type type, char *file,
+							t_cmd *next);
+t_cmd					*cmd_pipe_init(t_cmd *left, t_cmd *right);
+t_cmd					*cmd_group_init(t_cmd *group);
+void					cmd_free(t_cmd *root);
+
+t_cmd					*parse_program(t_token **token);
+void					ast_print(t_cmd *cmd);
 
 #endif

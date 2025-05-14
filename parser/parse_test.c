@@ -23,18 +23,26 @@ void	catch_int(int sig)
 	rl_redisplay();
 }
 
-int	run(char *src)
+int	run(char *src, char **envp)
 {
 	t_token	*tokens;
+	t_token	*head;
+	t_cmd	*cmd;
 
+	(void)envp;
 	tokens = tokens_scan(src);
 	if (tokens == NULL)
 		return (EX_DATAERR);
-	token_str(tokens, true, true);
-	return (token_free(tokens), EXIT_SUCCESS);
+	// token_str(tokens, true, true);
+	head = tokens;
+	cmd = parse_program(&tokens);
+	if (cmd == NULL)
+		return (token_free(head), EXIT_FAILURE);
+	ast_print(cmd);
+	return (cmd_free(cmd), token_free(head), EXIT_SUCCESS);
 }
 
-void	run_prompt(void)
+void	run_prompt(char *envp[])
 {
 	char	*line;
 
@@ -50,16 +58,18 @@ void	run_prompt(void)
 		if (*line)
 		{
 			add_history(line);
-			run(line);
+			run(line, envp);
 		}
 		free(line);
 	}
 }
 
-int	main(void)
+int	main(int argc, char *argv[], char *envp[])
 {
 	struct sigaction	sa;
 
+	(void)argc;
+	(void)argv;
 	g_sig = 0;
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
@@ -69,6 +79,6 @@ int	main(void)
 		perror("sigaction");
 		exit(EXIT_FAILURE);
 	}
-	run_prompt();
+	run_prompt(envp);
 	return (EXIT_SUCCESS);
 }

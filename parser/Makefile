@@ -1,7 +1,7 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 NAME = parse_test
-SRC = parse_test.c $(shell find ./tokenization -depth -maxdepth 1 -type f -name "*.c")
+SRC = parse_test.c $(shell find ./tokenization ./ast -depth -maxdepth 1 -type f -name "*.c")
 LIBS = -lreadline
 OBJ = $(SRC:.c=.o)
 LIBFT_NAME = libsn/libsn.a
