@@ -48,7 +48,7 @@ static void	ast_walk(t_cmd *cmd, int depth)
 	}
 	if (cmd->type == C_PIPE)
 	{
-		printf("(|");
+		printf("(pipe");
 		ast_walk(cmd->u_as.pipe.left, depth + 1);
 		ast_walk(cmd->u_as.pipe.right, depth + 1);
 		printf(")");
