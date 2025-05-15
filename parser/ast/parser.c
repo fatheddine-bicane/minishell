@@ -78,26 +78,51 @@ t_cmd	*parse_redirect(t_token **token)
 t_cmd	*parse_cmd(t_token **token)
 {
 	char	**argv;
+	int		matches;
+	int		i;
+	t_token	*current;
 
-	// t_cmd	*redirect;
-	// t_cmd	*exec;
 	if (match_token(token, 5, T_BLANK, T_WORD, T_VAR, T_STRING_SINGLE,
 			T_STRING_DOUBLE))
 	{
-		// eat all words
-		// then parse redirects
 		if ((*token)->prev->type == T_BLANK && !match_token(token, 4, T_WORD,
 				T_VAR, T_STRING_SINGLE, T_STRING_DOUBLE))
 			*token = (*token)->prev;
 		else
 		{
-			argv = malloc(sizeof(char *) * 2);
+			matches = 1;
+			current = (*token)->prev;
+			while (match_token(token, 5, T_BLANK, T_WORD, T_VAR,
+					T_STRING_SINGLE, T_STRING_DOUBLE))
+			{
+				if ((*token)->prev->type == T_BLANK && !match_token(token, 4,
+						T_WORD, T_VAR, T_STRING_SINGLE, T_STRING_DOUBLE))
+				{
+					*token = (*token)->prev;
+					break ;
+				}
+				matches++;
+				continue ;
+			}
+			argv = malloc(sizeof(char *) * matches + 1);
 			if (argv == NULL)
 				return (NULL);
-			argv[0] = sn_strdup((*token)->prev->lexeme);
-			if (argv[0] == NULL)
-				return (NULL);
-			argv[1] = NULL;
+			i = 0;
+			while (i < matches)
+			{
+				argv[i] = sn_strdup(current->lexeme);
+				if (argv[i] == NULL)
+				{
+					while (i > 0)
+						free(argv[--i]);
+					return (NULL);
+				}
+				current = current->next;
+				if (current->type == T_BLANK)
+					current = current->next;
+				i++;
+			}
+			argv[matches] = NULL;
 			return (cmd_exec_init(argv));
 		}
 	}

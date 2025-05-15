@@ -22,7 +22,7 @@ static void	ast_walk(t_cmd *cmd, int depth)
 		printf("empty");
 	if (cmd->type == C_EXEC)
 	{
-		printf("exec ");
+		printf("(exec ");
 		argv = cmd->u_as.exec.argv;
 		while (*argv != NULL)
 		{
@@ -30,6 +30,7 @@ static void	ast_walk(t_cmd *cmd, int depth)
 			if (*argv)
 				printf(" ");
 		}
+		printf(")");
 	}
 	if (cmd->type == C_REDIRECT)
 	{
