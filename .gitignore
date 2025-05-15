@@ -4,3 +4,4 @@
 minishell
 # lib archive
 *.a
+.vscode

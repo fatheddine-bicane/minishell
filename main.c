@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 21:54:56 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/23 18:32:03 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/14 22:55:46 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,8 @@ int main(int argc, char **argv, char **envp)
 	my_envp = ft_set_env(envp);
 	while (1)
 	{
-		char *rl = "test";
-		/*rl = readline("====> ");*/
-		rl = readline("╭─ minishell \n╰─> ");
+		char (*rl) = readline("====> ");
+		/*rl = readline("╭─ minishell \n╰─> ");*/
 		//BUG: if an empty line is set to rl there is segfault
 
 		// INFO: to test pipes
