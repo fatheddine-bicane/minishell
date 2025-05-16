@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/13 16:43:58 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/16 15:44:39 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,5 +63,8 @@ bool	ft_is_builtin(char *command);
 void	ft_exec_builtins(char **command_arg, t_list **my_envp);
 
 void	ft_here_doc(char *rl); //INFO: creat here_doc input
+
+
+char	**ft_split_variable(char *variable);
 
 #endif
