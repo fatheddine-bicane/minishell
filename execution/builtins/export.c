@@ -82,7 +82,7 @@ void	ft_sort_myenvp(t_list *my_envp)
 	ft_free_arr(envp_sort);
 }
 
-bool	ft_variable_append(char *variable)
+bool	ft_to_append(char *variable)
 {
 	int	i;
 
@@ -92,6 +92,22 @@ bool	ft_variable_append(char *variable)
 	if ('+' == variable[i - 1])
 		return (true);
 	return (false);
+}
+
+char	*ft_append_equal(char *variable)
+{
+	int		i;
+
+	i = 0;
+	while ('=' != variable[i] && variable)
+		i++;
+	if ('=' != variable[i])
+	{
+		free(variable);
+		return(ft_strjoin(variable, "="));
+	}
+	return (variable);
+	// INFO: variable dosent add '=' when the variable exported befor dosent have the = sign
 }
 
 void	ft_append_to_varriable(t_list **my_envp, char *variable)
@@ -107,6 +123,7 @@ void	ft_append_to_varriable(t_list **my_envp, char *variable)
 	{
 		if (!ft_strncmp(tmp->content, variable, i))
 		{
+			tmp->content = ft_append_equal(tmp->content);
 			char (*varr_result) = ft_strjoin(tmp->content, variable + i + 2);
 			free(tmp->content);
 			tmp->content = varr_result;
@@ -138,6 +155,28 @@ void	ft_add_variable(t_list **my_envp, char *variable)
 	ft_lstadd_back(my_envp, ft_lstnew(ft_strdup(res)));
 }
 
+bool	ft_valid_argument(char *variable)
+{
+	int	i;
+
+	i = 0;
+	if (!ft_isalpha(variable[i]) || '_' != variable[i])
+		return (false);
+	while ('=' != variable[i] && variable[i])
+	{
+		if ('+' == variable[i] && '=' != variable[i + 1])
+			return (false);
+		if (!ft_isalpha(variable[i]) || !ft_isdigit(variable[i]))
+			return (false);
+		i++;
+	}
+	/*if ('=' != variable[i])*/
+	/*{*/
+	/*	return (false);*/
+	/*}*/
+	return (true);
+}
+
 void	ft_export(t_list **my_envp, char **variables)
 {
 	int		vars_i; // INFO: variables_index
@@ -153,9 +192,14 @@ void	ft_export(t_list **my_envp, char **variables)
 		vars_i = 1;
 		while (variables[vars_i])
 		{
+			if (!ft_valid_argument(variables[vars_i]) == false)
+			{
+				vars_i++;
+				continue;
+			}
 			if (ft_variable_exist(*my_envp, variables[vars_i]))
 			{
-				if (ft_variable_append(variables[vars_i]))
+				if (ft_to_append(variables[vars_i]))
 				{
 					ft_append_to_varriable(my_envp, variables[vars_i]);
 				}
@@ -166,7 +210,7 @@ void	ft_export(t_list **my_envp, char **variables)
 			}
 			else
 			{
-				if (ft_variable_append(variables[vars_i]))
+				if (ft_to_append(variables[vars_i]))
 				{
 					ft_add_variable(my_envp, variables[vars_i]);
 				}
