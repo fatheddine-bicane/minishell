@@ -45,18 +45,17 @@ t_cmd	*parse_redirect(t_token **token)
 	t_cmd	*cmd;
 	t_cmd	*next;
 
-	if (match_token(token, 1, T_REDIRECT_IN))
+	if (match_token(token, 1, T_REDIR_IN))
 	{
-		if (!match_token(token, 5, T_WORD, T_VAR, T_STRING_SINGLE,
-				T_STRING_DOUBLE))
+		if (!match_token(token, 5, T_WORD, T_VAR, T_STR_SINGLE, T_STR_DOUBLE))
 		{
 			sn_printf_fd(STDERR_FILENO,
 				"syntax error near unexpected token `%s`", (*token)->lexeme);
 			return (NULL);
 		}
 		next = parse_redirect(token);
-		cmd = cmd_redirect_init(R_REDIRECT_IN,
-				sn_strdup((*token)->prev->lexeme), next);
+		cmd = cmd_redirect_init(R_REDIR_IN, sn_strdup((*token)->prev->lexeme),
+				next);
 		if (cmd == NULL)
 			return (cmd_free(next), NULL);
 		return (cmd);
@@ -71,12 +70,11 @@ t_cmd	*parse_cmd(t_token **token)
 	int		i;
 	t_token	*current;
 
-	if (match_token(token, 5, T_WORD, T_VAR, T_STRING_SINGLE, T_STRING_DOUBLE))
+	if (match_token(token, 5, T_WORD, T_VAR, T_STR_SINGLE, T_STR_DOUBLE))
 	{
 		matches = 1;
 		current = (*token)->prev;
-		while (match_token(token, 5, T_WORD, T_VAR, T_STRING_SINGLE,
-				T_STRING_DOUBLE))
+		while (match_token(token, 5, T_WORD, T_VAR, T_STR_SINGLE, T_STR_DOUBLE))
 			matches++;
 		argv = malloc(sizeof(char *) * matches + 1);
 		if (argv == NULL)

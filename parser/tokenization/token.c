@@ -54,7 +54,7 @@ void	token_free(t_token *t)
 	type = t->type;
 	if (t->lexeme)
 		free(t->str);
-	if (type == T_STRING_SINGLE || type == T_STRING_DOUBLE)
+	if (type == T_STR_SINGLE || type == T_STR_DOUBLE)
 		free(t->lexeme);
 	if (type == T_WORD || type == T_VAR)
 		free(t->lexeme);

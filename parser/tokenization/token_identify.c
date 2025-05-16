@@ -23,14 +23,14 @@ static t_token	*token_identify_multi(char *src, size_t *current, char c)
 	if (c == '>')
 	{
 		if (match_char(src, current, '>'))
-			return (token_new(T_REDIRECT_OUT_APPEND, ">>"));
-		return (token_new(T_REDIRECT_OUT, ">"));
+			return (token_new(T_REDIR_OUT_APPEND, ">>"));
+		return (token_new(T_REDIR_OUT, ">"));
 	}
 	if (c == '<')
 	{
 		if (match_char(src, current, '<'))
 			return (token_new(T_HEREDOC, "<<"));
-		return (token_new(T_REDIRECT_IN, "<"));
+		return (token_new(T_REDIR_IN, "<"));
 	}
 	if (c == '$' && match_var(src, current))
 		return (extract_var(src, current));

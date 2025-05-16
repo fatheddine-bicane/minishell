@@ -31,12 +31,12 @@ typedef enum e_token_type
 {
 	T_LEFT_PAREN,
 	T_RIGHT_PAREN,
-	T_REDIRECT_IN,
-	T_REDIRECT_OUT,
-	T_REDIRECT_OUT_APPEND,
+	T_REDIR_IN,
+	T_REDIR_OUT,
+	T_REDIR_OUT_APPEND,
 	T_HEREDOC,
-	T_STRING_SINGLE,
-	T_STRING_DOUBLE,
+	T_STR_SINGLE,
+	T_STR_DOUBLE,
 	T_PIPE,
 	T_OR,
 	T_AND,
@@ -66,9 +66,9 @@ typedef struct s_exec
 
 typedef enum e_redirect_type
 {
-	R_REDIRECT_IN,
-	R_REDIRECT_OUT,
-	R_REDIRECT_OUT_APPEND,
+	R_REDIR_IN,
+	R_REDIR_OUT,
+	R_REDIR_OUT_APPEND,
 	R_HEREDOC,
 }						t_redirect_type;
 
