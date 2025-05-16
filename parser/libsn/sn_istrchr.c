@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executable.c                                       :+:      :+:    :+:   */
+/*   sn_istrchr.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/19 14:15:18 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/13 16:48:09 by fbicane          ###   ########.fr       */
+/*   Created: 2024/10/25 22:18:11 by klaayoun          #+#    #+#             */
+/*   Updated: 2024/10/25 22:21:05 by klaayoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishel.h"
+#include "libsn.h"
 
-void	ft_apply_comm(char *rl, t_list *my_envp)
+ssize_t	sn_istrchr(const char *s, char c)
 {
-	pid_t	pid;
+	ssize_t	i;
 
-	pid = fork();
-	if (-1 == pid)
-	{
-		// TODO: error mssg
-	}
-	ft_executable(rl, my_envp, pid, true);
+	i = 0;
+	while (s[i] && s[i] != c)
+		i++;
+	if (s[i] == c)
+		return (i);
+	return (-1);
 }

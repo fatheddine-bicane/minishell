@@ -16,11 +16,12 @@ void	ft_redirect_out(char *ouf_name)
 {
 	int	ouf;
 
-	ouf = open(ouf_name, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	ouf = open(ouf_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (-1 == ouf)
 		return ;
 	if (-1 == dup2(ouf, STDOUT_FILENO))
 		return ;
+	// TODO: close ouf
 }
 
 void	ft_redirect_inf(char *inf_file)
@@ -32,4 +33,17 @@ void	ft_redirect_inf(char *inf_file)
 		return ;
 	if (-1 == dup2(inf, STDIN_FILENO))
 		return ;
+	// TODO: close inf
+}
+
+void	ft_append_out(char *ouf_file)
+{
+	int	ouf;
+
+	ouf = open(ouf_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (-1 == ouf)
+		return ;
+	if (-1 == dup2(ouf, STDOUT_FILENO))
+		return ;
+	// TODO: close ouf
 }

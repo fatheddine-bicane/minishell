@@ -1,25 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executable.c                                       :+:      :+:    :+:   */
+/*   sn_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/19 14:15:18 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/13 16:48:09 by fbicane          ###   ########.fr       */
+/*   Created: 2024/10/25 22:18:11 by klaayoun          #+#    #+#             */
+/*   Updated: 2024/10/25 22:21:05 by klaayoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishel.h"
+#include "libsn.h"
 
-void	ft_apply_comm(char *rl, t_list *my_envp)
+void	*sn_memset(void *s, int c, size_t n)
 {
-	pid_t	pid;
+	size_t	i;
 
-	pid = fork();
-	if (-1 == pid)
-	{
-		// TODO: error mssg
-	}
-	ft_executable(rl, my_envp, pid, true);
+	i = 0;
+	while (n--)
+		((char *)s)[i++] = (unsigned char)c;
+	return (s);
 }

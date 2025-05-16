@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executable.c                                       :+:      :+:    :+:   */
+/*   sn_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/19 14:15:18 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/13 16:48:09 by fbicane          ###   ########.fr       */
+/*   Created: 2024/10/25 22:18:11 by klaayoun          #+#    #+#             */
+/*   Updated: 2024/10/25 22:21:05 by klaayoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishel.h"
+#include "libsn.h"
 
-void	ft_apply_comm(char *rl, t_list *my_envp)
+size_t	sn_strlcpy(char *dst, const char *src, size_t size)
 {
-	pid_t	pid;
+	size_t	l;
 
-	pid = fork();
-	if (-1 == pid)
-	{
-		// TODO: error mssg
-	}
-	ft_executable(rl, my_envp, pid, true);
+	l = sn_strlen(src);
+	if (size == 0)
+		return (l);
+	while (--size && *src)
+		*dst++ = *src++;
+	*dst = '\0';
+	return (l);
 }

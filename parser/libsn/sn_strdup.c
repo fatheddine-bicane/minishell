@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executable.c                                       :+:      :+:    :+:   */
+/*   sn_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/19 14:15:18 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/13 16:48:09 by fbicane          ###   ########.fr       */
+/*   Created: 2024/10/25 22:18:11 by klaayoun          #+#    #+#             */
+/*   Updated: 2024/10/25 22:21:05 by klaayoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishel.h"
+#include "libsn.h"
 
-void	ft_apply_comm(char *rl, t_list *my_envp)
+char	*sn_strdup(const char *s)
 {
-	pid_t	pid;
+	char	*dup;
+	size_t	len;
 
-	pid = fork();
-	if (-1 == pid)
-	{
-		// TODO: error mssg
-	}
-	ft_executable(rl, my_envp, pid, true);
+	len = sn_strlen(s) + 1;
+	dup = (char *)malloc(sizeof(char) * len);
+	if (dup == NULL)
+		return (NULL);
+	return ((char *)sn_memcpy(dup, s, len));
 }
