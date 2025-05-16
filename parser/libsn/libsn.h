@@ -55,7 +55,7 @@ int				sn_strncmp(const char *s1, const char *s2, size_t n);
 char			**sn_split(char const *s, char c);
 char			*sn_strjoin(char *start, char *end, char join);
 char			*sn_strsearch(char *haystack[], char *needle);
-char			**sn_split_free(char **arr);
+void			sn_strs_free(char **arr);
 char			*sn_strndup(const char *src, size_t n);
 char			*sn_readfile(char *file);
 

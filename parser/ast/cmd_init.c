@@ -77,7 +77,7 @@ void	cmd_free(t_cmd *root)
 		return ;
 	if (root->type == C_EXEC)
 	{
-		sn_split_free(root->u_as.exec.argv);
+		sn_strs_free(root->u_as.exec.argv);
 		free(root);
 	}
 	else if (root->type == C_PIPE)
