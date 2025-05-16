@@ -76,7 +76,7 @@ t_cmd	*parse_cmd(t_token **token)
 		current = (*token)->prev;
 		while (match_token(token, 5, T_WORD, T_VAR, T_STR_SINGLE, T_STR_DOUBLE))
 			matches++;
-		argv = malloc(sizeof(char *) * matches + 1);
+		argv = malloc(sizeof(char *) * (matches + 1));
 		if (argv == NULL)
 			return (NULL);
 		i = 0;
