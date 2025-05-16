@@ -20,6 +20,8 @@ bool	ft_variable_exist(t_list *my_envp, char *varaible)
 	while (varaible[i] && '=' != varaible[i])
 		i++;
 
+	if ('+' == varaible[i - 1])
+		i--;
 	while (my_envp)
 	{
 		if (!ft_strncmp(my_envp->content, varaible, i))
