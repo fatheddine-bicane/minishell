@@ -63,6 +63,8 @@ bool	match_token(t_token **head, size_t count, ...)
 	while (count--)
 	{
 		type = va_arg(args, int);
+		if (current->type == T_BLANK && type != T_BLANK)
+			current = current->next;
 		if (current->type == type)
 		{
 			*head = current->next;

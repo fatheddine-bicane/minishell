@@ -19,14 +19,12 @@ t_cmd	*parse_group(t_token **token)
 {
 	t_cmd	*cmd;
 
-	if (match_token(token, 1, T_LEFT_PAREN) || (match_tokens(token, 2, T_BLANK,
-				T_LEFT_PAREN)))
+	if (match_token(token, 1, T_LEFT_PAREN))
 	{
 		cmd = cmd_group_init(parse_program(token));
 		if (cmd == NULL)
 			return (NULL);
-		if (!match_token(token, 1, T_RIGHT_PAREN) || !match_tokens(token, 2,
-				T_BLANK, T_RIGHT_PAREN))
+		if (!match_token(token, 1, T_RIGHT_PAREN))
 		{
 			sn_printf_fd(STDERR_FILENO, "Expect ')' to end subshell.");
 			return (cmd_free(cmd), NULL);
@@ -47,20 +45,11 @@ t_cmd	*parse_redirect(t_token **token)
 	t_cmd	*cmd;
 	t_cmd	*next;
 
-	if (match_token(token, 1, T_REDIRECT_IN) || match_tokens(token, 2, T_BLANK,
-			T_REDIRECT_IN))
+	if (match_token(token, 1, T_REDIRECT_IN))
 	{
-		if (!match_token(token, 5, T_BLANK, T_WORD, T_VAR, T_STRING_SINGLE,
+		if (!match_token(token, 5, T_WORD, T_VAR, T_STRING_SINGLE,
 				T_STRING_DOUBLE))
 		{
-			if ((*token)->prev->type == T_BLANK && !match_token(token, 4,
-					T_WORD, T_VAR, T_STRING_SINGLE, T_STRING_DOUBLE))
-			{
-				sn_printf_fd(STDERR_FILENO,
-					"syntax error near unexpected token `%s`",
-					(*token)->lexeme);
-				return (NULL);
-			}
 			sn_printf_fd(STDERR_FILENO,
 				"syntax error near unexpected token `%s`", (*token)->lexeme);
 			return (NULL);
@@ -82,49 +71,29 @@ t_cmd	*parse_cmd(t_token **token)
 	int		i;
 	t_token	*current;
 
-	if (match_token(token, 5, T_BLANK, T_WORD, T_VAR, T_STRING_SINGLE,
-			T_STRING_DOUBLE))
+	if (match_token(token, 5, T_WORD, T_VAR, T_STRING_SINGLE, T_STRING_DOUBLE))
 	{
-		if ((*token)->prev->type == T_BLANK && !match_token(token, 4, T_WORD,
-				T_VAR, T_STRING_SINGLE, T_STRING_DOUBLE))
-			*token = (*token)->prev;
-		else
+		matches = 1;
+		current = (*token)->prev;
+		while (match_token(token, 5, T_WORD, T_VAR, T_STRING_SINGLE,
+				T_STRING_DOUBLE))
+			matches++;
+		argv = malloc(sizeof(char *) * matches + 1);
+		if (argv == NULL)
+			return (NULL);
+		i = 0;
+		while (i < matches)
 		{
-			matches = 1;
-			current = (*token)->prev;
-			while (match_token(token, 5, T_BLANK, T_WORD, T_VAR,
-					T_STRING_SINGLE, T_STRING_DOUBLE))
-			{
-				if ((*token)->prev->type == T_BLANK && !match_token(token, 4,
-						T_WORD, T_VAR, T_STRING_SINGLE, T_STRING_DOUBLE))
-				{
-					*token = (*token)->prev;
-					break ;
-				}
-				matches++;
-				continue ;
-			}
-			argv = malloc(sizeof(char *) * matches + 1);
-			if (argv == NULL)
-				return (NULL);
-			i = 0;
-			while (i < matches)
-			{
-				argv[i] = sn_strdup(current->lexeme);
-				if (argv[i] == NULL)
-				{
-					while (i > 0)
-						free(argv[--i]);
-					return (NULL);
-				}
+			argv[i] = sn_strdup(current->lexeme);
+			if (argv[i] == NULL)
+				return (sn_strs_free(argv), NULL);
+			current = current->next;
+			if (current->type == T_BLANK)
 				current = current->next;
-				if (current->type == T_BLANK)
-					current = current->next;
-				i++;
-			}
-			argv[matches] = NULL;
-			return (cmd_exec_init(argv));
+			i++;
 		}
+		argv[matches] = NULL;
+		return (cmd_exec_init(argv));
 	}
 	return (NULL);
 }
@@ -138,8 +107,7 @@ t_cmd	*parse_pipe(t_token **token)
 	left = parse_cmd(token);
 	if (left == NULL)
 		return (NULL);
-	while (match_token(token, 1, T_PIPE) || (match_tokens(token, 2, T_BLANK,
-				T_PIPE)))
+	while (match_token(token, 1, T_PIPE))
 	{
 		right = parse_cmd(token);
 		if (right == NULL)
