@@ -1,0 +1,145 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/25 22:18:11 by klaayoun          #+#    #+#             */
+/*   Updated: 2024/10/25 22:21:05 by klaayoun         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef PARSER_H
+# define PARSER_H
+
+# include "libsn/libsn.h"
+# include <errno.h>
+# include <fcntl.h>
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <signal.h>
+# include <stdbool.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <sysexits.h>
+
+typedef enum e_token_type
+{
+	T_LEFT_PAREN,
+	T_RIGHT_PAREN,
+	T_REDIRECT_IN,
+	T_REDIRECT_OUT,
+	T_REDIRECT_OUT_APPEND,
+	T_HEREDOC,
+	T_STRING_SINGLE,
+	T_STRING_DOUBLE,
+	T_PIPE,
+	T_OR,
+	T_AND,
+	T_WILDCARD,
+	T_BLANK,
+	T_WORD,
+	T_VAR,
+	T_SKIPPABLE,
+	T_EOF,
+}						t_token_type;
+
+typedef struct s_token
+{
+	t_token_type		type;
+	char				*lexeme;
+	char				*str;
+	struct s_token		*next;
+	struct s_token		*prev;
+}						t_token;
+
+typedef struct s_cmd	t_cmd;
+
+typedef struct s_exec
+{
+	char				**argv;
+}						t_exec;
+
+typedef enum e_redirect_type
+{
+	R_REDIRECT_IN,
+	R_REDIRECT_OUT,
+	R_REDIRECT_OUT_APPEND,
+	R_HEREDOC,
+}						t_redirect_type;
+
+typedef struct s_redirect
+{
+	t_redirect_type		type;
+	char				*file;
+	t_cmd				*next;
+}						t_redirect;
+
+typedef struct s_pipe
+{
+	t_cmd				*left;
+	t_cmd				*right;
+}						t_pipe;
+
+typedef struct s_group
+{
+	t_cmd				*cmd;
+}						t_group;
+
+typedef enum e_cmd_type
+{
+	C_EXEC,
+	C_PIPE,
+	C_REDIRECT,
+	C_GROUP,
+}						t_cmd_type;
+
+typedef struct s_cmd
+{
+	t_cmd_type			type;
+	union
+	{
+		t_exec			exec;
+		t_redirect		redirect;
+		t_pipe			pipe;
+		t_group			group;
+	} u_as;
+}						t_cmd;
+
+t_token					*token_new(t_token_type type, char *lexeme);
+void					token_free(t_token *token);
+void					tokens_free(t_token *token);
+void					token_str(t_token *t, bool nl, bool all);
+const char				*token_type_str(t_token_type type);
+t_token					*tokens_scan(char *src);
+
+bool					is_metachar(char *src, size_t current);
+bool					is_name(char *src, size_t current);
+bool					match_char(char *src, size_t *current, char expected);
+bool					match_word(char *src, size_t *current);
+bool					match_identifier(char *src, size_t *current);
+bool					match_var(char *src, size_t *current);
+bool					match_token(t_token **head, size_t count, ...);
+bool					match_tokens(t_token **head, size_t count, ...);
+char					*extract_word(char *src, size_t *current);
+t_token					*token_identify(char *src, size_t *current);
+t_token					*extract_str(char *src, size_t *current, bool single);
+t_token					*extract_identifier(char *src, size_t *current);
+t_token					*extract_var(char *src, size_t *current);
+t_token					*extract_blank(char *src, size_t *current);
+
+t_cmd					*cmd_exec_init(char **argv);
+t_cmd					*cmd_redirect_init(t_redirect_type type, char *file,
+							t_cmd *next);
+t_cmd					*cmd_pipe_init(t_cmd *left, t_cmd *right);
+t_cmd					*cmd_group_init(t_cmd *group);
+void					cmd_free(t_cmd *root);
+
+t_cmd					*parse_program(t_token **token);
+void					ast_print(t_cmd *cmd);
+
+#endif
