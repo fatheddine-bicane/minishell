@@ -33,13 +33,12 @@ int	run(char *src, char **envp)
 	tokens = tokens_scan(src);
 	if (tokens == NULL)
 		return (EX_DATAERR);
-	// token_str(tokens, true, true);
 	head = tokens;
 	cmd = parse_program(&tokens);
 	if (cmd == NULL)
-		return (token_free(head), EXIT_FAILURE);
+		return (tokens_free(head), EXIT_FAILURE);
 	ast_print(cmd);
-	return (cmd_free(cmd), token_free(head), EXIT_SUCCESS);
+	return (cmd_free(cmd), tokens_free(head), EXIT_SUCCESS);
 }
 
 void	run_prompt(char *envp[])
