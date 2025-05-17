@@ -26,7 +26,7 @@ t_cmd	*cmd_exec_init(char **argv)
 	return (cmd);
 }
 
-t_cmd	*cmd_redirect_init(t_redirect_type type, char *file, t_cmd *next)
+t_cmd	*cmd_redirect_init(int type, char *file, t_cmd *next)
 {
 	t_cmd	*cmd;
 

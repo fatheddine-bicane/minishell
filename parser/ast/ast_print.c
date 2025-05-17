@@ -35,10 +35,11 @@ static void	ast_walk(t_cmd *cmd, int depth)
 	if (cmd->type == C_REDIRECT)
 	{
 		// TODO:(karim) print string type of redirection
-		printf("redirect(%d) %s", cmd->u_as.redirect.type,
+		printf("(redirect(%d) %s", cmd->u_as.redirect.type,
 			cmd->u_as.redirect.file);
 		if (cmd->u_as.redirect.next != NULL)
 			ast_walk(cmd->u_as.redirect.next, depth + 1);
+		printf(")");
 	}
 	if (cmd->type == C_GROUP)
 	{

@@ -64,17 +64,9 @@ typedef struct s_exec
 	char				**argv;
 }						t_exec;
 
-typedef enum e_redirect_type
-{
-	R_REDIR_IN,
-	R_REDIR_OUT,
-	R_REDIR_OUT_APPEND,
-	R_HEREDOC,
-}						t_redirect_type;
-
 typedef struct s_redirect
 {
-	t_redirect_type		type;
+	int					type;
 	char				*file;
 	t_cmd				*next;
 }						t_redirect;
@@ -133,8 +125,7 @@ t_token					*extract_var(char *src, size_t *current);
 t_token					*extract_blank(char *src, size_t *current);
 
 t_cmd					*cmd_exec_init(char **argv);
-t_cmd					*cmd_redirect_init(t_redirect_type type, char *file,
-							t_cmd *next);
+t_cmd					*cmd_redirect_init(int type, char *file, t_cmd *next);
 t_cmd					*cmd_pipe_init(t_cmd *left, t_cmd *right);
 t_cmd					*cmd_group_init(t_cmd *group);
 void					cmd_free(t_cmd *root);

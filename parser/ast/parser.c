@@ -36,31 +36,49 @@ t_cmd	*parse_group(t_token **token)
 
 t_cmd	*parse_io_redirect(t_token **token)
 {
-	(void)token;
-	return (NULL);
-}
+	t_token	*t;
+	int		type;
 
-t_cmd	*parse_redirect(t_token **token)
-{
-	t_cmd	*cmd;
-	t_cmd	*next;
-
-	if (match_token(token, 1, T_REDIR_IN))
+	if (match_token(token, 4, T_REDIR_IN, T_REDIR_OUT, T_REDIR_OUT_APPEND,
+			T_HEREDOC))
 	{
-		if (!match_token(token, 4, T_WORD, T_VAR, T_STR_SINGLE, T_STR_DOUBLE))
+		if (!match_token(token, 4, T_WORD, T_VAR, T_STR_DOUBLE, T_STR_SINGLE))
 		{
 			sn_printf_fd(STDERR_FILENO,
 				"syntax error near unexpected token `%s`", (*token)->lexeme);
 			return (NULL);
 		}
-		next = parse_redirect(token);
-		cmd = cmd_redirect_init(R_REDIR_IN, sn_strdup((*token)->prev->lexeme),
-				next);
-		if (cmd == NULL)
-			return (cmd_free(next), NULL);
-		return (cmd);
+		t = (*token);
+		if (t->prev->prev->type == T_BLANK)
+			type = t->prev->prev->prev->type;
+		else
+			type = t->prev->prev->type;
+		return (cmd_redirect_init(type, sn_strdup(t->prev->lexeme), NULL));
 	}
 	return (parse_group(token));
+}
+
+t_cmd	*parse_redirect(t_token **token)
+{
+	t_cmd	*cmd;
+	t_cmd	*left;
+	t_cmd	*right;
+
+	left = parse_io_redirect(token);
+	if (left == NULL)
+		return (NULL);
+	cmd = left;
+	while (match_token(token, 4, T_REDIR_IN, T_REDIR_OUT, T_REDIR_OUT_APPEND,
+			T_HEREDOC))
+	{
+		// TODO:(karim) fix issue with blanks
+		right = parse_io_redirect(&(*token)->prev);
+		if (right == NULL)
+			return (cmd_free(left), NULL);
+		cmd->u_as.redirect.next = right;
+		cmd = right;
+	}
+	return (left);
 }
 
 t_cmd	*parse_cmd(t_token **token)
@@ -93,7 +111,7 @@ t_cmd	*parse_cmd(t_token **token)
 		argv[matches] = NULL;
 		return (cmd_exec_init(argv));
 	}
-	return (NULL);
+	return (parse_redirect(token));
 }
 
 t_cmd	*parse_pipe(t_token **token)
