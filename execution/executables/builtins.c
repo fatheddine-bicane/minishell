@@ -45,8 +45,7 @@ int	ft_check_bultins(char *rl, t_list **my_envp)
 	}
 	else if (!ft_strncmp("echo", rl, 4))
 	{
-		char **echo_arg = ft_split(rl, 32);
-		ft_echo(echo_arg, *my_envp);
+		ft_echo(ft_split(rl, 32), *my_envp);
 		add_history(rl);
 		return (1);
 	}

@@ -17,19 +17,19 @@ void	ft_handl_n(char **arr, int *j, bool *new_line) // INFO: handle -n flag
 	int	i;
 
 	i = 0;
-	while (arr[*j][0] == '-' && arr[*j])
+	while ('-' == arr[*j][0] && arr[*j])
 	{
 		i = 1;
-		while (arr[*j][i] == 'n' && arr[*j][i])
+		while ('n' == arr[*j][i] && arr[*j][i])
 			i++;
 		if (arr[*j][i])
 		{
+			(*j)--;
 			break;
-			j--;
 		}
 		else
 			(*new_line) = false;
-		j++;
+		(*j)++;
 	}
 }
 
@@ -64,14 +64,6 @@ void	ft_expand_var(char *str, int *j, t_list *my_envp)// INFO: expand the var fr
 	ft_print_var(i - 1, str + 1, my_envp);
 	printf("%s", str + i);
 	(*j)++;
-}
-
-void	ft_handl_ds(char *str)
-{
-	if (str[1] != '_' && !ft_isalpha(str[1]))
-	{
-		// TODO: handle cases where the argg start with $
-	}
 }
 
 void	ft_echo(char **echo_arg, t_list *my_envp)
