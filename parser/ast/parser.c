@@ -38,14 +38,18 @@ t_cmd	*parse_io_redirect(t_token **token)
 {
 	t_token	*t;
 	int		type;
+	char	*lexeme;
 
 	if (match_token(token, 4, T_REDIR_IN, T_REDIR_OUT, T_REDIR_OUT_APPEND,
 			T_HEREDOC))
 	{
 		if (!match_token(token, 4, T_WORD, T_VAR, T_STR_DOUBLE, T_STR_SINGLE))
 		{
+			lexeme = (*token)->lexeme;
+			if ((*token)->type == T_BLANK || (*token)->type == T_EOF)
+				lexeme = "newline";
 			sn_printf_fd(STDERR_FILENO,
-				"syntax error near unexpected token `%s`", (*token)->lexeme);
+				"syntax error near unexpected token `%s`\n", lexeme);
 			return (NULL);
 		}
 		t = (*token);
