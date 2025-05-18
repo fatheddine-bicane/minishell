@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/16 15:44:39 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/17 15:46:48 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,16 @@ void	ft_pwd(void);
 void	ft_env(t_list *my_envp);
 void	ft_echo(char **echo_arg, t_list *my_envp);
 void	ft_exit(void);
+
+// INFO: export;
 void	ft_export(t_list **my_envp, char **variables);
+void	ft_sort_myenvp(t_list *my_envp);
+bool	ft_to_append(char *variable);
+char	*ft_append_equal(char *variable);
+void	ft_append_to_varriable(t_list **my_envp, char *variable);
+void	ft_add_variable(t_list **my_envp, char *variable);
+void	ft_export_utils_1(t_list **my_envp, char *variable);
+
 void	ft_unset(t_list **my_envp, char **variables);
 
 t_list *ft_set_env(char **envp); //INFO: creat custum envp
