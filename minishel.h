@@ -21,11 +21,14 @@
 # include <unistd.h>
 # include <fcntl.h>
 #include <sys/wait.h>
+# include <signal.h>
 
 #include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <string.h>
+
+static volatile sig_atomic_t g_signal_flag = 0;
 
 // INFO: unset struct
 typedef struct s_unset
