@@ -71,10 +71,11 @@ void	ft_pipex(char **commands, t_list **my_envp); //INFO: handle pipes
 bool	ft_is_builtin(char *command);
 void	ft_exec_builtins(char **command_arg, t_list **my_envp);
 
-void	ft_here_doc(char *rl); //INFO: creat here_doc input
+void	ft_here_doc(char *delimiter); //INFO: creat here_doc input
 
 
 char	**ft_split_variable(char *variable);
 
 void	ft_handle_redirections(char **redirections);
+
 #endif

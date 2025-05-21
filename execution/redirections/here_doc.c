@@ -54,31 +54,20 @@ static char	*ft_creat_input(char *limiter)
 	return (join);
 }
 
-static void	ft_open(int *inf)
+void	ft_here_doc(char *delimiter)
 {
-	(*inf) = open("tmp", O_RDONLY);
-	if (dup2((*inf), STDIN_FILENO) == -1)
-		return; // TODO: error mssg
-	close((*inf));
-	unlink("tmp"); // WARNING: check if function allowed
-}
-
-void	ft_here_doc(char *rl)
-{
-	char	**command;
 	char	*input;
 	int		inf;
 
-	command = ft_split(rl, 32);
-	// TODO: protect command from NULL
-
-	input = ft_creat_input(command[1]);
-	inf = open("tmp", O_RDWR | O_CREAT | O_TRUNC, 0644);
+	input = ft_creat_input(delimiter);
+	// TODO: open the file below in /tmp folder
+	inf = open("XDAHHCKL8FHKCSJF00", O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (-1 == inf)
 		return; // TODO: error mssg
 	ft_putstr_fd(input, inf);
 	free(input);
+	if (-1 == dup2(inf, STDIN_FILENO))
+		return; // TODO: error mssg
 	close(inf);
-	ft_open(&inf);
-	close(inf);
+	unlink("XDAHHCKL8FHKCSJF00");
 }
