@@ -14,11 +14,24 @@
 
 int	ft_check_bultins(char *rl, t_list **my_envp)
 {
+
+	int	std_in_save = dup(STDIN_FILENO);
+	if (-1 == std_in_save)
+		return 0; // TODO: error mssg
+	int	std_out_save = dup(STDOUT_FILENO);
+	if (-1 == std_out_save)
+		return 0; // TODO: error mssg
+
+
+
+
 	if (!ft_strncmp("unset", rl, 5))
 	{
 		char **str = ft_split(rl, 32);
 		ft_unset(my_envp, str);
 		add_history(rl);
+		dup2(std_in_save, STDIN_FILENO);
+		dup2(std_out_save, STDOUT_FILENO);
 		return (1);
 	}
 	else if (!ft_strncmp("cd", rl, 2))
@@ -35,18 +48,24 @@ int	ft_check_bultins(char *rl, t_list **my_envp)
 	{
 		ft_pwd();
 		add_history(rl);
+		dup2(std_in_save, STDIN_FILENO);
+		dup2(std_out_save, STDOUT_FILENO);
 		return (1);
 	}
 	else if (!ft_strncmp("env", rl, 3))
 	{
 		ft_env((*my_envp));
 		add_history(rl);
+		dup2(std_in_save, STDIN_FILENO);
+		dup2(std_out_save, STDOUT_FILENO);
 		return (1);
 	}
 	else if (!ft_strncmp("echo", rl, 4))
 	{
 		ft_echo(ft_split(rl, 32), *my_envp);
 		add_history(rl);
+		dup2(std_in_save, STDIN_FILENO);
+		dup2(std_out_save, STDOUT_FILENO);
 		return (1);
 	}
 	else if (!ft_strncmp("exit", rl, 4))
@@ -59,6 +78,8 @@ int	ft_check_bultins(char *rl, t_list **my_envp)
 	{
 		ft_export(my_envp, ft_split(rl, 32));
 		add_history(rl);
+		dup2(std_in_save, STDIN_FILENO);
+		dup2(std_out_save, STDOUT_FILENO);
 		return (1);
 	}
 	return (0);

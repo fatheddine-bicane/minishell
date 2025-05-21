@@ -76,4 +76,5 @@ void	ft_here_doc(char *rl); //INFO: creat here_doc input
 
 char	**ft_split_variable(char *variable);
 
+void	ft_handle_redirections(char **redirections);
 #endif

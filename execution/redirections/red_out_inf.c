@@ -12,38 +12,95 @@
 
 #include "../../minishel.h"
 
-void	ft_redirect_out(char *ouf_name)
+static void	ft_redirect_output(char *file_name)
 {
-	int	ouf;
+	int	redirect;
 
-	ouf = open(ouf_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (-1 == ouf)
-		return ;
-	if (-1 == dup2(ouf, STDOUT_FILENO))
-		return ;
-	// TODO: close ouf
+	redirect = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+	if (-1 == redirect)
+		return ; // TODO: error mssg
+	if (-1 == dup2(redirect, STDOUT_FILENO))
+	{
+		close(redirect);
+		return; // TODO: error mssg
+	}
+	close(redirect);
 }
 
-void	ft_redirect_inf(char *inf_file)
+static void	ft_appent_output(char *file_name)
 {
-	int	inf;
-
-	inf = open(inf_file, O_RDONLY);
-	if (-1 == inf)
+	int	redirect;
+	redirect = open(file_name, O_RDONLY | O_CREAT | O_APPEND, 0664);
+	if (-1 == redirect)
 		return ;
-	if (-1 == dup2(inf, STDIN_FILENO))
-		return ;
-	// TODO: close inf
+	if (-1 == dup2(redirect, STDOUT_FILENO))
+	{
+		close(redirect);
+		return; //TODO:error mssg
+	}
+	close(redirect);
 }
 
-void	ft_append_out(char *ouf_file)
+static void	ft_redirect_input(char *file_name)
 {
-	int	ouf;
+	int	redirect;
+	redirect = open(file_name, O_RDONLY);
+	if (-1 == redirect)
+		return ;
+	if (-1 == dup2(redirect, STDIN_FILENO))
+	{
+		close(redirect);
+		return; //TODO:error mssg
+	}
+	close(redirect);
+}
 
-	ouf = open(ouf_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (-1 == ouf)
-		return ;
-	if (-1 == dup2(ouf, STDOUT_FILENO))
-		return ;
-	// TODO: close ouf
+void	ft_handle_redirections(char **redirections)
+{
+	int	i;
+	/*int	redirect;*/
+
+	i = 0;
+	while (redirections[i])
+	{
+		if ('>' == redirections[i][0])
+		{
+			ft_redirect_output(redirections[i] + 1);
+			/*redirect = open(redirections[i] + 1, O_WRONLY | O_CREAT | O_TRUNC, 0664);*/
+			/*if (-1 == redirect)*/
+			/*	return ;*/
+			/*if (-1 == dup2(redirect, STDOUT_FILENO))*/
+			/*{*/
+			/*	close(redirect);*/
+			/*	return; //TODO:error mssg*/
+			/*}*/
+		}
+		else if ('<' == redirections[i][0])
+		{
+			ft_redirect_input(redirections[i] + 1);
+			/*redirect = open(redirections[i] + 1, O_RDONLY);*/
+			/*if (-1 == redirect)*/
+			/*	return ;*/
+			/*if (-1 == dup2(redirect, STDIN_FILENO))*/
+			/*{*/
+			/*	close(redirect);*/
+			/*	return; //TODO:error mssg*/
+			/*}*/
+		}
+		else if ('>' == redirections[i][0] && '>' == redirections[i][1])
+		{
+			ft_appent_output(redirections[i] + 2);
+			/*redirect = open(redirections[i] + 2, O_RDONLY | O_CREAT | O_APPEND, 0664);*/
+			/*if (-1 == redirect)*/
+			/*	return ;*/
+			/*if (-1 == dup2(redirect, STDOUT_FILENO))*/
+			/*{*/
+			/*	close(redirect);*/
+			/*	return; //TODO:error mssg*/
+			/*}*/
+		}
+		else if ('<' == redirections[i][0] && '<' == redirections[i][1])
+			ft_here_doc(redirections[i] + 2);
+		i++;
+	}
 }
