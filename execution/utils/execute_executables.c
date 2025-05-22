@@ -60,6 +60,12 @@ void	ft_executable(char *command, t_list *my_envp, pid_t pid, bool to_wait)
 	if (NULL == paths)
 		return;
 
+	if (0 == pid)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+	}
+
 	if (!access(command_args[0], F_OK | X_OK))
 	{
 		if (0 == pid)

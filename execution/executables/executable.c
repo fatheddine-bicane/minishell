@@ -16,10 +16,13 @@ void	ft_apply_comm(char *rl, t_list *my_envp)
 {
 	pid_t	pid;
 
+	// INFO: ignore the signals in the parrent so the ctrl c wont quit the shell
+	ignore_signals_parrent();
 	pid = fork();
 	if (-1 == pid)
 	{
 		// TODO: error mssg
 	}
 	ft_executable(rl, my_envp, pid, true);
+	setup_signals();
 }

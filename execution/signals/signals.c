@@ -12,11 +12,37 @@
 
 #include "../../minishel.h"
 
-//to handle ctrl / maybe use sigemptyset() and sigaddset() to add the new signal
-
-void	ft_signal(void)
+void	sigint_handler(int signal)
 {
-	sigset_t	*test;
+	(void) signal;
+	g_signal_flag = SIGINT;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
+}
 
-	
+void	setup_signals(void)
+{
+	struct sigaction signals;
+
+	signals.sa_handler = sigint_handler;
+	sigemptyset(&signals.sa_mask);
+	signals.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &signals, NULL);
+	signals.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &signals, NULL);
+	/*signal(SIGINT, sigint_handler);*/
+}
+
+void	ignore_signals_parrent(void)
+{
+	struct sigaction	signal;
+
+	sigemptyset(&signal.sa_mask);
+	signal.sa_flags = SA_RESTART;
+	signal.sa_handler = SIG_IGN;
+	sigaction(SIGINT, &signal, NULL);
+	signal.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &signal, NULL);
 }

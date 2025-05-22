@@ -81,4 +81,8 @@ char	**ft_split_variable(char *variable);
 
 void	ft_handle_redirections(char **redirections);
 
+// INFO: signals
+void	setup_signals(void);
+void	ignore_signals_parrent(void);
+
 #endif

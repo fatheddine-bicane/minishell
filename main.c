@@ -20,26 +20,7 @@
 /*	return data;*/
 /*}*/
 
-void	sigint_handler(int signal)
-{
-	if (SIGINT == signal)
-	{
-		g_signal_flag = SIGINT;
-		rl_on_new_line();
-		/*rl_replace_line("", 0);*/
-		rl_redisplay();
-	}
-}
 
-void	ft_setup_signals(void)
-{
-	struct sigaction signals;
-
-	signals.sa_handler = sigint_handler;
-	sigemptyset(&signals.sa_mask);
-	signals.sa_flags = SA_RESTART;
-	sigaction(SIGINT, &signals, NULL);
-}
 
 int main(int argc, char **argv, char **envp)
 {
@@ -49,15 +30,16 @@ int main(int argc, char **argv, char **envp)
 	(void)argv;
 
 	my_envp = ft_set_env(envp);
-	ft_setup_signals();
+	setup_signals();
 	while (1)
 	{
+		// TODO: maybe update the exit status here (use global variable)
 		g_signal_flag = 0;
 		char (*rl) = readline("====> ");
-		if (SIGINT == g_signal_flag)
+		if (!rl)
 		{
-			free (rl);
-			continue;
+			write(STDOUT_FILENO, "exit\n", 5);
+			break ;
 		}
 		/*rl = readline("╭─ minishell \n╰─> ");*/
 		// BUG: if an empty line is set to rl there is segfault
@@ -79,7 +61,6 @@ int main(int argc, char **argv, char **envp)
 		/*	perror(strerror(errno));*/
 
 		add_history(rl);
-		printf("\n");
 	}
     return (0);
 }
