@@ -15,6 +15,7 @@
 static void	ast_walk(t_cmd *cmd, int depth)
 {
 	char	**argv;
+	char	*cmp_type;
 
 	if (depth > 0)
 		printf(" ");
@@ -52,6 +53,18 @@ static void	ast_walk(t_cmd *cmd, int depth)
 		printf("(pipe");
 		ast_walk(cmd->u_as.pipe.left, depth + 1);
 		ast_walk(cmd->u_as.pipe.right, depth + 1);
+		printf(")");
+	}
+	if (cmd->type == C_COMPOUND)
+	{
+		cmp_type = NULL;
+		if (cmd->u_as.compound.type == OP_AND)
+			cmp_type = "and";
+		if (cmd->u_as.compound.type == OP_OR)
+			cmp_type = "or";
+		printf("(%s", cmp_type);
+		ast_walk(cmd->u_as.compound.left, depth + 1);
+		ast_walk(cmd->u_as.compound.right, depth + 1);
 		printf(")");
 	}
 	if (depth == 0)

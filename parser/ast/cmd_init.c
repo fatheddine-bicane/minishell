@@ -57,6 +57,22 @@ t_cmd	*cmd_pipe_init(t_cmd *left, t_cmd *right)
 	return (cmd);
 }
 
+t_cmd	*cmd_cmp_init(t_cmp_type op, t_cmd *left, t_cmd *right)
+{
+	t_cmd	*cmd;
+
+	if (left == NULL || right == NULL)
+		return (NULL);
+	cmd = malloc(sizeof(t_cmd));
+	if (cmd == NULL)
+		return (NULL);
+	cmd->type = C_COMPOUND;
+	cmd->u_as.compound.type = op;
+	cmd->u_as.compound.left = left;
+	cmd->u_as.compound.right = right;
+	return (cmd);
+}
+
 t_cmd	*cmd_group_init(t_cmd *group)
 {
 	t_cmd	*cmd;
@@ -78,6 +94,12 @@ void	cmd_free(t_cmd *root)
 	if (root->type == C_EXEC)
 	{
 		sn_strs_free(root->u_as.exec.argv);
+		free(root);
+	}
+	else if (root->type == C_COMPOUND)
+	{
+		cmd_free(root->u_as.compound.left);
+		cmd_free(root->u_as.compound.right);
 		free(root);
 	}
 	else if (root->type == C_PIPE)

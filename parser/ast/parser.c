@@ -12,20 +12,6 @@
 
 #include "../parser.h"
 
-char	*get_redirect_lexeme(t_token *token)
-{
-	char	*lexeme;
-
-	lexeme = token->lexeme;
-	if (token->type == T_EOF)
-		lexeme = "newline";
-	if (token->type == T_BLANK && token->next->type == T_EOF)
-		lexeme = "newline";
-	if (token->type == T_BLANK && token->next->type != T_EOF)
-		lexeme = token->next->lexeme;
-	return (lexeme);
-}
-
 t_cmd	*parse_io_redirect(t_token **token)
 {
 	t_token	*t;
@@ -37,7 +23,7 @@ t_cmd	*parse_io_redirect(t_token **token)
 	{
 		if (!match_token(token, 4, T_WORD, T_VAR, T_STR_DOUBLE, T_STR_SINGLE))
 		{
-			lexeme = get_redirect_lexeme(*token);
+			lexeme = extract_lexeme_err(*token);
 			sn_eprintf("syntax error near unexpected token `%s`\n", lexeme);
 			return (NULL);
 		}
@@ -48,7 +34,8 @@ t_cmd	*parse_io_redirect(t_token **token)
 			type = t->prev->prev->type;
 		return (cmd_redirect_init(type, sn_strdup(t->prev->lexeme), NULL));
 	}
-	sn_eprintf("syntax error near unexpected token `%s`\n", (*token)->lexeme);
+	lexeme = extract_lexeme_err(*token);
+	sn_eprintf("syntax error near unexpected token `%s`\n", lexeme);
 	return (NULL);
 }
 
@@ -149,11 +136,35 @@ t_cmd	*parse_pipe(t_token **token)
 	return (left);
 }
 
+t_cmd	*parse_compound(t_token **token)
+{
+	t_cmd		*cmd;
+	t_cmd		*left;
+	t_cmd		*right;
+	t_cmp_type	op;
+
+	left = parse_pipe(token);
+	if (left == NULL)
+		return (NULL);
+	while (match_token(token, 1, T_AND) || match_token(token, 1, T_OR))
+	{
+		op = extract_cmp_op((*token)->prev);
+		right = parse_pipe(token);
+		if (right == NULL)
+			return (cmd_free(left), NULL);
+		cmd = cmd_cmp_init(op, left, right);
+		if (cmd == NULL)
+			return (cmd_free(left), cmd_free(right), NULL);
+		left = cmd;
+	}
+	return (left);
+}
+
 t_cmd	*parse_program(t_token **token)
 {
 	if (token == NULL || *token == NULL)
 		return (NULL);
 	if ((*token)->type == T_EOF)
 		return (NULL);
-	return (parse_pipe(token));
+	return (parse_compound(token));
 }
