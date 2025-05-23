@@ -12,26 +12,18 @@
 
 #include "../parser.h"
 
-t_cmd	*parse_program(t_token **token);
-t_cmd	*parse_cmd(t_token **token);
-
-t_cmd	*parse_group(t_token **token)
+char	*get_redirect_lexeme(t_token *token)
 {
-	t_cmd	*cmd;
+	char	*lexeme;
 
-	if (match_token(token, 1, T_LEFT_PAREN))
-	{
-		cmd = cmd_group_init(parse_program(token));
-		if (cmd == NULL)
-			return (NULL);
-		if (!match_token(token, 1, T_RIGHT_PAREN))
-		{
-			sn_printf_fd(STDERR_FILENO, "Expect ')' to end subshell.");
-			return (cmd_free(cmd), NULL);
-		}
-		return (cmd);
-	}
-	return (parse_cmd(token));
+	lexeme = token->lexeme;
+	if (token->type == T_EOF)
+		lexeme = "newline";
+	if (token->type == T_BLANK && token->next->type == T_EOF)
+		lexeme = "newline";
+	if (token->type == T_BLANK && token->next->type != T_EOF)
+		lexeme = token->next->lexeme;
+	return (lexeme);
 }
 
 t_cmd	*parse_io_redirect(t_token **token)
@@ -45,14 +37,8 @@ t_cmd	*parse_io_redirect(t_token **token)
 	{
 		if (!match_token(token, 4, T_WORD, T_VAR, T_STR_DOUBLE, T_STR_SINGLE))
 		{
-			t = (*token);
-			lexeme = t->lexeme;
-			if (t->type == T_EOF || (t->type == T_BLANK && t->next->type == T_EOF))
-				lexeme = "newline";
-			if (t->type == T_BLANK && t->next->type != T_EOF)
-				lexeme = t->next->lexeme;
-			sn_printf_fd(STDERR_FILENO,
-				"syntax error near unexpected token `%s`\n", lexeme);
+			lexeme = get_redirect_lexeme(*token);
+			sn_eprintf("syntax error near unexpected token `%s`\n", lexeme);
 			return (NULL);
 		}
 		t = (*token);
@@ -62,7 +48,8 @@ t_cmd	*parse_io_redirect(t_token **token)
 			type = t->prev->prev->type;
 		return (cmd_redirect_init(type, sn_strdup(t->prev->lexeme), NULL));
 	}
-	return (parse_group(token));
+	sn_eprintf("syntax error near unexpected token `%s`\n", (*token)->lexeme);
+	return (NULL);
 }
 
 t_cmd	*parse_redirect(t_token **token)
@@ -121,18 +108,37 @@ t_cmd	*parse_cmd(t_token **token)
 	return (parse_redirect(token));
 }
 
+t_cmd	*parse_group(t_token **token)
+{
+	t_cmd	*cmd;
+
+	if (match_token(token, 1, T_LEFT_PAREN))
+	{
+		cmd = cmd_group_init(parse_program(token));
+		if (cmd == NULL)
+			return (NULL);
+		if (!match_token(token, 1, T_RIGHT_PAREN))
+		{
+			sn_eprintf("Expect ')' to end subshell.");
+			return (cmd_free(cmd), NULL);
+		}
+		return (cmd);
+	}
+	return (parse_cmd(token));
+}
+
 t_cmd	*parse_pipe(t_token **token)
 {
 	t_cmd	*cmd;
 	t_cmd	*left;
 	t_cmd	*right;
 
-	left = parse_cmd(token);
+	left = parse_group(token);
 	if (left == NULL)
 		return (NULL);
 	while (match_token(token, 1, T_PIPE))
 	{
-		right = parse_cmd(token);
+		right = parse_group(token);
 		if (right == NULL)
 			return (cmd_free(left), NULL);
 		cmd = cmd_pipe_init(left, right);

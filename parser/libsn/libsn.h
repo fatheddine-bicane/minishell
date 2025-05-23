@@ -61,6 +61,7 @@ char			*sn_readfile(char *file);
 
 int				sn_vprintf_fd(va_list args, int fd, const char *format, ...);
 int				sn_printf(const char *format, ...);
+int				sn_eprintf(const char *format, ...);
 int				sn_vprintf(va_list args, const char *format, ...);
 int				sn_printf_fd(int fd, const char *format, ...);
 int				sn_sprintf(char **buff, const char *format, ...);

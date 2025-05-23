@@ -57,3 +57,16 @@ int	sn_printf(const char *format, ...)
 	va_end(args);
 	return (bytes);
 }
+
+int	sn_eprintf(const char *format, ...)
+{
+	va_list	args;
+	int		bytes;
+
+	if (!format)
+		return (-1);
+	va_start(args, format);
+	bytes = sn_vprintf_fd(args, STDERR_FILENO, format);
+	va_end(args);
+	return (bytes);
+}
