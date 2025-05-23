@@ -45,9 +45,12 @@ t_cmd	*parse_io_redirect(t_token **token)
 	{
 		if (!match_token(token, 4, T_WORD, T_VAR, T_STR_DOUBLE, T_STR_SINGLE))
 		{
-			lexeme = (*token)->lexeme;
-			if ((*token)->type == T_BLANK || (*token)->type == T_EOF)
+			t = (*token);
+			lexeme = t->lexeme;
+			if (t->type == T_EOF || (t->type == T_BLANK && t->next->type == T_EOF))
 				lexeme = "newline";
+			if (t->type == T_BLANK && t->next->type != T_EOF)
+				lexeme = t->next->lexeme;
 			sn_printf_fd(STDERR_FILENO,
 				"syntax error near unexpected token `%s`\n", lexeme);
 			return (NULL);
