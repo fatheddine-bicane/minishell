@@ -33,6 +33,8 @@ int	run(char *src, char **envp)
 	tokens = tokens_scan(src);
 	if (tokens == NULL)
 		return (EX_DATAERR);
+	if (is_end(tokens))
+		return (tokens_free(tokens), EXIT_SUCCESS);
 	head = tokens;
 	cmd = parse_program(&tokens);
 	if (cmd == NULL)

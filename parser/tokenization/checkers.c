@@ -33,3 +33,10 @@ bool	is_metachar(char *src, size_t current)
 		return (true);
 	return (false);
 }
+
+bool	is_end(t_token *token)
+{
+	if (token->type == T_EOF)
+		return (true);
+	return (token->type == T_BLANK && token->next->type == T_EOF);
+}
