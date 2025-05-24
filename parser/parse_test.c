@@ -34,7 +34,7 @@ int	run(char *src, char **envp)
 	if (tokens == NULL)
 		return (EX_DATAERR);
 	if (is_end(tokens))
-		return (tokens_free(tokens), EXIT_SUCCESS);
+		return (tokens_free(tokens), EXIT_EMPTY_AST);
 	head = tokens;
 	cmd = parse_program(&tokens);
 	if (cmd == NULL)
@@ -58,8 +58,8 @@ void	run_prompt(char *envp[])
 		}
 		if (*line)
 		{
-			add_history(line);
-			run(line, envp);
+			if (run(line, envp) != EXIT_EMPTY_AST)
+				add_history(line);
 		}
 		free(line);
 	}

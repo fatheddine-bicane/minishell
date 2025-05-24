@@ -28,10 +28,12 @@
 # include <sysexits.h>
 
 # ifndef EXIT_SYNTAX_ERROR
-
 #  define EXIT_SYNTAX_ERROR 2
-
 # endif //  EXIT_SYNTAX_ERROR
+
+# ifndef EXIT_EMPTY_AST
+#  define EXIT_EMPTY_AST 3
+# endif //  EXIT_EMPTY_AST
 
 typedef enum e_token_type
 {
