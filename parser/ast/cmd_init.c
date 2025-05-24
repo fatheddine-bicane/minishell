@@ -86,38 +86,3 @@ t_cmd	*cmd_group_init(t_cmd *group)
 	cmd->u_as.group.cmd = group;
 	return (cmd);
 }
-
-void	cmd_free(t_cmd *root)
-{
-	if (root == NULL)
-		return ;
-	if (root->type == C_EXEC)
-	{
-		sn_strs_free(root->u_as.exec.argv);
-		free(root);
-	}
-	else if (root->type == C_COMPOUND)
-	{
-		cmd_free(root->u_as.compound.left);
-		cmd_free(root->u_as.compound.right);
-		free(root);
-	}
-	else if (root->type == C_PIPE)
-	{
-		cmd_free(root->u_as.pipe.left);
-		cmd_free(root->u_as.pipe.right);
-		free(root);
-	}
-	else if (root->type == C_REDIRECT)
-	{
-		if (root->u_as.redirect.next != NULL)
-			cmd_free(root->u_as.redirect.next);
-		free(root->u_as.redirect.file);
-		free(root);
-	}
-	else if (root->type == C_GROUP)
-	{
-		cmd_free(root->u_as.group.cmd);
-		free(root);
-	}
-}

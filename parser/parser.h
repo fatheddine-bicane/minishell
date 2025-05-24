@@ -27,6 +27,12 @@
 # include <sys/wait.h>
 # include <sysexits.h>
 
+# ifndef EXIT_SYNTAX_ERROR
+
+#  define EXIT_SYNTAX_ERROR 2
+
+# endif //  EXIT_SYNTAX_ERROR
+
 typedef enum e_token_type
 {
 	T_LEFT_PAREN,
@@ -145,12 +151,12 @@ t_cmd					*cmd_redirect_init(int type, char *file, t_cmd *next);
 t_cmd					*cmd_pipe_init(t_cmd *left, t_cmd *right);
 t_cmd					*cmd_group_init(t_cmd *group);
 t_cmd					*cmd_cmp_init(t_cmp_type op, t_cmd *left, t_cmd *right);
-void					cmd_free(t_cmd *root);
 
 t_cmp_type				extract_cmp_op(t_token *token);
 char					*extract_lexeme_err(t_token *token);
 
 t_cmd					*parse_program(t_token **token);
+void					ast_free(t_cmd *root);
 void					ast_print(t_cmd *cmd);
 
 #endif

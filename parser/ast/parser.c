@@ -55,7 +55,7 @@ t_cmd	*parse_redirect(t_token **token)
 		// TODO:(karim) fix issue with blanks
 		right = parse_io_redirect(&(*token)->prev);
 		if (right == NULL)
-			return (cmd_free(left), NULL);
+			return (ast_free(left), NULL);
 		cmd->u_as.redirect.next = right;
 		cmd = right;
 	}
@@ -106,8 +106,8 @@ t_cmd	*parse_group(t_token **token)
 			return (NULL);
 		if (!match_token(token, 1, T_RIGHT_PAREN))
 		{
-			sn_eprintf("Expect ')' to end subshell.");
-			return (cmd_free(cmd), NULL);
+			sn_eprintf("Expect ')' to end subshell.\n");
+			return (ast_free(cmd), NULL);
 		}
 		return (cmd);
 	}
@@ -127,10 +127,10 @@ t_cmd	*parse_pipe(t_token **token)
 	{
 		right = parse_group(token);
 		if (right == NULL)
-			return (cmd_free(left), NULL);
+			return (ast_free(left), NULL);
 		cmd = cmd_pipe_init(left, right);
 		if (cmd == NULL)
-			return (cmd_free(left), cmd_free(right), NULL);
+			return (ast_free(left), ast_free(right), NULL);
 		left = cmd;
 	}
 	return (left);
@@ -151,10 +151,10 @@ t_cmd	*parse_compound(t_token **token)
 		op = extract_cmp_op((*token)->prev);
 		right = parse_pipe(token);
 		if (right == NULL)
-			return (cmd_free(left), NULL);
+			return (ast_free(left), NULL);
 		cmd = cmd_cmp_init(op, left, right);
 		if (cmd == NULL)
-			return (cmd_free(left), cmd_free(right), NULL);
+			return (ast_free(left), ast_free(right), NULL);
 		left = cmd;
 	}
 	return (left);

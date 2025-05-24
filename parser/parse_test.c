@@ -36,9 +36,9 @@ int	run(char *src, char **envp)
 	head = tokens;
 	cmd = parse_program(&tokens);
 	if (cmd == NULL)
-		return (tokens_free(head), EXIT_FAILURE);
+		return (tokens_free(head), EXIT_SYNTAX_ERROR);
 	ast_print(cmd);
-	return (cmd_free(cmd), tokens_free(head), EXIT_SUCCESS);
+	return (ast_free(cmd), tokens_free(head), EXIT_SUCCESS);
 }
 
 void	run_prompt(char *envp[])
