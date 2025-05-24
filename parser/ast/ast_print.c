@@ -12,36 +12,58 @@
 
 #include "../parser.h"
 
-static void	ast_walk(t_cmd *cmd, int depth)
+static void	ast_walk(t_cmd *cmd, int depth);
+
+void	cmp_print(t_cmd *cmd, int depth)
 {
-	char	**argv;
 	char	*cmp_type;
 
+	cmp_type = NULL;
+	if (cmd->u_as.compound.type == OP_AND)
+		cmp_type = "and";
+	if (cmd->u_as.compound.type == OP_OR)
+		cmp_type = "or";
+	printf("(%s", cmp_type);
+	ast_walk(cmd->u_as.compound.left, depth + 1);
+	ast_walk(cmd->u_as.compound.right, depth + 1);
+	printf(")");
+}
+
+// TODO:(karim) print string type of redirection
+void	redirect_print(t_cmd *cmd, int depth)
+{
+	printf("(redirect(%d) %s", cmd->u_as.redirect.type,
+		cmd->u_as.redirect.file);
+	if (cmd->u_as.redirect.next != NULL)
+		ast_walk(cmd->u_as.redirect.next, depth + 1);
+	printf(")");
+}
+
+void	exec_print(t_cmd *cmd, int depth)
+{
+	char	**argv;
+
+	printf("(exec ");
+	argv = cmd->u_as.exec.argv;
+	while (*argv != NULL)
+	{
+		printf("%s", *argv++);
+		if (*argv)
+			printf(" ");
+	}
+	printf(")");
+}
+
+static void	ast_walk(t_cmd *cmd, int depth)
+{
 	if (depth > 0)
 		printf(" ");
 	if (cmd == NULL)
 		printf("empty");
 	if (cmd->type == C_EXEC)
-	{
-		printf("(exec ");
-		argv = cmd->u_as.exec.argv;
-		while (*argv != NULL)
-		{
-			printf("%s", *argv++);
-			if (*argv)
-				printf(" ");
-		}
-		printf(")");
-	}
+		exec_print(cmd, depth);
 	if (cmd->type == C_REDIRECT)
-	{
-		// TODO:(karim) print string type of redirection
-		printf("(redirect(%d) %s", cmd->u_as.redirect.type,
-			cmd->u_as.redirect.file);
-		if (cmd->u_as.redirect.next != NULL)
-			ast_walk(cmd->u_as.redirect.next, depth + 1);
-		printf(")");
-	}
+		redirect_print(cmd, depth);
 	if (cmd->type == C_GROUP)
 	{
 		printf("(group");
@@ -56,17 +78,7 @@ static void	ast_walk(t_cmd *cmd, int depth)
 		printf(")");
 	}
 	if (cmd->type == C_COMPOUND)
-	{
-		cmp_type = NULL;
-		if (cmd->u_as.compound.type == OP_AND)
-			cmp_type = "and";
-		if (cmd->u_as.compound.type == OP_OR)
-			cmp_type = "or";
-		printf("(%s", cmp_type);
-		ast_walk(cmd->u_as.compound.left, depth + 1);
-		ast_walk(cmd->u_as.compound.right, depth + 1);
-		printf(")");
-	}
+		cmp_print(cmd, depth);
 	if (depth == 0)
 		printf("\n");
 }
