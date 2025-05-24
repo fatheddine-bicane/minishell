@@ -34,9 +34,7 @@ char	*extract_lexeme_err(t_token *token)
 	char	*lexeme;
 
 	lexeme = token->lexeme;
-	if (token->type == T_EOF)
-		lexeme = "newline";
-	if (token->type == T_BLANK && token->next->type == T_EOF)
+	if (is_end(token))
 		lexeme = "newline";
 	if (token->type == T_BLANK && token->next->type != T_EOF)
 		lexeme = token->next->lexeme;
