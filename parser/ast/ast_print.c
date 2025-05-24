@@ -39,7 +39,7 @@ void	redirect_print(t_cmd *cmd, int depth)
 	printf(")");
 }
 
-void	exec_print(t_cmd *cmd, int depth)
+void	exec_print(t_cmd *cmd)
 {
 	char	**argv;
 
@@ -61,12 +61,12 @@ static void	ast_walk(t_cmd *cmd, int depth)
 	if (cmd == NULL)
 		printf("empty");
 	if (cmd->type == C_EXEC)
-		exec_print(cmd, depth);
+		exec_print(cmd);
 	if (cmd->type == C_REDIRECT)
 		redirect_print(cmd, depth);
 	if (cmd->type == C_GROUP)
 	{
-		printf("(group");
+		printf("(subshell");
 		ast_walk(cmd->u_as.group.cmd, depth + 1);
 		printf(")");
 	}
