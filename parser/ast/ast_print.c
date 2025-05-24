@@ -19,9 +19,9 @@ void	cmp_print(t_cmd *cmd, int depth)
 	char	*cmp_type;
 
 	cmp_type = NULL;
-	if (cmd->u_as.compound.type == OP_AND)
+	if (cmd->u_as.compound.type == T_AND)
 		cmp_type = "and";
-	if (cmd->u_as.compound.type == OP_OR)
+	if (cmd->u_as.compound.type == T_OR)
 		cmp_type = "or";
 	printf("(%s", cmp_type);
 	ast_walk(cmd->u_as.compound.left, depth + 1);
@@ -29,11 +29,12 @@ void	cmp_print(t_cmd *cmd, int depth)
 	printf(")");
 }
 
-// TODO:(karim) print string type of redirection
 void	redirect_print(t_cmd *cmd, int depth)
 {
-	printf("(redirect(%d) %s", cmd->u_as.redirect.type,
-		cmd->u_as.redirect.file);
+	const char	*type;
+
+	type = token_type_str(cmd->u_as.redirect.type);
+	printf("(redirect(%s) %s", type, cmd->u_as.redirect.file);
 	if (cmd->u_as.redirect.next != NULL)
 		ast_walk(cmd->u_as.redirect.next, depth + 1);
 	printf(")");

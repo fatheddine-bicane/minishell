@@ -57,7 +57,7 @@ t_cmd	*cmd_pipe_init(t_cmd *left, t_cmd *right)
 	return (cmd);
 }
 
-t_cmd	*cmd_cmp_init(t_cmp_type op, t_cmd *left, t_cmd *right)
+t_cmd	*cmd_cmp_init(int op, t_cmd *left, t_cmd *right)
 {
 	t_cmd	*cmd;
 

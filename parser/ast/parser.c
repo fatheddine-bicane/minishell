@@ -138,10 +138,10 @@ t_cmd	*parse_pipe(t_token **token)
 
 t_cmd	*parse_compound(t_token **token)
 {
-	t_cmd		*cmd;
-	t_cmd		*left;
-	t_cmd		*right;
-	t_cmp_type	op;
+	t_cmd	*cmd;
+	t_cmd	*left;
+	t_cmd	*right;
+	int		op;
 
 	left = parse_pipe(token);
 	if (left == NULL)

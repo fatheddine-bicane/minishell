@@ -12,16 +12,16 @@
 
 #include "../parser.h"
 
-t_cmp_type	extract_cmp_op(t_token *token)
+int	extract_cmp_op(t_token *token)
 {
-	t_cmp_type	op;
+	int	op;
 
-	op = OP_UNKNOWN;
+	op = T_EOF;
 	if (token->type == T_AND)
-		op = OP_AND;
+		op = T_AND;
 	if (token->type == T_OR)
-		op = OP_OR;
-	if (op == OP_UNKNOWN)
+		op = T_OR;
+	if (op == T_EOF)
 	{
 		sn_eprintf("token has unknown cmp type %s", token->str);
 		exit(EXIT_FAILURE);

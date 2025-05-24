@@ -83,16 +83,9 @@ typedef struct s_pipe
 	t_cmd				*right;
 }						t_pipe;
 
-typedef enum e_cmp_type
-{
-	OP_AND,
-	OP_OR,
-	OP_UNKNOWN,
-}						t_cmp_type;
-
 typedef struct s_compound_cmd
 {
-	t_cmp_type			type;
+	int					type;
 	t_cmd				*left;
 	t_cmd				*right;
 }						t_compound;
@@ -150,9 +143,9 @@ t_cmd					*cmd_exec_init(char **argv);
 t_cmd					*cmd_redirect_init(int type, char *file, t_cmd *next);
 t_cmd					*cmd_pipe_init(t_cmd *left, t_cmd *right);
 t_cmd					*cmd_group_init(t_cmd *group);
-t_cmd					*cmd_cmp_init(t_cmp_type op, t_cmd *left, t_cmd *right);
+t_cmd					*cmd_cmp_init(int op, t_cmd *left, t_cmd *right);
 
-t_cmp_type				extract_cmp_op(t_token *token);
+int						extract_cmp_op(t_token *token);
 char					*extract_lexeme_err(t_token *token);
 
 t_cmd					*parse_program(t_token **token);
