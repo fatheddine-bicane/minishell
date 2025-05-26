@@ -40,12 +40,11 @@ int	run(char *src, char **envp)
 	cmd = parse_program(&tokens);
 	if (cmd == NULL)
 		return (tokens_free(head), EXIT_SYNTAX_ERROR);
-	if (tokens->type != T_EOF || (tokens->type == T_BLANK
-			&& tokens->next->type != T_EOF))
+	if (!is_end(tokens))
 	{
 		lexeme = extract_lexeme_err(tokens);
 		sn_eprintf("syntax error near unexpected token `%s`\n", lexeme);
-		return (EXIT_FAILURE);
+		return (ast_free(cmd), tokens_free(head), EXIT_FAILURE);
 	}
 	ast_print(cmd);
 	return (ast_free(cmd), tokens_free(head), EXIT_SUCCESS);
