@@ -38,9 +38,7 @@ int	run(char *src, char **envp)
 		return (tokens_free(tokens), EXIT_EMPTY_AST);
 	head = tokens;
 	cmd = parse_program(&tokens);
-	if (cmd == NULL)
-		return (tokens_free(head), EXIT_SYNTAX_ERROR);
-	if (!is_end(tokens))
+	if (cmd == NULL || !is_end(tokens))
 	{
 		lexeme = extract_lexeme_err(tokens);
 		sn_eprintf("syntax error near unexpected token `%s`\n", lexeme);
