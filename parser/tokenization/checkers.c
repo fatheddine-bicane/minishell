@@ -40,3 +40,9 @@ bool	is_end(t_token *token)
 		return (true);
 	return (token->type == T_BLANK && token->next->type == T_EOF);
 }
+
+bool	is_redirect(t_token *token)
+{
+	return (token->type == T_REDIR_IN || token->type == T_REDIR_OUT
+		|| token->type == T_REDIR_OUT_APPEND || token->type == T_HEREDOC);
+}

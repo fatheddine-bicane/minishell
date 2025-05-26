@@ -12,11 +12,21 @@
 
 #include "../parser.h"
 
-t_cmd	*parse_io_redirect(t_token **token)
+int	get_redirect_type(t_token **token)
 {
 	t_token	*t;
+
+	t = *token;
+	while (!is_redirect(t))
+		t = t->prev;
+	return (t->type);
+}
+
+t_cmd	*parse_io_redirect(t_token **token)
+{
 	int		type;
 	char	*lexeme;
+	char	*file;
 
 	if (match_token(token, 4, T_REDIR_IN, T_REDIR_OUT, T_REDIR_OUT_APPEND,
 			T_HEREDOC))
@@ -27,12 +37,9 @@ t_cmd	*parse_io_redirect(t_token **token)
 			sn_eprintf("syntax error near unexpected token `%s`\n", lexeme);
 			return (NULL);
 		}
-		t = (*token);
-		if (t->prev->prev->type == T_BLANK)
-			type = t->prev->prev->prev->type;
-		else
-			type = t->prev->prev->type;
-		return (cmd_redirect_init(type, sn_strdup(t->prev->lexeme), NULL));
+		type = get_redirect_type(token);
+		file = sn_strdup((*token)->prev->lexeme);
+		return (cmd_redirect_init(type, file, NULL));
 	}
 	lexeme = extract_lexeme_err(*token);
 	sn_eprintf("syntax error near unexpected token `%s`\n", lexeme);
@@ -52,8 +59,10 @@ t_cmd	*parse_redirect(t_token **token)
 	while (match_token(token, 4, T_REDIR_IN, T_REDIR_OUT, T_REDIR_OUT_APPEND,
 			T_HEREDOC))
 	{
-		// TODO:(karim) fix issue with blanks
-		right = parse_io_redirect(&(*token)->prev);
+		*token = (*token)->prev;
+		if ((*token)->type == T_BLANK)
+			*token = (*token)->prev;
+		right = parse_io_redirect(token);
 		if (right == NULL)
 			return (ast_free(left), NULL);
 		cmd->u_as.redirect.next = right;
