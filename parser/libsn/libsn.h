@@ -84,6 +84,8 @@ bool			sb_ensure_size(t_str_builder *sb, size_t len);
 void			sb_truncate(t_str_builder *sb, size_t len);
 void			sb_clear(t_str_builder *sb);
 void			sb_drop(t_str_builder *sb, size_t len);
+
+char			**sb_split(t_str_builder *sb, char c);
 bool			sb_append_str(t_str_builder *sb, const char *str, size_t len);
 bool			sb_append_char(t_str_builder *sb, char c);
 bool			sb_append_nbr(t_str_builder *sb, int n);

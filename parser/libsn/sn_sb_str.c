@@ -51,3 +51,17 @@ void	sb_drop(t_str_builder *sb, size_t len)
 	sb->len -= len;
 	sn_memmove(sb->buff, sb->buff + len, sb->len + 1);
 }
+
+char	**sb_split(t_str_builder *sb, char c)
+{
+	char	*text;
+	char	**strs;
+
+	text = sb_build(sb);
+	if (text == NULL)
+		return (NULL);
+	strs = sn_split(text, c);
+	if (strs == NULL)
+		return (free(text), NULL);
+	return (free(text), strs);
+}
