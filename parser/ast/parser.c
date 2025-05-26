@@ -106,6 +106,9 @@ t_cmd	*parse_cmd(t_token **token)
 	return (sb_free(sb), cmd);
 }
 
+// TODO(karim): if error inside parser
+// do not error outside parser
+// sn_eprintf("Expect ')' to end subshell.\n");
 t_cmd	*parse_group(t_token **token)
 {
 	t_cmd	*cmd;
@@ -116,11 +119,8 @@ t_cmd	*parse_group(t_token **token)
 		if (cmd == NULL)
 			return (NULL);
 		if (!match_token(token, 1, T_RIGHT_PAREN))
-		{
-			sn_eprintf("Expect ')' to end subshell.\n");
 			return (ast_free(cmd), NULL);
-		}
-		return (cmd);
+		return (append_cmd(parse_redirect(token), cmd));
 	}
 	return (parse_cmd(token));
 }
