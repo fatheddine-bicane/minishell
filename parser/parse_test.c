@@ -28,6 +28,7 @@ int	run(char *src, char **envp)
 	t_token	*tokens;
 	t_token	*head;
 	t_cmd	*cmd;
+	char	*lexeme;
 
 	(void)envp;
 	tokens = tokens_scan(src);
@@ -39,6 +40,13 @@ int	run(char *src, char **envp)
 	cmd = parse_program(&tokens);
 	if (cmd == NULL)
 		return (tokens_free(head), EXIT_SYNTAX_ERROR);
+	if (tokens->type != T_EOF || (tokens->type == T_BLANK
+			&& tokens->next->type != T_EOF))
+	{
+		lexeme = extract_lexeme_err(tokens);
+		sn_eprintf("syntax error near unexpected token `%s`\n", lexeme);
+		return (EXIT_FAILURE);
+	}
 	ast_print(cmd);
 	return (ast_free(cmd), tokens_free(head), EXIT_SUCCESS);
 }
