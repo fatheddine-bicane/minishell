@@ -12,9 +12,9 @@
 
 #include "../parser.h"
 
-static void	ast_walk(t_cmd *cmd, int depth);
+static void	ast_walk(t_cmd *cmd, t_str_builder *sb, int depth);
 
-void	cmp_print(t_cmd *cmd, int depth)
+void	cmp_print(t_cmd *cmd, t_str_builder *sb, int depth)
 {
 	char	*cmp_type;
 
@@ -23,68 +23,94 @@ void	cmp_print(t_cmd *cmd, int depth)
 		cmp_type = "and";
 	if (cmd->u_as.compound.type == T_OR)
 		cmp_type = "or";
-	printf("(%s", cmp_type);
-	ast_walk(cmd->u_as.compound.left, depth + 1);
-	ast_walk(cmd->u_as.compound.right, depth + 1);
-	printf(")");
+	sb_append_char(sb, '(');
+	sb_append_str(sb, cmp_type, 0);
+	ast_walk(cmd->u_as.compound.left, sb, depth + 1);
+	ast_walk(cmd->u_as.compound.right, sb, depth + 1);
+	sb_append_char(sb, ')');
 }
 
-void	redirect_print(t_cmd *cmd, int depth)
+void	redirect_print(t_cmd *cmd, t_str_builder *sb, int depth)
 {
 	const char	*type;
 
 	type = token_type_str(cmd->u_as.redirect.type);
-	printf("(redirect(%s) %s", type, cmd->u_as.redirect.file);
+	sb_append_str(sb, "(redirect(", 10);
+	sb_append_str(sb, type, 0);
+	sb_append_str(sb, ") ", 2);
+	sb_append_str(sb, cmd->u_as.redirect.file, 0);
 	if (cmd->u_as.redirect.next != NULL)
-		ast_walk(cmd->u_as.redirect.next, depth + 1);
-	printf(")");
+		ast_walk(cmd->u_as.redirect.next, sb, depth + 1);
+	sb_append_char(sb, ')');
 }
 
-void	exec_print(t_cmd *cmd)
+void	exec_print(t_cmd *cmd, t_str_builder *sb)
 {
 	char	**argv;
 
-	printf("(exec ");
+	sb_append_str(sb, "(exec ", 6);
 	argv = cmd->u_as.exec.argv;
 	while (*argv != NULL)
 	{
-		printf("%s", *argv++);
+		sb_append_str(sb, *argv++, 0);
 		if (*argv)
-			printf(" ");
+			sb_append_char(sb, ' ');
 	}
-	printf(")");
+	sb_append_char(sb, ')');
 }
 
-static void	ast_walk(t_cmd *cmd, int depth)
+static void	ast_walk(t_cmd *cmd, t_str_builder *sb, int depth)
 {
 	if (depth > 0)
-		printf(" ");
+		sb_append_char(sb, ' ');
 	if (cmd == NULL)
-		printf("empty");
+		sb_append_str(sb, "empty", 5);
 	if (cmd->type == C_EXEC)
-		exec_print(cmd);
+		exec_print(cmd, sb);
 	if (cmd->type == C_REDIRECT)
-		redirect_print(cmd, depth);
+		redirect_print(cmd, sb, depth);
 	if (cmd->type == C_GROUP)
 	{
-		printf("(subshell");
-		ast_walk(cmd->u_as.group.cmd, depth + 1);
-		printf(")");
+		sb_append_str(sb, "(subshell", 9);
+		ast_walk(cmd->u_as.group.cmd, sb, depth + 1);
+		sb_append_char(sb, ')');
 	}
 	if (cmd->type == C_PIPE)
 	{
-		printf("(pipe");
-		ast_walk(cmd->u_as.pipe.left, depth + 1);
-		ast_walk(cmd->u_as.pipe.right, depth + 1);
-		printf(")");
+		sb_append_str(sb, "(pipe", 5);
+		ast_walk(cmd->u_as.pipe.left, sb, depth + 1);
+		ast_walk(cmd->u_as.pipe.right, sb, depth + 1);
+		sb_append_char(sb, ')');
 	}
 	if (cmd->type == C_COMPOUND)
-		cmp_print(cmd, depth);
+		cmp_print(cmd, sb, depth);
 	if (depth == 0)
-		printf("\n");
+		sb_append_char(sb, '\n');
 }
 
-void	ast_print(t_cmd *cmd)
+char	*ast_output(t_cmd *cmd, bool print)
 {
-	ast_walk(cmd, 0);
+	t_str_builder	*sb;
+	char			*str;
+	size_t			len;
+
+	sb = sb_create(10);
+	if (sb == NULL)
+	{
+		sn_eprintf("could not init string builder\n");
+		exit(EXIT_FAILURE);
+	}
+	ast_walk(cmd, sb, 0);
+	if (!print)
+		sb_truncate(sb, sb_len(sb) - 1);
+	len = sb_len(sb);
+	str = sb_build(sb);
+	if (str == NULL)
+	{
+		sn_eprintf("could not build string\n");
+		exit(EXIT_FAILURE);
+	}
+	if (print)
+		return (write(STDOUT_FILENO, str, len), free(str), NULL);
+	return (str);
 }

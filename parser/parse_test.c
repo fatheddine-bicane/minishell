@@ -44,7 +44,7 @@ int	run(char *src, char **envp)
 		sn_eprintf("syntax error near unexpected token `%s`\n", lexeme);
 		return (ast_free(cmd), tokens_free(head), EXIT_FAILURE);
 	}
-	ast_print(cmd);
+	ast_output(cmd, true);
 	return (ast_free(cmd), tokens_free(head), EXIT_SUCCESS);
 }
 

@@ -154,6 +154,6 @@ char					*extract_lexeme_err(t_token *token);
 
 t_cmd					*parse_program(t_token **token);
 void					ast_free(t_cmd *root);
-void					ast_print(t_cmd *cmd);
+char					*ast_output(t_cmd *cmd, bool print);
 
 #endif
