@@ -13,9 +13,17 @@
 #include "../parser.h"
 
 int	test_exec(void);
+int	test_exec_right_redirection(void);
+int	test_exec_mixed_redirection(void);
+int	test_exec_no_cmd(void);
+int	test_exec_redirect_with_no_cmd(void);
 
 int	main(void)
 {
 	test_exec();
+	test_exec_no_cmd();
+	test_exec_redirect_with_no_cmd();
+	test_exec_right_redirection();
+	test_exec_mixed_redirection();
 	return (EXIT_SUCCESS);
 }

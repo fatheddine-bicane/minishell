@@ -35,9 +35,9 @@ void	redirect_print(t_cmd *cmd, t_str_builder *sb, int depth)
 	const char	*type;
 
 	type = token_type_str(cmd->u_as.redirect.type);
-	sb_append_str(sb, "(redirect(", 10);
+	sb_append_str(sb, "(redirect ", 10);
 	sb_append_str(sb, type, 0);
-	sb_append_str(sb, ") ", 2);
+	sb_append_char(sb, ' ');
 	sb_append_str(sb, cmd->u_as.redirect.file, 0);
 	if (cmd->u_as.redirect.next != NULL)
 		ast_walk(cmd->u_as.redirect.next, sb, depth + 1);
@@ -64,7 +64,10 @@ static void	ast_walk(t_cmd *cmd, t_str_builder *sb, int depth)
 	if (depth > 0)
 		sb_append_char(sb, ' ');
 	if (cmd == NULL)
+	{
 		sb_append_str(sb, "empty", 5);
+		return ;
+	}
 	if (cmd->type == C_EXEC)
 		exec_print(cmd, sb);
 	if (cmd->type == C_REDIRECT)
@@ -72,8 +75,7 @@ static void	ast_walk(t_cmd *cmd, t_str_builder *sb, int depth)
 	if (cmd->type == C_GROUP)
 	{
 		sb_append_str(sb, "(subshell", 9);
-		ast_walk(cmd->u_as.group.cmd, sb, depth + 1);
-		sb_append_char(sb, ')');
+		(ast_walk(cmd->u_as.group.cmd, sb, depth + 1), sb_append_char(sb, ')'));
 	}
 	if (cmd->type == C_PIPE)
 	{
@@ -84,8 +86,6 @@ static void	ast_walk(t_cmd *cmd, t_str_builder *sb, int depth)
 	}
 	if (cmd->type == C_COMPOUND)
 		cmp_print(cmd, sb, depth);
-	if (depth == 0)
-		sb_append_char(sb, '\n');
 }
 
 char	*ast_output(t_cmd *cmd, bool print)
@@ -101,8 +101,8 @@ char	*ast_output(t_cmd *cmd, bool print)
 		exit(EXIT_FAILURE);
 	}
 	ast_walk(cmd, sb, 0);
-	if (!print)
-		sb_truncate(sb, sb_len(sb) - 1);
+	if (print)
+		sb_append_char(sb, '\n');
 	len = sb_len(sb);
 	str = sb_build(sb);
 	if (str == NULL)
