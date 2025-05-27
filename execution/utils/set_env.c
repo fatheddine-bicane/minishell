@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:48:49 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/21 11:31:18 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/23 17:20:30 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,9 +125,11 @@ t_list *ft_set_env(char **envp)
 			i++;
 			continue ;
 		}
-		else if (!ft_strncmp(envp[i], "SHLVL=", 6))
+		if (!ft_strncmp(envp[i], "SHLVL=", 6))
 		{
-			char (*shlvl_var) = ft_itoa(ft_atoi(envp[i] + 6) + 1);
+			int lvl = ft_atoi(envp[i] + 6);
+			char (*shlvl_var) = ft_itoa(lvl + 1);
+			printf("lvl = %d, %s, %s\n", lvl, envp[i] + 6, shlvl_var);
 			ft_lstadd_back(&my_envp, ft_lstnew(ft_strjoin("SHLVL=", shlvl_var)));
 			free(shlvl_var);
 			i++;
