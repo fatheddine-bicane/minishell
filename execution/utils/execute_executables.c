@@ -50,29 +50,9 @@ static char	*ft_concat_path(char *arr2, char *command)
 	return (str);
 }
 
-char	*find_executable_cwd(char *cmd)
-{
-	char	cwd[PATH_MAX];
-
-	if (getcwd(cwd, sizeof(cwd)))
-		return (ft_strjoin(cwd, cmd));
-	else
-	{
-		// TODO: error mssg (protect getcwd)
-	}
-	return (NULL);
-
-}
-
-void	ft_executable(char *command, t_list *my_envp, pid_t pid, bool to_wait)
+void	ft_executable(char *command, t_list *my_envp, pid_t pid, bool to_wait, int *exit_stat)
 {
 	char **command_args = ft_split(command, 32);
-	int	i = 0;
-	char	*path;
-	char	**paths = ft_find_path(my_envp);
-
-	if (NULL == paths)
-		return;
 
 	if (0 == pid)
 	{
@@ -80,74 +60,73 @@ void	ft_executable(char *command, t_list *my_envp, pid_t pid, bool to_wait)
 		signal(SIGQUIT, SIG_DFL);
 	}
 
-	/*printf ("%s\n", command_args[0]);*/
-	if ('.' == command_args[0][0])
+	if (('.' == command_args[0][0] && '/' == command_args[0][1]) || (ft_strchr(command_args[0], '/')) || ('/' == command_args[0][0]))
 	{
-		path = find_executable_cwd(command_args[0] + 1);
-		/*if (!access(path, F_OK | X_OK))*/
-
 		if (!access(command_args[0], F_OK | X_OK))
 		{
-			printf("wa ana hnaya\n");
 			if (0 == pid)
-			{
 				execve(command_args[0], command_args, ft_prep_envp(my_envp));
-			}
 			else if ((0 != pid) && to_wait)
 				waitpid(pid, NULL, 0);
 		}
 		else
 		{
 			if (0 == pid)
-				exit(1);
-			printf("command not found walo\n");
+			{
+				exit(127);
+			}
+			else
+			{
+				(*exit_stat) = 127;
+				perror(command_args[0]);
+			}
 		}
-	}
-	else if (!access(command_args[0], F_OK | X_OK))
-	{
-		if (0 == pid)
-		{
-			/*printf("hna execute same directory %s\n", command_args[0]);*/
-			execve(command_args[0], command_args, ft_prep_envp(my_envp));
-		}
-		else if ((0 != pid) && to_wait)
-			waitpid(pid, NULL, 0);
 	}
 	else
 	{
-		/*printf("else %s\n", command);*/
+		char (**paths) = ft_find_path(my_envp);
+		int (i) = 0;
+		if (NULL == paths) // INFO: protection if path is unseted
+		{
+			if (0 == pid)
+			{
+				exit(127);
+			}
+			else
+			{
+				(*exit_stat) = 127;
+				perror(command_args[0]);
+			}
+			return;
+		}
 		while (paths[i])
 		{
-			/*if (0 == pid)*/
-			/*	printf("paths[%d] %s\n", i, paths[i]);*/
-			path = ft_concat_path(paths[i], command_args[0]);
+			char (*path) = ft_concat_path(paths[i], command_args[0]);
 			if (!access(path, F_OK | X_OK))
 			{
 				free(command_args[0]);
 				command_args[0] = path;
 				if (0 == pid)
 				{
-					/*printf("hna execute %s\n", command_args[0]);*/
 					execve(command_args[0], command_args, ft_prep_envp(my_envp));
-					/*printf("ta 9lwa ma trunut\n");*/
+					exit(127);
 				}
 				else if ((0 != pid) && to_wait)
 				{
-					/*int	status;*/
-					/*int	res;*/
-
-					wait_child(pid);
-					/*waitpid(pid, &status, 0);*/
-					/*if (WIFEXITED(status))*/
-					/*	res = WEXITSTATUS(status);*/
-					/*if (WIFSIGNALED(status))*/
-					/*	res = WTERMSIG(status);*/
-					/*printf("the exit status : %d\n", res);*/
+					wait_child(pid, exit_stat);
+					return ;
 				}
 			}
 			i++;
 		}
 		if (0 == pid)
-			exit(1);
+		{
+			exit(127);
+		}
+		else
+		{
+			(*exit_stat) = 127;
+			perror(command_args[0]);
+		}
 	}
 }

@@ -61,8 +61,8 @@ void	ft_unset(t_list **my_envp, char **variables);
 
 t_list *ft_set_env(char **envp); //INFO: creat custum envp
 
-void	ft_executable(char *command, t_list *my_envp, pid_t pid, bool to_wait); //INFO: apply commands
-void	ft_apply_comm(char *rl, t_list *my_envp);
+void	ft_executable(char *command, t_list *my_envp, pid_t pid, bool to_wait, int *exit_stat); //INFO: apply commands
+void	ft_apply_comm(char *rl, t_list *my_envp, int *exit_stat);
 void	ft_here_doc(char *rl);
 
 int	ft_check_bultins(char *rl, t_list **my_envp);
@@ -84,6 +84,6 @@ void	ft_handle_redirections(char **redirections);
 // INFO: signals
 void	setup_signals(void);
 void	ignore_signals_parrent(void);
-int	wait_child(pid_t pid);
+int	wait_child(pid_t pid, int *exit_stat);
 
 #endif

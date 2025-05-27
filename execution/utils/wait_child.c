@@ -12,15 +12,30 @@
 
 #include "../../minishel.h"
 
-int	wait_child(pid_t pid)
+int	wait_child(pid_t pid, int *exit_stat)
 {
 	int	status;
 
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
-		status = WEXITSTATUS(status);
+		(*exit_stat) = WEXITSTATUS(status);
 	if (WIFSIGNALED(status))
-		status = WTERMSIG(status);
-	printf("the exit status : %d\n", status);
+	{
+		g_signal_flag = WTERMSIG(status);
+		if (2 == g_signal_flag)
+		{
+			(*exit_stat) = 130;
+			g_signal_flag = 0;
+			printf("\n");
+		}
+		if (3 == g_signal_flag)
+		{
+			(*exit_stat) = 131;
+			g_signal_flag = 0;
+			printf("Quit: 3\n");
+		}
+	}
+
+	printf("the exit status : %d\n", (*exit_stat));
 	return (0);
 }
