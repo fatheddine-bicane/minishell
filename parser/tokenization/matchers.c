@@ -53,16 +53,18 @@ bool	match_token(t_token **head, size_t count, ...)
 	t_token			*current;
 	va_list			args;
 	t_token_type	type;
+	size_t			i;
 
-	if (head == NULL || *head == NULL)
+	if (head == NULL || *head == NULL || (*head)->type == T_EOF)
 		return (false);
 	current = *head;
-	if (current->type == T_EOF)
-		return (va_end(args), false);
 	va_start(args, count);
-	while (count--)
+	i = 0;
+	while (i++ < count)
 	{
-		type = va_arg(args, int);
+		type = (t_token_type)va_arg(args, int);
+		if (current->type == T_BLANK && type != T_BLANK)
+			current = current->next;
 		if (current->type == type)
 		{
 			*head = current->next;
@@ -78,15 +80,15 @@ bool	match_tokens(t_token **head, size_t count, ...)
 	va_list			args;
 	t_token_type	type;
 	bool			matches;
+	size_t			i;
 
-	if (head == NULL || *head == NULL)
+	if (head == NULL || *head == NULL || (*head)->type == T_EOF)
 		return (false);
 	current = *head;
-	if (current->type == T_EOF)
-		return (va_end(args), false);
 	matches = true;
+	i = 0;
 	va_start(args, count);
-	while (count--)
+	while (i++ < count)
 	{
 		type = va_arg(args, int);
 		if (current->type != type)

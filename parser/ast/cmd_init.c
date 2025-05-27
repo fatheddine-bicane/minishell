@@ -26,7 +26,7 @@ t_cmd	*cmd_exec_init(char **argv)
 	return (cmd);
 }
 
-t_cmd	*cmd_redirect_init(t_redirect_type type, char *file, t_cmd *next)
+t_cmd	*cmd_redirect_init(int type, char *file, t_cmd *next)
 {
 	t_cmd	*cmd;
 
@@ -57,6 +57,22 @@ t_cmd	*cmd_pipe_init(t_cmd *left, t_cmd *right)
 	return (cmd);
 }
 
+t_cmd	*cmd_cmp_init(int op, t_cmd *left, t_cmd *right)
+{
+	t_cmd	*cmd;
+
+	if (left == NULL || right == NULL)
+		return (NULL);
+	cmd = malloc(sizeof(t_cmd));
+	if (cmd == NULL)
+		return (NULL);
+	cmd->type = C_COMPOUND;
+	cmd->u_as.compound.type = op;
+	cmd->u_as.compound.left = left;
+	cmd->u_as.compound.right = right;
+	return (cmd);
+}
+
 t_cmd	*cmd_group_init(t_cmd *group)
 {
 	t_cmd	*cmd;
@@ -69,33 +85,4 @@ t_cmd	*cmd_group_init(t_cmd *group)
 	cmd->type = C_GROUP;
 	cmd->u_as.group.cmd = group;
 	return (cmd);
-}
-
-void	cmd_free(t_cmd *root)
-{
-	if (root == NULL)
-		return ;
-	if (root->type == C_EXEC)
-	{
-		sn_split_free(root->u_as.exec.argv);
-		free(root);
-	}
-	else if (root->type == C_PIPE)
-	{
-		cmd_free(root->u_as.pipe.left);
-		cmd_free(root->u_as.pipe.right);
-		free(root);
-	}
-	else if (root->type == C_REDIRECT)
-	{
-		if (root->u_as.redirect.next != NULL)
-			cmd_free(root->u_as.redirect.next);
-		free(root->u_as.redirect.file);
-		free(root);
-	}
-	else if (root->type == C_GROUP)
-	{
-		cmd_free(root->u_as.group.cmd);
-		free(root);
-	}
 }

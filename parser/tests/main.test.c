@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sn_strjoin.c                                       :+:      :+:    :+:   */
+/*   main.test.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,29 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
-char	*sn_strjoin(char *start, char *end, char join)
+int	test_exec(void);
+int	test_exec_right_redirection(void);
+int	test_exec_mixed_redirection(void);
+int	test_exec_no_cmd(void);
+int	test_exec_redirect_with_no_cmd(void);
+
+int	main(void)
 {
-	char	*result;
-	size_t	i;
-	size_t	j;
-
-	if (start == NULL || end == NULL)
-		return (NULL);
-	result = malloc(sizeof(char) * (sn_strlen(start) + sn_strlen(end) + 2));
-	if (result == NULL)
-		return (NULL);
-	i = 0;
-	while (start[i])
-	{
-		result[i] = start[i];
-		i++;
-	}
-	result[i++] = join;
-	j = 0;
-	while (end[j])
-		result[i++] = end[j++];
-	result[i] = '\0';
-	return (result);
+	test_exec();
+	test_exec_no_cmd();
+	test_exec_redirect_with_no_cmd();
+	test_exec_right_redirection();
+	test_exec_mixed_redirection();
+	return (EXIT_SUCCESS);
 }

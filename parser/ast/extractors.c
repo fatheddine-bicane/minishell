@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sn_strjoin.c                                       :+:      :+:    :+:   */
+/*   extractors.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,29 +10,33 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
-char	*sn_strjoin(char *start, char *end, char join)
+int	extract_cmp_op(t_token *token)
 {
-	char	*result;
-	size_t	i;
-	size_t	j;
+	int	op;
 
-	if (start == NULL || end == NULL)
-		return (NULL);
-	result = malloc(sizeof(char) * (sn_strlen(start) + sn_strlen(end) + 2));
-	if (result == NULL)
-		return (NULL);
-	i = 0;
-	while (start[i])
+	op = T_EOF;
+	if (token->type == T_AND)
+		op = T_AND;
+	if (token->type == T_OR)
+		op = T_OR;
+	if (op == T_EOF)
 	{
-		result[i] = start[i];
-		i++;
+		sn_eprintf("token has unknown cmp type %s", token->str);
+		exit(EXIT_FAILURE);
 	}
-	result[i++] = join;
-	j = 0;
-	while (end[j])
-		result[i++] = end[j++];
-	result[i] = '\0';
-	return (result);
+	return (op);
+}
+
+char	*extract_lexeme_err(t_token *token)
+{
+	char	*lexeme;
+
+	lexeme = token->lexeme;
+	if (is_end(token))
+		lexeme = "newline";
+	if (token->type == T_BLANK && token->next->type != T_EOF)
+		lexeme = token->next->lexeme;
+	return (lexeme);
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sn_strjoin.c                                       :+:      :+:    :+:   */
+/*   ast_core.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,29 +10,33 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
-char	*sn_strjoin(char *start, char *end, char join)
+void	ast_free(t_cmd *root)
 {
-	char	*result;
-	size_t	i;
-	size_t	j;
-
-	if (start == NULL || end == NULL)
-		return (NULL);
-	result = malloc(sizeof(char) * (sn_strlen(start) + sn_strlen(end) + 2));
-	if (result == NULL)
-		return (NULL);
-	i = 0;
-	while (start[i])
+	if (root == NULL)
+		return ;
+	if (root->type == C_EXEC)
+		(sn_strs_free(root->u_as.exec.argv), free(root));
+	else if (root->type == C_COMPOUND)
 	{
-		result[i] = start[i];
-		i++;
+		ast_free(root->u_as.compound.left);
+		ast_free(root->u_as.compound.right);
+		free(root);
 	}
-	result[i++] = join;
-	j = 0;
-	while (end[j])
-		result[i++] = end[j++];
-	result[i] = '\0';
-	return (result);
+	else if (root->type == C_PIPE)
+	{
+		ast_free(root->u_as.pipe.left);
+		ast_free(root->u_as.pipe.right);
+		free(root);
+	}
+	else if (root->type == C_REDIRECT)
+	{
+		if (root->u_as.redirect.next != NULL)
+			ast_free(root->u_as.redirect.next);
+		free(root->u_as.redirect.file);
+		free(root);
+	}
+	else if (root->type == C_GROUP)
+		(ast_free(root->u_as.group.cmd), free(root));
 }

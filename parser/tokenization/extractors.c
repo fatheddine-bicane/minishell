@@ -20,11 +20,11 @@ t_token	*extract_str(char *src, size_t *current, bool single)
 	t_token_type	type;
 
 	quote = '"';
-	type = T_STRING_DOUBLE;
+	type = T_STR_DOUBLE;
 	if (single)
 	{
 		quote = '\'';
-		type = T_STRING_SINGLE;
+		type = T_STR_SINGLE;
 	}
 	start = *current;
 	while (src[*current] && src[*current] != quote)

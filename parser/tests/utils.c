@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sn_strjoin.c                                       :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,29 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
-char	*sn_strjoin(char *start, char *end, char join)
+char	*ast_gen(char *src)
 {
-	char	*result;
-	size_t	i;
-	size_t	j;
+	t_token	*tokens;
+	t_token	*head;
+	t_cmd	*ast;
+	char	*got;
 
-	if (start == NULL || end == NULL)
-		return (NULL);
-	result = malloc(sizeof(char) * (sn_strlen(start) + sn_strlen(end) + 2));
-	if (result == NULL)
-		return (NULL);
-	i = 0;
-	while (start[i])
-	{
-		result[i] = start[i];
-		i++;
-	}
-	result[i++] = join;
-	j = 0;
-	while (end[j])
-		result[i++] = end[j++];
-	result[i] = '\0';
-	return (result);
+	tokens = tokens_scan(src);
+	head = tokens;
+	ast = parse_program(&tokens);
+	got = ast_output(ast, false);
+	return (tokens_free(head), ast_free(ast), got);
 }

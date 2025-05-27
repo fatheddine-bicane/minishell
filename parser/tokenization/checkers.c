@@ -33,3 +33,16 @@ bool	is_metachar(char *src, size_t current)
 		return (true);
 	return (false);
 }
+
+bool	is_end(t_token *token)
+{
+	if (token->type == T_EOF)
+		return (true);
+	return (token->type == T_BLANK && token->next->type == T_EOF);
+}
+
+bool	is_redirect(t_token *token)
+{
+	return (token->type == T_REDIR_IN || token->type == T_REDIR_OUT
+		|| token->type == T_REDIR_OUT_APPEND || token->type == T_HEREDOC);
+}
