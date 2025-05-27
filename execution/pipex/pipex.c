@@ -34,7 +34,7 @@ void	ft_wait_pids(t_list *pids)
 	}
 }
 
-void	ft_pipex(char **commands, t_list **my_envp)
+void	ft_pipex(char **commands, t_list **my_envp, int *exit_stat)
 {
 	pid_t	pid;
 	int		c_i; // INFO: commands_index
@@ -79,8 +79,10 @@ void	ft_pipex(char **commands, t_list **my_envp)
 				close(fd[1]);
 			}
 
-			ft_exec_builtins(ft_split(commands[c_i], 32), my_envp);
-			ft_executable(commands[c_i], *my_envp, pid, false);
+
+			int	b;
+			ft_exec_builtins(ft_split(commands[c_i], 32), my_envp, exit_stat);
+			ft_executable(commands[c_i], *my_envp, pid, false, exit_stat);
 		}
 		else
 		{

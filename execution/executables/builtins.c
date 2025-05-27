@@ -12,7 +12,8 @@
 
 #include "../../minishel.h"
 
-int	ft_check_bultins(char *rl, t_list **my_envp)
+/*int	ft_check_bultins(char *rl, t_list **my_envp)*/
+int	ft_check_bultins(char *rl, t_list **my_envp, int *exit_stat)
 {
 
 	int	std_in_save = dup(STDIN_FILENO);
@@ -62,7 +63,7 @@ int	ft_check_bultins(char *rl, t_list **my_envp)
 	}
 	else if (!ft_strncmp("echo", rl, 4))
 	{
-		ft_echo(ft_split(rl, 32), *my_envp);
+		ft_echo(ft_split(rl, 32), *my_envp, exit_stat);
 		add_history(rl);
 		dup2(std_in_save, STDIN_FILENO);
 		dup2(std_out_save, STDOUT_FILENO);

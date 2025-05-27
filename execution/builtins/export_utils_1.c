@@ -63,6 +63,7 @@ char	*ft_append_equal(char *variable)
 	if ('=' != variable[i])
 	{
 		free(variable);
+		variable = NULL;
 		return(ft_strjoin(variable, "="));
 	}
 	return (variable);

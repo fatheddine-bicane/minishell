@@ -28,6 +28,8 @@
 #include <readline/history.h>
 #include <string.h>
 
+#include "./parser/parser.h"
+
 static volatile sig_atomic_t g_signal_flag = 0;
 
 // INFO: unset struct
@@ -41,11 +43,18 @@ typedef struct s_unset
 	bool	skip_loop;
 }	t_unset;
 
+typedef struct s_shell
+{
+	char	**argv;
+	t_list	**my_envp;
+	int		exit_status;
+}	t_shell;
+
 // INFO: builtin command
 void	ft_cd(char *path, t_list **my_envp);
 void	ft_pwd(void);
 void	ft_env(t_list *my_envp);
-void	ft_echo(char **echo_arg, t_list *my_envp);
+void	ft_echo(char **echo_arg, t_list *my_envp, int *exit_stat);
 void	ft_exit(void);
 
 // INFO: export;
@@ -65,14 +74,14 @@ void	ft_executable(char *command, t_list *my_envp, pid_t pid, bool to_wait, int 
 void	ft_apply_comm(char *rl, t_list *my_envp, int *exit_stat);
 void	ft_here_doc(char *rl);
 
-int	ft_check_bultins(char *rl, t_list **my_envp);
+int	ft_check_bultins(char *rl, t_list **my_envp, int *exit_stat);
 void	ft_free_arr(char **arr_s);
 
 char **ft_prep_envp(t_list *my_envp); //INFO: transform the envp to char **
 
-void	ft_pipex(char **commands, t_list **my_envp); //INFO: handle pipes
+void	ft_pipex(char **commands, t_list **my_envp, int *exit_stat); //INFO: handle pipes
 bool	ft_is_builtin(char *command);
-void	ft_exec_builtins(char **command_arg, t_list **my_envp);
+void	ft_exec_builtins(char **command_arg, t_list **my_envp, int *exit_stat);
 
 void	ft_here_doc(char *delimiter); //INFO: creat here_doc input
 

@@ -12,7 +12,7 @@
 
 #include "../../minishel.h"
 
-void	ft_apply_comm(char *rl, t_list *my_envp)
+void	ft_apply_comm(char *rl, t_list *my_envp, int *exit_stat)
 {
 	pid_t	pid;
 
@@ -23,6 +23,6 @@ void	ft_apply_comm(char *rl, t_list *my_envp)
 	{
 		// TODO: error mssg
 	}
-	ft_executable(rl, my_envp, pid, true);
+	ft_executable(rl, my_envp, pid, true, exit_stat);
 	setup_signals();
 }

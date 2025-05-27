@@ -33,8 +33,9 @@ bool	ft_is_builtin(char *command)
 }
 
 
-void	ft_exec_builtins(char **command_arg, t_list **my_envp)
+void	ft_exec_builtins(char **command_arg, t_list **my_envp, int *exit_stat)
 {
+	int	b;
 	if (!ft_is_builtin(command_arg[0]))
 	{
 		ft_free_arr(command_arg);
@@ -42,7 +43,7 @@ void	ft_exec_builtins(char **command_arg, t_list **my_envp)
 	}
 	if (0 == ft_strncmp(command_arg[0], "echo", 4))
 	{
-		ft_echo(command_arg, (*my_envp));
+		ft_echo(command_arg, (*my_envp), exit_stat);
 		exit(0);
 	}
 	else if (0 == ft_strncmp(command_arg[0], "cd", 2))
