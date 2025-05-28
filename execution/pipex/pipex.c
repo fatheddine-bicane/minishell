@@ -22,14 +22,15 @@ int	ft_commands_count(char **commands)
 	return (i);
 }
 
-void	ft_wait_pids(t_list *pids)
+void	ft_wait_pids(t_list *pids, int *exit_stat)
 {
 	pid_t	pid;
 
 	while (pids)
 	{
 		pid = ft_atoi((char *)pids->content);
-		waitpid(pid, NULL, 0);
+		/*waitpid(pid, NULL, 0);*/
+		wait_child(pid, exit_stat);
 		pids = pids->next;
 	}
 }
@@ -80,7 +81,6 @@ void	ft_pipex(char **commands, t_list **my_envp, int *exit_stat)
 			}
 
 
-			int	b;
 			ft_exec_builtins(ft_split(commands[c_i], 32), my_envp, exit_stat);
 			ft_executable(commands[c_i], *my_envp, pid, false, exit_stat);
 		}
@@ -99,5 +99,5 @@ void	ft_pipex(char **commands, t_list **my_envp, int *exit_stat)
 		}
 		c_i++;
 	}
-	ft_wait_pids(pids); // TODO: check if it waits for pids
+	ft_wait_pids(pids, exit_stat); // TODO: check if it waits for pids
 }

@@ -12,7 +12,7 @@
 
 #include "../../minishel.h"
 
-int	wait_child(pid_t pid, int *exit_stat)
+void	wait_child(pid_t pid, int *exit_stat)
 {
 	int	status;
 
@@ -37,5 +37,4 @@ int	wait_child(pid_t pid, int *exit_stat)
 	}
 
 	printf("the exit status : %d\n", (*exit_stat));
-	return (0);
 }

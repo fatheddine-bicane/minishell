@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:21:00 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/23 17:21:09 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/28 14:15:36 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ int main(int argc, char **argv, char **envp)
 		// BUG: if an empty line is set to rl there is segfault
 
 		// INFO: to test pipes
-		/*ft_pipex(ft_split(rl, '|'), &my_envp);*/
+		/*ft_pipex(ft_split(rl, '|'), &my_envp, &exit_stat);*/
 		/*continue;*/
 
 		/*if (ft_is_builtin(argv))*/

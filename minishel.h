@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/23 15:53:41 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/28 14:13:03 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,6 @@ void	ft_handle_redirections(char **redirections);
 // INFO: signals
 void	setup_signals(void);
 void	ignore_signals_parrent(void);
-int	wait_child(pid_t pid, int *exit_stat);
+void	wait_child(pid_t pid, int *exit_stat);
 
 #endif
