@@ -12,11 +12,17 @@
 
 #include "../../minishel.h"
 
-void	ft_pwd(void)
+void	ft_pwd(int *exit_status)
 {
 	char	path[PATH_MAX];
 	if (getcwd(path, sizeof(path)))
+	{
 		printf("%s\n", path);
+		(*exit_status) = 0;
+	}
 	else
+	{
 		perror("getcwd() error");
+		(*exit_status) = 1;
+	}
 }

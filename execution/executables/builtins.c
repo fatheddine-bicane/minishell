@@ -13,8 +13,9 @@
 #include "../../minishel.h"
 
 /*int	ft_check_bultins(char *rl, t_list **my_envp)*/
-int	ft_check_bultins(char *rl, t_list **my_envp, int *exit_stat)
+int	run_bultins(char **argv, t_list **my_envp, int *exit_stat)
 {
+	bool	is_builtin = false;
 
 	int	std_in_save = dup(STDIN_FILENO);
 	if (-1 == std_in_save)
@@ -25,63 +26,53 @@ int	ft_check_bultins(char *rl, t_list **my_envp, int *exit_stat)
 
 
 
+	/*add_history(argv);*/
+	if (!ft_strncmp("unset", argv[0], 5))
+	{
+		/*char **str = ft_split(rl, 32);*/
+		ft_unset(my_envp, argv);
+		is_builtin = true;
+	}
+	else if (!ft_strncmp("cd", argv[0], 2))
+	{
+		ft_cd(argv, my_envp, exit_stat);
+		/*char **arr = ft_split(rl, ' ');*/
+		/*if (!arr[1])*/
+		/*	ft_cd(NULL, my_envp, exit_stat);*/
+		/*else*/
+		/*	ft_cd(arr[1], my_envp, exit_stat);*/
+		is_builtin = true;
+	}
+	else if (!ft_strncmp("pwd", argv[0], 3))
+	{
+		ft_pwd(exit_stat);
+		is_builtin = true;
+	}
+	else if (!ft_strncmp("env", argv[0], 3))
+	{
+		ft_env((*my_envp), exit_stat);
+		is_builtin = true;
+	}
+	else if (!ft_strncmp("echo", argv[0], 4))
+	{
+		ft_echo(argv, *my_envp, exit_stat);
+		is_builtin = true;
+	}
+	else if (!ft_strncmp("exit", argv[0], 4))
+	{
+		ft_exit(exit_stat);
+		is_builtin = true;
+	}
+	else if (!ft_strncmp("export", argv[0], 6))
+	{
+		ft_export(my_envp, argv, exit_stat);
+		is_builtin = true;
+	}
 
-	if (!ft_strncmp("unset", rl, 5))
-	{
-		char **str = ft_split(rl, 32);
-		ft_unset(my_envp, str);
-		add_history(rl);
-		dup2(std_in_save, STDIN_FILENO);
-		dup2(std_out_save, STDOUT_FILENO);
+	dup2(std_in_save, STDIN_FILENO);
+	dup2(std_out_save, STDOUT_FILENO);
+	ft_free_arr(argv);
+	if (is_builtin)
 		return (1);
-	}
-	else if (!ft_strncmp("cd", rl, 2))
-	{
-		char **arr = ft_split(rl, ' ');
-		if (!arr[1])
-			ft_cd(NULL, my_envp);
-		else
-			ft_cd(arr[1], my_envp);
-		add_history(rl);
-		return (1);
-	}
-	else if (!ft_strncmp("pwd", rl, 3))
-	{
-		ft_pwd();
-		add_history(rl);
-		dup2(std_in_save, STDIN_FILENO);
-		dup2(std_out_save, STDOUT_FILENO);
-		return (1);
-	}
-	else if (!ft_strncmp("env", rl, 3))
-	{
-		ft_env((*my_envp));
-		add_history(rl);
-		dup2(std_in_save, STDIN_FILENO);
-		dup2(std_out_save, STDOUT_FILENO);
-		return (1);
-	}
-	else if (!ft_strncmp("echo", rl, 4))
-	{
-		ft_echo(ft_split(rl, 32), *my_envp, exit_stat);
-		add_history(rl);
-		dup2(std_in_save, STDIN_FILENO);
-		dup2(std_out_save, STDOUT_FILENO);
-		return (1);
-	}
-	else if (!ft_strncmp("exit", rl, 4))
-	{
-		ft_exit();
-		add_history(rl);
-		return (1);
-	}
-	else if (!ft_strncmp("export", rl, 6))
-	{
-		ft_export(my_envp, ft_split(rl, 32));
-		add_history(rl);
-		dup2(std_in_save, STDIN_FILENO);
-		dup2(std_out_save, STDOUT_FILENO);
-		return (1);
-	}
 	return (0);
 }

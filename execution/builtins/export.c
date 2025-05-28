@@ -52,7 +52,7 @@ static bool	ft_valid_argument(char *variable)
 
 
 
-void	ft_export(t_list **my_envp, char **variables)
+void	ft_export(t_list **my_envp, char **variables, int *exit_stat)
 {
 	if (!variables[1])
 		ft_sort_myenvp(*my_envp);
@@ -79,5 +79,5 @@ void	ft_export(t_list **my_envp, char **variables)
 			vars_i++;
 		}
 	}
-	ft_free_arr(variables);
+	(*exit_stat) = 0;
 }

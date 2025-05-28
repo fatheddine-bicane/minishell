@@ -12,7 +12,8 @@
 
 #include "../../minishel.h"
 
-void	ft_exit(void)
+void	ft_exit(int *exit_stat)
 {
-	exit(errno);
+	exit(0);
+	(*exit_stat) = 0;
 }

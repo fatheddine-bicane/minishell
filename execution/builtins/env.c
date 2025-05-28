@@ -24,11 +24,12 @@
 /*	}*/
 /*}*/
 
- void	ft_env(t_list *my_envp)
+ void	ft_env(t_list *my_envp, int *exit_stat)
 {
 	while (my_envp)
 	{
 		printf("%s\n", (char *)my_envp->content);
 		my_envp = my_envp->next;
 	}
+	(*exit_stat) = 0;
 }

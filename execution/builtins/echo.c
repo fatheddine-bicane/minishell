@@ -77,7 +77,6 @@ void	ft_echo(char **echo_arg, t_list *my_envp, int *exit_stat)
 	while (echo_arg[i])
 	{
 
-		printf("argv to print   %s\n", echo_arg[i]);
 		if ('$' == echo_arg[i][0] && '?' == echo_arg[i][1])
 		{
 			printf("%d", (*exit_stat));
@@ -100,6 +99,5 @@ void	ft_echo(char **echo_arg, t_list *my_envp, int *exit_stat)
 	}
 	if (new_line)
 		printf("\n");
-	ft_free_arr(echo_arg);
 	(*exit_stat) = 0;
 }

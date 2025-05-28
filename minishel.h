@@ -51,14 +51,14 @@ typedef struct s_shell
 }	t_shell;
 
 // INFO: builtin command
-void	ft_cd(char *path, t_list **my_envp);
-void	ft_pwd(void);
-void	ft_env(t_list *my_envp);
+void	ft_cd(char **path, t_list **my_envp, int *exit_stat);
+void	ft_pwd(int *exit_stat);
+void	ft_env(t_list *my_envp, int *exit_stat);
 void	ft_echo(char **echo_arg, t_list *my_envp, int *exit_stat);
-void	ft_exit(void);
+void	ft_exit(int *exit_stat);
 
 // INFO: export;
-void	ft_export(t_list **my_envp, char **variables);
+void	ft_export(t_list **my_envp, char **variables, int *exit_stat);
 void	ft_sort_myenvp(t_list *my_envp);
 bool	ft_to_append(char *variable);
 char	*ft_append_equal(char *variable);
@@ -74,7 +74,7 @@ void	ft_executable(char *command, t_list *my_envp, pid_t pid, bool to_wait, int 
 void	ft_apply_comm(char *rl, t_list *my_envp, int *exit_stat);
 void	ft_here_doc(char *rl);
 
-int	ft_check_bultins(char *rl, t_list **my_envp, int *exit_stat);
+int		run_bultins(char **argv, t_list **my_envp, int *exit_stat);
 void	ft_free_arr(char **arr_s);
 
 char **ft_prep_envp(t_list *my_envp); //INFO: transform the envp to char **

@@ -51,50 +51,51 @@ char	*ft_set_oldpwd(void)
 		return (ft_strjoin("OLDPWD=", oldpwd));
 	}
 	else
-	{
 		perror("getcwd() error");
-		// TODO: exit
-	}
 	return (NULL);
 
 }
 
-void	ft_cd(char *path, t_list **my_envp)
+void	ft_cd(char **path, t_list **my_envp, int *exit_stat)
 {
 	char	*home_path;
 	char	*oldpwd;
 
 	home_path = ft_home_path(*my_envp);
 	oldpwd = ft_set_oldpwd();
-	if (!path)
+	if (!path[1])
 	{
 		if (!home_path)
 		{
-			perror("minishell: cd: HOME not set\n");
-			free(home_path);
-			free(oldpwd);
-			return ;
+			ft_putstr_fd("cd: HOME not set\n", 2);
+			/*free(home_path);*/
+			/*free(oldpwd);*/
+			(*exit_stat) = 1;
+			return (free(home_path), free(oldpwd), ft_free_arr(path));
 		}
 		if (-1 == chdir(home_path))
 		{
-			perror("minishell: chdir() error\n");
+			ft_putstr_fd("minishell: chdir() error\n", 2);
 			free(home_path);
 			free(oldpwd);
+			ft_free_arr(path);
+			(*exit_stat) = 1;
 			return ;
 		}
 		ft_change_oldpwd(my_envp, oldpwd);
 	}
 	else
 	{
-		if (-1 == chdir(path))
+		if (-1 == chdir(path[1]))
 		{
-			perror("minishell: cd: ");
-			perror(path);
-			perror(": No such file or directory\n");
+			perror(path[1]);
 			free(home_path);
 			free(oldpwd);
+			ft_free_arr(path);
+			(*exit_stat) = 1;
 			return;
 		}
 		ft_change_oldpwd(my_envp, oldpwd);
 	}
+	(*exit_stat) = 0;
 }

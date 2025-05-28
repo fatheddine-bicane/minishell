@@ -131,7 +131,8 @@ int main(int argc, char **argv, char **envp)
 		/*ft_pipex(ft_split(rl, '|'), &my_envp);*/
 		/*continue;*/
 
-		if (ft_check_bultins(rl, &my_envp, &exit_stat))
+		/*if (ft_is_builtin(argv))*/
+		if (run_bultins(ft_split(rl, 32), &my_envp, &exit_stat))
 		{
 			continue ;
 			add_history(rl);
