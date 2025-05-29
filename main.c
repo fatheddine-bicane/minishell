@@ -22,28 +22,18 @@
 /*	return data;*/
 /*}*/
 
-int	run(char *src, t_cmd **cmd)
-{
-	t_token	*tokens;
-	t_token	*head;
-	char	*lexeme;
+/*int	run(char *src)*/
+/*{*/
+/*	t_cmd	*ast;*/
+/*	int		status;*/
+/**/
+/*	ast = NULL;*/
+/*	status = create_ast(src, &ast);*/
+/*	if (status != EXIT_EMPTY_AST && status != EXIT_SYNTAX_ERROR)*/
+/*		ast_output(ast, true);*/
+/*	return (ast_free(ast), status);*/
+/*}*/
 
-	tokens = tokens_scan(src);
-	if (tokens == NULL)
-		return (EX_DATAERR);
-	if (is_end(tokens))
-		return (tokens_free(tokens), EXIT_EMPTY_AST);
-	head = tokens;
-	*cmd = parse_program(&tokens);
-	if (cmd == NULL || !is_end(tokens))
-	{
-		lexeme = extract_lexeme_err(tokens);
-		sn_eprintf("syntax error near unexpected token `%s`\n", lexeme);
-		return (ast_free(*cmd), tokens_free(head), EXIT_FAILURE);
-	}
-	tokens_free(head);
-	return (EXIT_SUCCESS);
-}
 
 int main(int argc, char **argv, char **envp)
 {
@@ -71,11 +61,11 @@ int main(int argc, char **argv, char **envp)
 
 		if (*rl == '\0')
 			continue;
-		if (run(rl, &cmd) != EXIT_EMPTY_AST)
+		if (create_ast(rl, &cmd) != EXIT_EMPTY_AST) // INFO: return status 
 		{
 			add_history(rl);
 			if (cmd == NULL)
-				continue;
+				continue; // INFO: syntax error
 			if (cmd->type == C_EXEC)
 			{
 				is_command(cmd, &my_envp, &exit_stat);
