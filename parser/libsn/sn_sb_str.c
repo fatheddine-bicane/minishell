@@ -26,15 +26,9 @@ bool	sb_append_str(t_str_builder *sb, const char *str, size_t len)
 	if (sb->buff[sb->len] == NULL)
 		return (false);
 	sb->total_size += len;
-	sb->buff[++sb->len] = NULL;
+	sb->len++;
+	sb->buff[sb->len] = NULL;
 	return (true);
-}
-
-const char	*sb_str(t_str_builder *sb, size_t index)
-{
-	if (sb == NULL || sb->buff == NULL)
-		return (NULL);
-	return (sb->buff[index]);
 }
 
 bool	sb_append_char(t_str_builder *sb, char c)
@@ -46,7 +40,8 @@ bool	sb_append_char(t_str_builder *sb, char c)
 	sb->buff[sb->len] = sn_strndup(&c, 1);
 	if (sb->buff[sb->len] == NULL)
 		return (false);
-	sb->buff[++sb->len] = NULL;
+	sb->len++;
+	sb->buff[sb->len] = NULL;
 	sb->total_size++;
 	return (true);
 }
