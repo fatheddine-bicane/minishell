@@ -78,25 +78,22 @@ void	is_redirection(t_cmd *cmd, t_list **my_envp, int *exit_stat)
 	sb = sb_create(10);
 	if (sb == NULL)
 		return;
-	/*[">" "file" "<" "file"] ["> file", "< file"]*/
+	/*[">", "file", '' "<" "file"] ["> file", "< file"]*/
 	while (tmp != NULL && tmp->type == C_REDIRECT)
 	{
 		sb_append_str(sb, token_type_str(tmp->u_as.redirect.type), 0);
 		sb_append_str(sb, tmp->u_as.redirect.file, 0);
-		sb_append_char(sb, ' ');
 		tmp = tmp->u_as.redirect.next;
 	}
-	char *redirects = sb_build(sb);// TODO: wait for karim merge for ** support
+	char **redirects = sb_build(sb);// TODO: wait for karim merge for ** support
 
-
-	ft_handle_redirections(ft_split(redirects, 32));
+	ft_handle_redirections(redirects);
+	sn_strs_free(redirects);
 
 	if (tmp)
 	{
 		is_command(tmp, my_envp, exit_stat);
 	}
-
-
 	ft_save_std_files(false);
 }
 
