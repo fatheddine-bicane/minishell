@@ -82,22 +82,24 @@ t_cmd	*parse_cmd(t_token **token)
 	t_str_builder	*sb;
 	t_cmd			*cmd;
 	t_cmd			*tmp;
+	t_token			*t;
 
 	sb = sb_create(10);
 	cmd = parse_redirect(token);
 	while (match_token(token, 4, T_WORD, T_VAR, T_STR_SINGLE, T_STR_DOUBLE))
 	{
-		if (sb_len(sb) > 0 && !sb_append_char(sb, ' '))
-			return (sb_free(sb), ast_free(cmd), NULL);
-		if (!sb_append_str(sb, (*token)->prev->lexeme, 0))
+		t = (*token)->prev;
+		if (t->type == T_STR_SINGLE && t->lexeme[0] == '\0')
+			sb_append_char(sb, '\0');
+		if (t->type != T_STR_SINGLE && !sb_append_str(sb, t->lexeme, 0))
 			return (sb_free(sb), ast_free(cmd), NULL);
 		cmd = append_cmd(cmd, parse_redirect(token));
 	}
 	if (cmd == NULL && sb_len(sb) > 0)
-		return (cmd_exec_init(sb_split(sb, ' ')));
+		return (cmd_exec_init(sb_build(sb)));
 	if (sb_len(sb) > 0)
 	{
-		tmp = cmd_exec_init(sb_split(sb, ' '));
+		tmp = cmd_exec_init(sb_build(sb));
 		if (tmp == NULL)
 			return (ast_free(cmd), NULL);
 		append_cmd(cmd, tmp);

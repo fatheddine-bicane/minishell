@@ -23,35 +23,23 @@ void	catch_int(int sig)
 	rl_redisplay();
 }
 
-int	run(char *src, char **envp)
+int	run(char *src)
 {
-	t_token	*tokens;
-	t_token	*head;
-	t_cmd	*cmd;
-	char	*lexeme;
+	t_cmd	*ast;
+	int		status;
 
-	(void)envp;
-	tokens = tokens_scan(src);
-	if (tokens == NULL)
-		return (EX_DATAERR);
-	if (is_end(tokens))
-		return (tokens_free(tokens), EXIT_EMPTY_AST);
-	head = tokens;
-	cmd = parse_program(&tokens);
-	if (cmd == NULL || !is_end(tokens))
-	{
-		lexeme = extract_lexeme_err(tokens);
-		sn_eprintf("syntax error near unexpected token `%s`\n", lexeme);
-		return (ast_free(cmd), tokens_free(head), EXIT_FAILURE);
-	}
-	ast_output(cmd, true);
-	return (ast_free(cmd), tokens_free(head), EXIT_SUCCESS);
+	ast = NULL;
+	status = create_ast(src, &ast);
+	if (status != EXIT_EMPTY_AST && status != EXIT_SYNTAX_ERROR)
+		ast_output(ast, true);
+	return (ast_free(ast), status);
 }
 
 void	run_prompt(char *envp[])
 {
 	char	*line;
 
+	(void)envp;
 	while (1)
 	{
 		line = readline("shell> ");
@@ -63,7 +51,7 @@ void	run_prompt(char *envp[])
 		}
 		if (*line)
 		{
-			if (run(line, envp) != EXIT_EMPTY_AST)
+			if (run(line) != EXIT_EMPTY_AST)
 				add_history(line);
 		}
 		free(line);

@@ -24,9 +24,10 @@
 
 typedef struct s_str_builder
 {
-	char		*buff;
+	char		**buff;
 	size_t		cap;
 	size_t		len;
+	size_t		total_size;
 }				t_str_builder;
 
 # ifndef BUFFER_SIZE
@@ -94,7 +95,9 @@ bool			sb_append_ptr(t_str_builder *sb, void *ptr);
 bool			sb_append_hex(t_str_builder *sb, unsigned long num,
 					int uppercase);
 size_t			sb_len(t_str_builder *sb);
-const char		*sb_str(t_str_builder *sb);
-char			*sb_build(t_str_builder *sb);
+size_t			sb_total_size(t_str_builder *sb);
+const char		*sb_str(t_str_builder *sb, size_t index);
+char			**sb_build(t_str_builder *sb);
+char			*sb_build_str(t_str_builder *sb);
 
 #endif

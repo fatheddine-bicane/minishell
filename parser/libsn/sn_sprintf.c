@@ -17,7 +17,7 @@ static int	process(va_list args, t_str_builder *sb, char specifier)
 	int		bytes;
 	bool	r;
 
-	bytes = sb->len;
+	bytes = sb_total_size(sb);
 	r = false;
 	if (specifier == '%')
 		r = sb_append_char(sb, '%');
@@ -35,7 +35,7 @@ static int	process(va_list args, t_str_builder *sb, char specifier)
 		r = sb_append_ptr(sb, va_arg(args, void *));
 	if (!r)
 		return (-1);
-	return (sb->len - bytes);
+	return (sb_total_size(sb) - bytes);
 }
 
 static int	parse(va_list ap, t_str_builder *sb, const char *s, size_t *i)
@@ -71,7 +71,7 @@ static t_str_builder	*inner_buff_init(char **buff, const char *fmt)
 
 	if (!buff || !fmt)
 		return (NULL);
-	sb = sb_create(sn_strlen(fmt));
+	sb = sb_create(10);
 	if (sb == NULL)
 		return (NULL);
 	return (sb);
@@ -103,7 +103,7 @@ int	sn_vsprintf(va_list args, char **buff, const char *fmt, ...)
 			return (*buff = NULL, sb_free(sb), -1);
 		bytes += r;
 	}
-	return (*buff = sb_build(sb), bytes);
+	return (*buff = sb_build_str(sb), bytes);
 }
 
 int	sn_sprintf(char **buff, const char *format, ...)
