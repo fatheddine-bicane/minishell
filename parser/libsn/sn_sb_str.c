@@ -14,42 +14,41 @@
 
 bool	sb_append_str(t_str_builder *sb, const char *str, size_t len)
 {
-	if (sb == NULL || str == NULL)
+	if (sb == NULL || sb->buff == NULL || str == NULL)
 		return (false);
 	if (*str == '\0')
 		return (true);
 	if (len == 0)
 		len = sn_strlen(str);
-	if (!sb_ensure_size(sb, len))
+	if (!sb_ensure_size(sb, 1))
 		return (false);
-	sn_memmove(sb->buff + sb->len, str, len);
-	sb->len += len;
-	sb->buff[sb->len] = '\0';
+	sb->buff[sb->len] = sn_strndup(str, len);
+	if (sb->buff[sb->len] == NULL)
+		return (false);
+	sb->total_size += len;
+	sb->buff[++sb->len] = NULL;
 	return (true);
+}
+
+const char	*sb_str(t_str_builder *sb, size_t index)
+{
+	if (sb == NULL || sb->buff == NULL)
+		return (NULL);
+	return (sb->buff[index]);
 }
 
 bool	sb_append_char(t_str_builder *sb, char c)
 {
-	if (sb == NULL)
+	if (sb == NULL || sb->buff == NULL)
 		return (false);
 	if (!sb_ensure_size(sb, 1))
 		return (false);
-	sb->buff[sb->len++] = c;
-	sb->buff[sb->len] = '\0';
+	sb->buff[sb->len] = sn_strndup(&c, 1);
+	if (sb->buff[sb->len] == NULL)
+		return (false);
+	sb->buff[++sb->len] = NULL;
+	sb->total_size++;
 	return (true);
-}
-
-void	sb_drop(t_str_builder *sb, size_t len)
-{
-	if (sb == NULL || len == 0)
-		return ;
-	if (len >= sb->len)
-	{
-		sb_clear(sb);
-		return ;
-	}
-	sb->len -= len;
-	sn_memmove(sb->buff, sb->buff + len, sb->len + 1);
 }
 
 char	**sb_split(t_str_builder *sb, char c)
@@ -57,7 +56,7 @@ char	**sb_split(t_str_builder *sb, char c)
 	char	*text;
 	char	**strs;
 
-	text = sb_build(sb);
+	text = sb_build_str(sb);
 	if (text == NULL)
 		return (NULL);
 	strs = sn_split(text, c);

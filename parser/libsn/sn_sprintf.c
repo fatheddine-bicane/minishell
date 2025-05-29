@@ -103,7 +103,7 @@ int	sn_vsprintf(va_list args, char **buff, const char *fmt, ...)
 			return (*buff = NULL, sb_free(sb), -1);
 		bytes += r;
 	}
-	return (*buff = sb_build(sb), bytes);
+	return (*buff = sb_build_str(sb), bytes);
 }
 
 int	sn_sprintf(char **buff, const char *format, ...)

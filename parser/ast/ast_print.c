@@ -103,8 +103,8 @@ char	*ast_output(t_cmd *cmd, bool print)
 	ast_walk(cmd, sb, 0);
 	if (print)
 		sb_append_char(sb, '\n');
-	len = sb_len(sb);
-	str = sb_build(sb);
+	len = sb_total_size(sb);
+	str = sb_build_str(sb);
 	if (str == NULL)
 	{
 		sn_eprintf("could not build string\n");
