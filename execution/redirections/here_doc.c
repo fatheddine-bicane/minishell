@@ -54,6 +54,8 @@ static char	*ft_creat_input(char *limiter)
 	return (join);
 }
 
+// INFO: cat /dev/random (to randomize)
+
 void	ft_here_doc(char *delimiter)
 {
 	char	*input;
@@ -66,8 +68,15 @@ void	ft_here_doc(char *delimiter)
 		return; // TODO: error mssg
 	ft_putstr_fd(input, inf);
 	free(input);
-	if (-1 == dup2(inf, STDIN_FILENO))
+	close(inf);
+	inf = open("XDAHHCKL8FHKCSJF00", O_RDONLY);
+	if (-1 == inf)
 		return; // TODO: error mssg
+	if (-1 == dup2(inf, STDIN_FILENO))
+	{
+		perror("dup2()");
+		return; // TODO: error mssg
+	}
 	close(inf);
 	unlink("XDAHHCKL8FHKCSJF00");
 }
