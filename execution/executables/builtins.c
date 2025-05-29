@@ -60,7 +60,7 @@ int	run_bultins(char **argv, t_list **my_envp, int *exit_stat)
 	}
 	else if (!ft_strncmp("exit", argv[0], 4))
 	{
-		ft_exit(exit_stat);
+		ft_exit(exit_stat, argv, my_envp);
 		is_builtin = true;
 	}
 	else if (!ft_strncmp("export", argv[0], 6))

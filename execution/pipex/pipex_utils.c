@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 11:36:30 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/28 14:18:53 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/28 18:42:57 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	ft_exec_builtins(char **command_arg, t_list **my_envp, int *exit_stat)
 	}
 	else if (0 == ft_strncmp(command_arg[0], "exit", 4))
 	{
-		ft_exit(exit_stat);
+		ft_exit(exit_stat, command_arg, my_envp);
 		exit(*exit_stat);
 	}
 	// TODO: free used memory (no execve to clean)

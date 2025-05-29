@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/28 14:13:03 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/28 18:31:18 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	ft_cd(char **path, t_list **my_envp, int *exit_stat);
 void	ft_pwd(int *exit_stat);
 void	ft_env(t_list *my_envp, int *exit_stat);
 void	ft_echo(char **echo_arg, t_list *my_envp, int *exit_stat);
-void	ft_exit(int *exit_stat);
+void	ft_exit(int *exit_stat, char **argv, t_list **my_envp);
 
 // INFO: export;
 void	ft_export(t_list **my_envp, char **variables, int *exit_stat);
@@ -69,6 +69,7 @@ void	ft_export_utils_1(t_list **my_envp, char *variable);
 void	ft_unset(t_list **my_envp, char **variables);
 
 t_list *ft_set_env(char **envp); //INFO: creat custum envp
+void	free_my_envp(t_list **my_envp);
 
 void	ft_executable(char *command, t_list *my_envp, pid_t pid, bool to_wait, int *exit_stat); //INFO: apply commands
 void	ft_apply_comm(char *rl, t_list *my_envp, int *exit_stat);

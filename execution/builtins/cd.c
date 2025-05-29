@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 18:45:52 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/06 19:08:18 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/28 16:18:32 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ char	*ft_set_oldpwd(void)
 		return (ft_strjoin("OLDPWD=", oldpwd));
 	}
 	else
-		perror("getcwd() error");
+		perror("getcwd()");
 	return (NULL);
 
 }
