@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/28 18:31:18 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/29 15:51:04 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,11 @@ void	ft_unset(t_list **my_envp, char **variables);
 t_list *ft_set_env(char **envp); //INFO: creat custum envp
 void	free_my_envp(t_list **my_envp);
 
-void	ft_executable(char *command, t_list *my_envp, pid_t pid, bool to_wait, int *exit_stat); //INFO: apply commands
-void	ft_apply_comm(char *rl, t_list *my_envp, int *exit_stat);
+void	ft_executable(char **command_args, t_list *my_envp, pid_t pid, bool to_wait, int *exit_stat); //INFO: apply commands
+void	ft_apply_comm(char **command_args, t_list *my_envp, int *exit_stat);
 void	ft_here_doc(char *rl);
 
-int		run_bultins(char **argv, t_list **my_envp, int *exit_stat);
+void	run_bultins(char **argv, t_list **my_envp, int *exit_stat);
 void	ft_free_arr(char **arr_s);
 
 char **ft_prep_envp(t_list *my_envp); //INFO: transform the envp to char **
@@ -95,5 +95,10 @@ void	ft_handle_redirections(char **redirections);
 void	setup_signals(void);
 void	ignore_signals_parrent(void);
 void	wait_child(pid_t pid, int *exit_stat);
+
+
+// INFO: parcing merged code
+void	is_command(t_cmd *cmd, t_list **my_envp, int *exit_stat);
+void	is_redirection(t_cmd *cmd, t_list **my_envp, int *exit_stat);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 15:48:51 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/23 15:53:31 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/29 14:02:59 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@ void	wait_child(pid_t pid, int *exit_stat)
 
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
+	{
 		(*exit_stat) = WEXITSTATUS(status);
+		printf("ana hna %d\n", *exit_stat);
+	}
 	if (WIFSIGNALED(status))
 	{
 		g_signal_flag = WTERMSIG(status);

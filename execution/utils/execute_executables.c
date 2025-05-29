@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 15:16:21 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/23 17:37:30 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/29 13:50:48 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,8 @@ static char	*ft_concat_path(char *arr2, char *command)
 	return (str);
 }
 
-void	ft_executable(char *command, t_list *my_envp, pid_t pid, bool to_wait, int *exit_stat)
+void	ft_executable(char **command_args, t_list *my_envp, pid_t pid, bool to_wait, int *exit_stat)
 {
-	char **command_args = ft_split(command, 32);
 
 	if (0 == pid)
 	{

@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 13:25:58 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/13 16:46:41 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/29 12:37:38 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	ft_pipex(char **commands, t_list **my_envp, int *exit_stat)
 
 
 			ft_exec_builtins(ft_split(commands[c_i], 32), my_envp, exit_stat);
-			ft_executable(commands[c_i], *my_envp, pid, false, exit_stat);
+			/*ft_executable(commands[c_i], *my_envp, pid, false, exit_stat);*/
 		}
 		else
 		{
