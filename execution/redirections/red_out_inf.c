@@ -30,7 +30,7 @@ static void	ft_redirect_output(char *file_name)
 static void	ft_appent_output(char *file_name)
 {
 	int	redirect;
-	redirect = open(file_name, O_RDONLY | O_CREAT | O_APPEND, 0664);
+	redirect = open(file_name, O_WRONLY | O_CREAT | O_APPEND, 0664);
 	if (-1 == redirect)
 		return ;
 	if (-1 == dup2(redirect, STDOUT_FILENO))
@@ -63,33 +63,11 @@ void	ft_handle_redirections(char **redirections)
 	i = 0;
 	while (redirections[i])
 	{
-		if ('>' == redirections[i][0])
+		/*if ('>' == redirections[i][0])*/
+		if (!ft_strncmp(">>", redirections[i], 2))
 		{
-			ft_redirect_output(redirections[i] + 1);
-			/*redirect = open(redirections[i] + 1, O_WRONLY | O_CREAT | O_TRUNC, 0664);*/
-			/*if (-1 == redirect)*/
-			/*	return ;*/
-			/*if (-1 == dup2(redirect, STDOUT_FILENO))*/
-			/*{*/
-			/*	close(redirect);*/
-			/*	return; //TODO:error mssg*/
-			/*}*/
-		}
-		else if ('<' == redirections[i][0])
-		{
-			ft_redirect_input(redirections[i] + 1);
-			/*redirect = open(redirections[i] + 1, O_RDONLY);*/
-			/*if (-1 == redirect)*/
-			/*	return ;*/
-			/*if (-1 == dup2(redirect, STDIN_FILENO))*/
-			/*{*/
-			/*	close(redirect);*/
-			/*	return; //TODO:error mssg*/
-			/*}*/
-		}
-		else if ('>' == redirections[i][0] && '>' == redirections[i][1])
-		{
-			ft_appent_output(redirections[i] + 2);
+			i++;
+			ft_appent_output(redirections[i]);
 			/*redirect = open(redirections[i] + 2, O_RDONLY | O_CREAT | O_APPEND, 0664);*/
 			/*if (-1 == redirect)*/
 			/*	return ;*/
@@ -99,8 +77,38 @@ void	ft_handle_redirections(char **redirections)
 			/*	return; //TODO:error mssg*/
 			/*}*/
 		}
-		else if ('<' == redirections[i][0] && '<' == redirections[i][1])
-			ft_here_doc(redirections[i] + 2);
+		else if (!ft_strncmp("<<", redirections[i], 2))
+		{
+			i++;
+			ft_here_doc(redirections[i]);
+		}
+		else if (!ft_strncmp(">", redirections[i], 1))
+		{
+			i++;
+			ft_redirect_output(redirections[i]);
+			/*redirect = open(redirections[i] + 1, O_WRONLY | O_CREAT | O_TRUNC, 0664);*/
+			/*if (-1 == redirect)*/
+			/*	return ;*/
+			/*if (-1 == dup2(redirect, STDOUT_FILENO))*/
+			/*{*/
+			/*	close(redirect);*/
+			/*	return; //TODO:error mssg*/
+			/*}*/
+		}
+		else if (!ft_strncmp("<", redirections[i], 1))
+		{
+			i++;
+			ft_redirect_input(redirections[i]);
+			/*redirect = open(redirections[i] + 1, O_RDONLY);*/
+			/*if (-1 == redirect)*/
+			/*	return ;*/
+			/*if (-1 == dup2(redirect, STDIN_FILENO))*/
+			/*{*/
+			/*	close(redirect);*/
+			/*	return; //TODO:error mssg*/
+			/*}*/
+		}
+		/*else if ('>' == redirections[i][0] && '>' == redirections[i][1])*/
 		i++;
 	}
 }
