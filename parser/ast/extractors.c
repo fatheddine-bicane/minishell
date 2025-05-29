@@ -40,3 +40,13 @@ char	*extract_lexeme_err(t_token *token)
 		lexeme = token->next->lexeme;
 	return (lexeme);
 }
+
+int	extract_redirect_type(t_token **token)
+{
+	t_token	*t;
+
+	t = *token;
+	while (!is_redirect(t))
+		t = t->prev;
+	return (t->type);
+}

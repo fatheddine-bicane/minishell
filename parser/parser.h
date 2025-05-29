@@ -152,7 +152,6 @@ t_cmd					*cmd_cmp_init(int op, t_cmd *left, t_cmd *right);
 int						extract_cmp_op(t_token *token);
 char					*extract_lexeme_err(t_token *token);
 
-t_cmd					*parse_program(t_token **token);
 int						create_ast(char *src, t_cmd **ast);
 void					ast_free(t_cmd *root);
 char					*ast_output(t_cmd *cmd, bool print);

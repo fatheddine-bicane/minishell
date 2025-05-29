@@ -12,38 +12,42 @@
 
 #include "../parser.h"
 
+t_cmd	*parse_program(t_token **token, int *status);
+t_cmd	*parse_cmd(t_token **token, int *status);
+t_cmd	*parse_redirect(t_token **token, int *status);
 t_cmd	*append_cmd(t_cmd *root, t_cmd *new);
-t_cmd	*parse_cmd(t_token **token);
-t_cmd	*parse_redirect(t_token **token);
 
-t_cmd	*parse_group(t_token **token)
+t_cmd	*parse_group(t_token **token, int *status)
 {
 	t_cmd	*cmd;
 
 	if (match_token(token, 1, T_LEFT_PAREN))
 	{
-		cmd = cmd_group_init(parse_program(token));
-		if (cmd == NULL)
-			return (NULL);
-		if (!match_token(token, 1, T_RIGHT_PAREN))
+		cmd = cmd_group_init(parse_program(token, status));
+		if (cmd == NULL || *status == -1)
 			return (ast_free(cmd), NULL);
-		return (append_cmd(parse_redirect(token), cmd));
+		if (!match_token(token, 1, T_RIGHT_PAREN))
+			return ((*status = -1), ast_free(cmd), NULL);
+		cmd = append_cmd(parse_redirect(token, status), cmd);
+		if (*status == -1)
+			return (ast_free(cmd), NULL);
+		return (cmd);
 	}
-	return (parse_cmd(token));
+	return (parse_cmd(token, status));
 }
 
-t_cmd	*parse_pipe(t_token **token)
+t_cmd	*parse_pipe(t_token **token, int *status)
 {
 	t_cmd	*cmd;
 	t_cmd	*left;
 	t_cmd	*right;
 
-	left = parse_group(token);
+	left = parse_group(token, status);
 	if (left == NULL)
 		return (NULL);
 	while (match_token(token, 1, T_PIPE))
 	{
-		right = parse_group(token);
+		right = parse_group(token, status);
 		if (right == NULL)
 			return (ast_free(left), NULL);
 		cmd = cmd_pipe_init(left, right);
@@ -54,20 +58,20 @@ t_cmd	*parse_pipe(t_token **token)
 	return (left);
 }
 
-t_cmd	*parse_compound(t_token **token)
+t_cmd	*parse_compound(t_token **token, int *status)
 {
 	t_cmd	*cmd;
 	t_cmd	*left;
 	t_cmd	*right;
 	int		op;
 
-	left = parse_pipe(token);
+	left = parse_pipe(token, status);
 	if (left == NULL)
 		return (NULL);
 	while (match_token(token, 1, T_AND) || match_token(token, 1, T_OR))
 	{
 		op = extract_cmp_op((*token)->prev);
-		right = parse_pipe(token);
+		right = parse_pipe(token, status);
 		if (right == NULL)
 			return (ast_free(left), NULL);
 		cmd = cmd_cmp_init(op, left, right);
@@ -78,11 +82,11 @@ t_cmd	*parse_compound(t_token **token)
 	return (left);
 }
 
-t_cmd	*parse_program(t_token **token)
+t_cmd	*parse_program(t_token **token, int *status)
 {
 	if (token == NULL || *token == NULL)
 		return (NULL);
 	if ((*token)->type == T_EOF)
 		return (NULL);
-	return (parse_compound(token));
+	return (parse_compound(token, status));
 }
