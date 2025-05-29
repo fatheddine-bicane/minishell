@@ -26,9 +26,10 @@ void	catch_int(int sig)
 int	run(char *src)
 {
 	t_cmd	*ast;
-	
+	int		status;
+
 	ast = NULL;
-	int status = create_ast(src, &ast);
+	status = create_ast(src, &ast);
 	if (status != EXIT_EMPTY_AST && status != EXIT_SYNTAX_ERROR)
 		ast_output(ast, true);
 	return (ast_free(ast), status);

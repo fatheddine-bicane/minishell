@@ -30,9 +30,8 @@ t_token	*extract_str(char *src, size_t *current, bool single)
 	while (src[*current] && src[*current] != quote)
 		*current += 1;
 	if (!src[*current])
-		return (sn_printf_fd(STDERR_FILENO,
-				"unexpected EOF while looking for matching `%c`\n", quote),
-			NULL);
+		return (sn_eprintf("unexpected EOF while looking for matching `%c`\n",
+				quote), NULL);
 	substr = sn_substr(src, start, *current - start);
 	if (substr == NULL)
 		return (NULL);

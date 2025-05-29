@@ -20,7 +20,7 @@ int	create_ast(char *src, t_cmd **ast)
 
 	tokens = tokens_scan(src);
 	if (tokens == NULL)
-		return (EXIT_FAILURE);
+		return (EXIT_SYNTAX_ERROR);
 	if (is_end(tokens))
 		return (tokens_free(tokens), EXIT_EMPTY_AST);
 	head = tokens;
