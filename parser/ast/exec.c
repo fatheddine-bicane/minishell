@@ -69,15 +69,6 @@ t_cmd	*parse_redirect(t_token **token, int *status)
 	return (left);
 }
 
-bool	append_lexeme(t_str_builder *sb, t_token *t)
-{
-	if (t->lexeme[0] == '\'' && t->lexeme[1] == '\'')
-		return (sb_append_char(sb, '\0'));
-	if (t->lexeme[0] == '"' && t->lexeme[1] == '"')
-		return (sb_append_char(sb, '\0'));
-	return (sb_append_str(sb, t->lexeme, 0));
-}
-
 t_cmd	*parse_cmd(t_token **token, int *status)
 {
 	t_str_builder	*sb;
@@ -90,7 +81,7 @@ t_cmd	*parse_cmd(t_token **token, int *status)
 		return (NULL);
 	while (match_token(token, 1, T_WORD))
 	{
-		if (!append_lexeme(sb, (*token)->prev))
+		if (!sb_append_str(sb, (*token)->prev->lexeme, 0))
 			return ((*status = -1), sb_free(sb), ast_free(cmd), NULL);
 		cmd = append_cmd(cmd, parse_redirect(token, status));
 		if (*status == -1)
