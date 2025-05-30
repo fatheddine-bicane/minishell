@@ -20,10 +20,11 @@ char	*ast_gen(char *src)
 	t_token	*head;
 	t_cmd	*ast;
 	char	*got;
+	int		status;
 
 	tokens = tokens_scan(src);
 	head = tokens;
-	int status = 0;
+	status = 0;
 	ast = parse_program(&tokens, &status);
 	got = ast_output(ast, false);
 	return (tokens_free(head), ast_free(ast), got);
