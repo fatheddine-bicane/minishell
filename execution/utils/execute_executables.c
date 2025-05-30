@@ -50,7 +50,7 @@ static char	*ft_concat_path(char *arr2, char *command)
 	return (str);
 }
 
-void	ft_executable(char **command_args, t_list *my_envp, pid_t pid, bool to_wait, int *exit_stat)
+void	ft_executable(char **command_args, t_list **my_envp, pid_t pid, bool to_wait, int *exit_stat)
 {
 
 	if (0 == pid)
@@ -64,7 +64,7 @@ void	ft_executable(char **command_args, t_list *my_envp, pid_t pid, bool to_wait
 		if (!access(command_args[0], F_OK | X_OK))
 		{
 			if (0 == pid)
-				execve(command_args[0], command_args, ft_prep_envp(my_envp));
+				execve(command_args[0], command_args, ft_prep_envp(*my_envp));
 			else if ((0 != pid) && to_wait)
 				waitpid(pid, NULL, 0);
 		}
@@ -83,7 +83,7 @@ void	ft_executable(char **command_args, t_list *my_envp, pid_t pid, bool to_wait
 	}
 	else
 	{
-		char (**paths) = ft_find_path(my_envp);
+		char (**paths) = ft_find_path(*my_envp);
 		int (i) = 0;
 		if (NULL == paths) // INFO: protection if path is unseted
 		{
@@ -107,24 +107,32 @@ void	ft_executable(char **command_args, t_list *my_envp, pid_t pid, bool to_wait
 				command_args[0] = path;
 				if (0 == pid)
 				{
-					execve(command_args[0], command_args, ft_prep_envp(my_envp));
+					execve(command_args[0], command_args, ft_prep_envp(*my_envp));
+					free(path);
+					ft_free_arr(paths);
 					exit(127);
 				}
 				else if ((0 != pid) && to_wait)
 				{
 					wait_child(pid, exit_stat);
+					/*free(path);*/
+					ft_free_arr(paths);
 					return ;
 				}
 			}
 			i++;
+			free(path);
 		}
+		ft_free_arr(paths);
 		if (0 == pid)
 		{
+			free_my_envp(my_envp);
 			exit(127);
 		}
 		else
 		{
 			(*exit_stat) = 127;
+			/*ft_free_arr(paths);*/
 			perror(command_args[0]);
 		}
 	}

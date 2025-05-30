@@ -28,6 +28,7 @@ bool	argument_is_numeric(char *argument)
 
 void	ft_exit(int *exit_stat, char **argv, t_list **my_envp)
 {
+	// TODO: free cmg the ast
 	(void)my_envp;
 	if (!argv[1])
 	{
@@ -41,7 +42,8 @@ void	ft_exit(int *exit_stat, char **argv, t_list **my_envp)
 		if (argument_is_numeric(argv[1]))
 		{
 			printf("exit\n");
-			// TODO: clean memory
+			ft_free_arr(argv); // TODO: free ast
+			free_my_envp(my_envp);
 			exit(ft_atoi(argv[1]));
 		}
 		else

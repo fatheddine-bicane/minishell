@@ -22,25 +22,19 @@
 /*	return data;*/
 /*}*/
 
-/*int	run(char *src)*/
-/*{*/
-/*	t_cmd	*ast;*/
-/*	int		status;*/
-/**/
-/*	ast = NULL;*/
-/*	status = create_ast(src, &ast);*/
-/*	if (status != EXIT_EMPTY_AST && status != EXIT_SYNTAX_ERROR)*/
-/*		ast_output(ast, true);*/
-/*	return (ast_free(ast), status);*/
-/*}*/
-
-
 int main(int argc, char **argv, char **envp)
 {
 	t_list *my_envp;
 	t_cmd	*cmd;
 	int		exit_stat = 0;
 
+
+
+	/*t_shell shell;*/
+
+	/*shell.exit_status = 0;*/
+	/*shell.my_envp = ft_set_env(envp);*/
+	/*shell.cmd = NULL;*/
 
 	(void)argc;
 	(void)argv;
@@ -56,7 +50,8 @@ int main(int argc, char **argv, char **envp)
 		if (!rl)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
-			break ;
+			free_my_envp(&my_envp);
+			exit(0);
 		}
 
 		if (*rl == '\0')
@@ -69,6 +64,7 @@ int main(int argc, char **argv, char **envp)
 			if (cmd->type == C_EXEC)
 			{
 				is_command(cmd, &my_envp, &exit_stat);
+				/*is_command(&shell);*/
 			}
 			else if (cmd->type == C_REDIRECT)
 			{
@@ -77,68 +73,7 @@ int main(int argc, char **argv, char **envp)
 			else
 				printf("not a command\n");
 			ast_free(cmd);
-
 		}
-
-		/*rl = readline("╭─ minishell \n╰─> ");*/
-		// BUG: if an empty line is set to rl there is segfault
-
-		// INFO: to test pipes
-		/*ft_pipex(ft_split(rl, '|'), &my_envp);*/
-		/*continue;*/
-
-
-		/*ft_here_doc(rl);*/
-		// ft_apply_comm(rl, my_envp);
-
-		/*if (errno != 0)*/
-		/*	perror(strerror(errno));*/
-
 	}
     return (0);
 }
-
-/*int main(int argc, char **argv, char **envp)*/
-/*{*/
-/*	t_list	*my_envp;*/
-/*	int		exit_stat = 0;*/
-/**/
-/*	(void)argc;*/
-/*	(void)argv;*/
-/**/
-/*	my_envp = ft_set_env(envp);*/
-/*	setup_signals();*/
-/*	while (1)*/
-/*	{*/
-/*		// TODO: maybe update the exit status here (use global variable)*/
-/*		g_signal_flag = 0;*/
-/*		char (*rl) = readline("====> ");*/
-/*		if (!rl)*/
-/*		{*/
-/*			write(STDOUT_FILENO, "exit\n", 5);*/
-/*			break ;*/
-/*		}*/
-		/*rl = readline("╭─ minishell \n╰─> ");*/
-/*		// BUG: if an empty line is set to rl there is segfault*/
-/**/
-/*		// INFO: to test pipes*/
-		/*ft_pipex(ft_split(rl, '|'), &my_envp, &exit_stat);*/
-		/*continue;*/
-/**/
-		/*if (ft_is_builtin(argv))*/
-/*		if (run_bultins(ft_split(rl, 32), &my_envp, &exit_stat))*/
-/*		{*/
-/*			continue ;*/
-/*			add_history(rl);*/
-/*		}*/
-/**/
-		/*ft_here_doc(rl);*/
-/*		ft_apply_comm(rl, my_envp, &exit_stat);*/
-/**/
-		/*if (errno != 0)*/
-		/*	perror(strerror(errno));*/
-/**/
-/*		add_history(rl);*/
-/*	}*/
-/*	return (0);*/
-/*}*/

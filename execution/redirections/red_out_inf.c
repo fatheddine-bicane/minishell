@@ -12,6 +12,28 @@
 
 #include "../../minishel.h"
 
+void	ft_save_std_files(bool save)
+{
+	static int	std_in_save;
+	static int	std_out_save;
+
+	if (true == save)
+	{
+		std_in_save = dup(STDIN_FILENO);
+		if (-1 == std_in_save)
+			return ; // TODO: error mssg
+		int	std_out_save = dup(STDOUT_FILENO);
+		if (-1 == std_out_save)
+			return ; // TODO: error mssg
+	}
+	else
+	{
+		dup2(std_in_save, STDIN_FILENO);
+		dup2(std_out_save, STDOUT_FILENO);
+	}
+	// TODO: close used files
+}
+
 static void	ft_redirect_output(char *file_name)
 {
 	int	redirect;
@@ -58,24 +80,14 @@ static void	ft_redirect_input(char *file_name)
 void	ft_handle_redirections(char **redirections)
 {
 	int	i;
-	/*int	redirect;*/
 
 	i = 0;
 	while (redirections[i])
 	{
-		/*if ('>' == redirections[i][0])*/
 		if (!ft_strncmp(">>", redirections[i], 2))
 		{
 			i++;
 			ft_appent_output(redirections[i]);
-			/*redirect = open(redirections[i] + 2, O_RDONLY | O_CREAT | O_APPEND, 0664);*/
-			/*if (-1 == redirect)*/
-			/*	return ;*/
-			/*if (-1 == dup2(redirect, STDOUT_FILENO))*/
-			/*{*/
-			/*	close(redirect);*/
-			/*	return; //TODO:error mssg*/
-			/*}*/
 		}
 		else if (!ft_strncmp("<<", redirections[i], 2))
 		{
@@ -86,29 +98,12 @@ void	ft_handle_redirections(char **redirections)
 		{
 			i++;
 			ft_redirect_output(redirections[i]);
-			/*redirect = open(redirections[i] + 1, O_WRONLY | O_CREAT | O_TRUNC, 0664);*/
-			/*if (-1 == redirect)*/
-			/*	return ;*/
-			/*if (-1 == dup2(redirect, STDOUT_FILENO))*/
-			/*{*/
-			/*	close(redirect);*/
-			/*	return; //TODO:error mssg*/
-			/*}*/
 		}
 		else if (!ft_strncmp("<", redirections[i], 1))
 		{
 			i++;
 			ft_redirect_input(redirections[i]);
-			/*redirect = open(redirections[i] + 1, O_RDONLY);*/
-			/*if (-1 == redirect)*/
-			/*	return ;*/
-			/*if (-1 == dup2(redirect, STDIN_FILENO))*/
-			/*{*/
-			/*	close(redirect);*/
-			/*	return; //TODO:error mssg*/
-			/*}*/
 		}
-		/*else if ('>' == redirections[i][0] && '>' == redirections[i][1])*/
 		i++;
 	}
 }
