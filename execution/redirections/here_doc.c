@@ -66,9 +66,10 @@ char	*random_name(void)
 	random_file = open("/dev/urandom", O_RDONLY);
 	if (-1 == random_file)
 		return (perror("read()"), NULL);
-	if (-1 == read(random_file, file_name, sizeof(file_name)))
+	ssize_t b_read = read(random_file, file_name, 9);
+	if (-1 == b_read)
 		return (perror("read()"), NULL);
-	file_name[10] = '\0';
+	file_name[b_read] = '\0';
 	i = -1;
 	while (file_name[++i])
 		file_name[i] = file_name[i] % 26 + 'a';
@@ -82,6 +83,7 @@ void	ft_here_doc(char *delimiter)
 	char	*file_name;
 	int		inf;
 
+	ft_save_std_files(false);
 	input = ft_creat_input(delimiter);
 	file_name = random_name();
 	printf("file name: %s\n", file_name);

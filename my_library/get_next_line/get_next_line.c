@@ -83,7 +83,11 @@ char	*get_next_line(int fd)
 	char		*tmp;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (free (container), NULL);
+	{
+		free (container);
+		container = NULL;
+		return (NULL);
+	}
 	if (!container)
 	{
 		container = malloc(1 * sizeof (char));
