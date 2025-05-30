@@ -12,7 +12,7 @@
 
 #include "../../minishel.h"
 
-void	ft_apply_comm(char **command_args, t_list *my_envp, int *exit_stat)
+void	ft_apply_comm(char **command_args, t_list **my_envp, int *exit_stat)
 {
 	pid_t	pid;
 

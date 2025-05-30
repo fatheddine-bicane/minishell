@@ -20,7 +20,6 @@ void	wait_child(pid_t pid, int *exit_stat)
 	if (WIFEXITED(status))
 	{
 		(*exit_stat) = WEXITSTATUS(status);
-		printf("ana hna %d\n", *exit_stat);
 	}
 	if (WIFSIGNALED(status))
 	{

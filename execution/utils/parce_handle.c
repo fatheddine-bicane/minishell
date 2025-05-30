@@ -13,14 +13,16 @@
 #include "../../minishel.h"
 
 void	is_command(t_cmd *cmd, t_list **my_envp, int *exit_stat)
+/*void	is_command(t_shell *shell)*/
 {
 	if (ft_is_builtin(cmd->u_as.exec.argv[0]))
 	{
 		run_bultins(cmd->u_as.exec.argv, my_envp, exit_stat);
+		/*run_bultins(shell);*/
 	}
 	else
 	{
-		ft_apply_comm(cmd->u_as.exec.argv, *my_envp, exit_stat);
+		ft_apply_comm(cmd->u_as.exec.argv, my_envp, exit_stat);
 	}
 }
 
@@ -43,27 +45,6 @@ void	is_command(t_cmd *cmd, t_list **my_envp, int *exit_stat)
 	 /*ft_pipex(cmd->u_as.redirect.type == T_HEREDOC)*/
 	 /* cmd->u_as.redirect.next->type*/
 /*}*/
-
-void	ft_save_std_files(bool save)
-{
-	static int	std_in_save;
-	static int	std_out_save;
-
-	if (true == save)
-	{
-		std_in_save = dup(STDIN_FILENO);
-		if (-1 == std_in_save)
-			return ; // TODO: error mssg
-		int	std_out_save = dup(STDOUT_FILENO);
-		if (-1 == std_out_save)
-			return ; // TODO: error mssg
-	}
-	else
-	{
-		dup2(std_in_save, STDIN_FILENO);
-		dup2(std_out_save, STDOUT_FILENO);
-	}
-}
 
 void	is_redirection(t_cmd *cmd, t_list **my_envp, int *exit_stat)
 {
