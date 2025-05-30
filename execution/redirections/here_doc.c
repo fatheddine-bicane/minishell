@@ -54,29 +54,49 @@ static char	*ft_creat_input(char *limiter)
 	return (join);
 }
 
-// INFO: cat /dev/random (to randomize)
+char	*random_name(void)
+{
+	char	*file_name;
+	int		random_file;
+	int		i;
+
+	file_name = malloc(sizeof(char) * 10);
+	if (!file_name)
+		return (NULL);
+	random_file = open("/dev/urandom", O_RDONLY);
+	if (-1 == random_file)
+		return (perror("read()"), NULL);
+	if (-1 == read(random_file, file_name, sizeof(file_name)))
+		return (perror("read()"), NULL);
+	file_name[10] = '\0';
+	i = -1;
+	while (file_name[++i])
+		file_name[i] = file_name[i] % 26 + 'a';
+	close(random_file);
+	return (file_name);
+}
 
 void	ft_here_doc(char *delimiter)
 {
 	char	*input;
+	char	*file_name;
 	int		inf;
 
 	input = ft_creat_input(delimiter);
-	// TODO: open the file below in /tmp folder
-	inf = open("XDAHHCKL8FHKCSJF00", O_RDWR | O_CREAT | O_TRUNC, 0644);
+	file_name = random_name();
+	printf("file name: %s\n", file_name);
+	inf = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (-1 == inf)
-		return; // TODO: error mssg
+		return(perror("open()"));
 	ft_putstr_fd(input, inf);
 	free(input);
 	close(inf);
-	inf = open("XDAHHCKL8FHKCSJF00", O_RDONLY);
+	inf = open(file_name, O_RDONLY);
 	if (-1 == inf)
 		return; // TODO: error mssg
 	if (-1 == dup2(inf, STDIN_FILENO))
-	{
-		perror("dup2()");
-		return; // TODO: error mssg
-	}
+		return(perror("dup2()"));
 	close(inf);
-	unlink("XDAHHCKL8FHKCSJF00");
+	unlink(file_name);
+	free(file_name);
 }
