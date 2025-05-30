@@ -14,7 +14,7 @@
 
 int		extract_redirect_type(t_token **token);
 
-t_cmd	*append_cmd(t_cmd *root, t_cmd *new)
+t_cmd	*append_redirect(t_cmd *root, t_cmd *new)
 {
 	t_cmd	*tmp;
 
@@ -25,6 +25,23 @@ t_cmd	*append_cmd(t_cmd *root, t_cmd *new)
 		tmp = tmp->u_as.redirect.next;
 	tmp->u_as.redirect.next = new;
 	return (root);
+}
+
+t_cmd	*combine_cmd(t_str_builder *sb, t_cmd *cmd)
+{
+	t_cmd	*tmp;
+
+	if (cmd == NULL && sb_len(sb) > 0)
+		return (cmd_exec_init(sb_build(sb)));
+	if (sb_len(sb) > 0)
+	{
+		tmp = cmd_exec_init(sb_build(sb));
+		if (tmp == NULL)
+			return (ast_free(cmd), NULL);
+		append_redirect(cmd, tmp);
+		sb = NULL;
+	}
+	return (sb_free(sb), cmd);
 }
 
 t_cmd	*parse_io_redirect(t_token **token, int *status)
@@ -73,29 +90,18 @@ t_cmd	*parse_cmd(t_token **token, int *status)
 {
 	t_str_builder	*sb;
 	t_cmd			*cmd;
-	t_cmd			*tmp;
 
-	sb = sb_create(10);
 	cmd = parse_redirect(token, status);
 	if (*status == -1)
 		return (NULL);
+	sb = sb_create(10);
 	while (match_token(token, 1, T_WORD))
 	{
 		if (!sb_append_str(sb, (*token)->prev->lexeme, 0))
 			return ((*status = -1), sb_free(sb), ast_free(cmd), NULL);
-		cmd = append_cmd(cmd, parse_redirect(token, status));
+		cmd = append_redirect(cmd, parse_redirect(token, status));
 		if (*status == -1)
 			return (sb_free(sb), ast_free(cmd), NULL);
 	}
-	if (cmd == NULL && sb_len(sb) > 0)
-		return (cmd_exec_init(sb_build(sb)));
-	if (sb_len(sb) > 0)
-	{
-		tmp = cmd_exec_init(sb_build(sb));
-		if (tmp == NULL)
-			return (ast_free(cmd), NULL);
-		append_cmd(cmd, tmp);
-		sb = NULL;
-	}
-	return (sb_free(sb), cmd);
+	return (combine_cmd(sb, cmd));
 }

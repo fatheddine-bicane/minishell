@@ -15,7 +15,7 @@
 t_cmd	*parse_program(t_token **token, int *status);
 t_cmd	*parse_cmd(t_token **token, int *status);
 t_cmd	*parse_redirect(t_token **token, int *status);
-t_cmd	*append_cmd(t_cmd *root, t_cmd *new);
+t_cmd	*append_redirect(t_cmd *root, t_cmd *new);
 
 t_cmd	*parse_group(t_token **token, int *status)
 {
@@ -28,7 +28,7 @@ t_cmd	*parse_group(t_token **token, int *status)
 			return (ast_free(cmd), NULL);
 		if (!match_token(token, 1, T_RIGHT_PAREN))
 			return ((*status = -1), ast_free(cmd), NULL);
-		cmd = append_cmd(parse_redirect(token, status), cmd);
+		cmd = append_redirect(parse_redirect(token, status), cmd);
 		if (*status == -1)
 			return (ast_free(cmd), NULL);
 		return (cmd);
