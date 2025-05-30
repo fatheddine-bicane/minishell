@@ -12,12 +12,12 @@
 
 #include "../parser.h"
 
-t_token	*extract_str(char *src, size_t *current, bool single)
+t_token *extract_str(char *src, size_t *current, bool single)
 {
-	size_t			start;
-	char			*substr;
-	char			quote;
-	t_token_type	type;
+	size_t start;
+	char *substr;
+	char quote;
+	t_token_type type;
 
 	quote = '"';
 	type = T_STR_DOUBLE;
@@ -32,7 +32,8 @@ t_token	*extract_str(char *src, size_t *current, bool single)
 		*current += 1;
 	if (!src[*current])
 		return (sn_eprintf("unexpected EOF while looking for matching `%c`\n",
-				quote), NULL);
+											 quote),
+						NULL);
 	if (!single)
 		*current += 1;
 	substr = sn_substr(src, start, *current - start);
@@ -41,23 +42,36 @@ t_token	*extract_str(char *src, size_t *current, bool single)
 	return (token_new(type, substr));
 }
 
-char	*extract_word(char *src, size_t *current)
+char *extract_word(char *src, size_t *current)
 {
-	size_t	start;
+	size_t start;
+	bool quoted;
+	char quote;
 
 	start = *current - 1;
-	if (match_word(src, current))
+	quoted = false;
+	quote = src[start];
+	if (is_quote(src, start))
+		quoted = true;
+	while (match_word(src, current))
 	{
-		while (match_word(src, current))
-			continue ;
+		if (is_quote(src, (*current) - 1))
+		{
+			quote = src[(*current) - 1];
+			quoted = !quoted;
+		}
 	}
+	if (quoted)
+		return (sn_eprintf("unexpected EOF while looking for matching `%c`\n",
+											 quote),
+						NULL);
 	return (sn_substr(src, start, *current - start));
 }
 
-t_token	*extract_identifier(char *src, size_t *current)
+t_token *extract_identifier(char *src, size_t *current)
 {
-	size_t	start;
-	char	*substr;
+	size_t start;
+	char *substr;
 
 	start = *current - 1;
 	while (is_name(src, *current))
@@ -68,10 +82,10 @@ t_token	*extract_identifier(char *src, size_t *current)
 	return (token_new(T_WORD, substr));
 }
 
-t_token	*extract_var(char *src, size_t *current)
+t_token *extract_var(char *src, size_t *current)
 {
-	size_t	start;
-	char	*substr;
+	size_t start;
+	char *substr;
 
 	*current -= 1;
 	if (match_char(src, current, '?'))
@@ -88,7 +102,7 @@ t_token	*extract_var(char *src, size_t *current)
 	return (token_new(T_VAR, substr));
 }
 
-t_token	*extract_blank(char *src, size_t *current)
+t_token *extract_blank(char *src, size_t *current)
 {
 	while (src[*current] && (src[*current] == ' ' || src[*current] == '\t'))
 		*current += 1;

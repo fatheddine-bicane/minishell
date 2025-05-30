@@ -17,12 +17,15 @@ bool	is_name(char *src, size_t current)
 	return (sn_isalpha(src[current]) || src[current] == '_');
 }
 
+bool	is_quote(char *src, size_t current)
+{
+	return (src[current] == '\'' || src[current] == '"');
+}
+
 bool	is_metachar(char *src, size_t current)
 {
 	if (!src[current])
 		return (false);
-	if (src[current] == '\'' || src[current] == '"')
-		return (true);
 	if (src[current] == ' ' || src[current] == '\t' || src[current] == '\n')
 		return (true);
 	if (src[current] == '|' || src[current] == '&')

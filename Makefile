@@ -16,6 +16,9 @@ RESET = \033[0m
 SRCS = 	$(shell ls ./my_library/libft/*.c) \
 		$(shell ls ./my_library/ft_printf/*.c) \
 		$(shell ls ./my_library/get_next_line/*.c) \
+		$(shell ls ./parser/libsn/*c) \
+		$(shell ls ./parser/tokenization/*c) \
+		$(shell ls ./parser/ast/*c) \
 		$(shell ls ./execution/builtins/*c) \
 		$(shell ls ./execution/utils/*c) \
 		$(shell ls ./execution/executables/*c) \

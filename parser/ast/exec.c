@@ -12,7 +12,7 @@
 
 #include "../parser.h"
 
-int	extract_redirect_type(t_token **token);
+int		extract_redirect_type(t_token **token);
 
 t_cmd	*append_cmd(t_cmd *root, t_cmd *new)
 {
