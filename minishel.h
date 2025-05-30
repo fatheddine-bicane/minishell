@@ -100,5 +100,6 @@ void	wait_child(pid_t pid, int *exit_stat);
 // INFO: parcing merged code
 void	is_command(t_cmd *cmd, t_list **my_envp, int *exit_stat);
 void	is_redirection(t_cmd *cmd, t_list **my_envp, int *exit_stat);
+void	ft_save_std_files(bool save);
 
 #endif

@@ -69,15 +69,10 @@ int main(int argc, char **argv, char **envp)
 			if (cmd->type == C_EXEC)
 			{
 				is_command(cmd, &my_envp, &exit_stat);
-				/*if (run_bultins(cmd->u_as.exec.argv, &my_envp, &exit_stat))*/
-				/*{*/
-				/*	continue ;*/
-				/*}*/
 			}
 			else if (cmd->type == C_REDIRECT)
 			{
 				is_redirection(cmd, &my_envp, &exit_stat);
-				printf("redirection\n");
 			}
 			else
 				printf("not a command\n");
