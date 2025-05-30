@@ -22,17 +22,18 @@ bool	is_quote(char *src, size_t current)
 	return (src[current] == '\'' || src[current] == '"');
 }
 
-bool	is_metachar(char *src, size_t current)
+bool	is_metachar(char *src, size_t current, bool is_quoted)
 {
 	if (!src[current])
 		return (false);
-	if (src[current] == ' ' || src[current] == '\t' || src[current] == '\n')
+	if (!is_quoted && (src[current] == ' ' || src[current] == '\t'
+			|| src[current] == '\n'))
 		return (true);
-	if (src[current] == '|' || src[current] == '&')
+	if (!is_quoted && (src[current] == '|' || src[current] == '&'))
 		return (true);
-	if (src[current] == '(' || src[current] == ')')
+	if (!is_quoted && (src[current] == '(' || src[current] == ')'))
 		return (true);
-	if (src[current] == '<' || src[current] == '>')
+	if (!is_quoted && (src[current] == '<' || src[current] == '>'))
 		return (true);
 	return (false);
 }

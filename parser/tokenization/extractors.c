@@ -44,23 +44,23 @@ t_token	*extract_str(char *src, size_t *current, bool single)
 char	*extract_word(char *src, size_t *current)
 {
 	size_t	start;
-	bool	quoted;
+	bool	is_quoted;
 	char	quote;
 
 	start = *current - 1;
-	quoted = false;
+	is_quoted = false;
 	quote = src[start];
 	if (is_quote(src, start))
-		quoted = true;
-	while (match_word(src, current))
+		is_quoted = true;
+	while (match_word(src, current, is_quoted))
 	{
 		if (is_quote(src, (*current) - 1))
 		{
 			quote = src[(*current) - 1];
-			quoted = !quoted;
+			is_quoted = !is_quoted;
 		}
 	}
-	if (quoted)
+	if (is_quoted)
 		return (sn_eprintf("unexpected EOF while looking for matching `%c`\n",
 				quote), NULL);
 	return (sn_substr(src, start, *current - start));
