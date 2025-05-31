@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   export_error.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/07 10:04:08 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/07 10:14:16 by fbicane          ###   ########.fr       */
+/*   Created: 2025/05/31 18:43:12 by fbicane           #+#    #+#             */
+/*   Updated: 2025/05/31 18:49:33 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
- void	ft_env(t_shell *shell)
+void	export_error(t_shell *shell, int error_mssg)
 {
-	t_list *my_envp;
-
-	my_envp = shell->my_envp;
-	while (my_envp)
+	(void)shell;
+	if (1 == error_mssg)
 	{
-		printf("%s\n", (char *)my_envp->content);
-		my_envp = my_envp->next;
+		printf("test");
 	}
-	shell->exit_status = 0;
 }
