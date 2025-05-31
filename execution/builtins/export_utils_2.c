@@ -46,8 +46,11 @@ static bool	ft_equal_in_var(char *variable)
 	return (false);
 }
 
-void	ft_export_utils_1(t_list **my_envp, char *variable)
+void	ft_export_utils_1(t_shell *shell, char *variable)
 {
+	t_list	**my_envp;
+
+	my_envp = &shell->my_envp;
 	if (ft_equal_in_var(variable))
 	{
 		if (ft_to_append(variable))

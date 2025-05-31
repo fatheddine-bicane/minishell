@@ -136,7 +136,7 @@ t_list *ft_set_env(char **envp)
 			continue ;
 			// BUG: the shlvl variable does not update when runing ./minishel (subshell)
 		}
-		ft_lstadd_back(&my_envp, ft_lstnew(ft_strdup((char *)envp[i])));
+		ft_lstadd_back(&my_envp, ft_lstnew(ft_strdup((envp[i]))));
 		i++;
 	}
 	return (my_envp);

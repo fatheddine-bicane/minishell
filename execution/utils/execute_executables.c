@@ -12,9 +12,12 @@
 
 #include "../../minishel.h"
 
-char	**ft_find_path(t_list *my_envp)
+char	**ft_find_path(t_shell *shell)
 {
 	char	*path_var = NULL;
+	t_list *my_envp;
+
+	my_envp = shell->my_envp;
 
 	while (my_envp)
 	{
@@ -50,8 +53,11 @@ static char	*ft_concat_path(char *arr2, char *command)
 	return (str);
 }
 
-void	ft_executable(char **command_args, t_list **my_envp, pid_t pid, bool to_wait, int *exit_stat)
+/*void	ft_executable(char **command_args, t_list **my_envp, pid_t pid, bool to_wait, int *exit_stat)*/
+void	ft_executable(t_shell *shell, pid_t pid, bool to_wait)
 {
+
+	char **com = shell->cmd->u_as.exec.argv;
 
 	if (0 == pid)
 	{
@@ -59,12 +65,12 @@ void	ft_executable(char **command_args, t_list **my_envp, pid_t pid, bool to_wai
 		signal(SIGQUIT, SIG_DFL);
 	}
 
-	if (('.' == command_args[0][0] && '/' == command_args[0][1]) || (ft_strchr(command_args[0], '/')) || ('/' == command_args[0][0]))
+	if (('.' == com[0][0] && '/' == com[0][1]) || (ft_strchr(com[0], '/')) || ('/' == com[0][0]))
 	{
-		if (!access(command_args[0], F_OK | X_OK))
+		if (!access(com[0], F_OK | X_OK))
 		{
 			if (0 == pid)
-				execve(command_args[0], command_args, ft_prep_envp(*my_envp));
+				execve(com[0], com, ft_prep_envp(shell));
 			else if ((0 != pid) && to_wait)
 				waitpid(pid, NULL, 0);
 		}
@@ -76,14 +82,14 @@ void	ft_executable(char **command_args, t_list **my_envp, pid_t pid, bool to_wai
 			}
 			else
 			{
-				(*exit_stat) = 127;
-				perror(command_args[0]);
+				shell->exit_status = 127;
+				perror(com[0]);
 			}
 		}
 	}
 	else
 	{
-		char (**paths) = ft_find_path(*my_envp);
+		char (**paths) = ft_find_path(shell);
 		int (i) = 0;
 		if (NULL == paths) // INFO: protection if path is unseted
 		{
@@ -93,28 +99,28 @@ void	ft_executable(char **command_args, t_list **my_envp, pid_t pid, bool to_wai
 			}
 			else
 			{
-				(*exit_stat) = 127;
-				perror(command_args[0]);
+				shell->exit_status = 127;
+				perror(com[0]);
 			}
 			return;
 		}
 		while (paths[i])
 		{
-			char (*path) = ft_concat_path(paths[i], command_args[0]);
+			char (*path) = ft_concat_path(paths[i], com[0]);
 			if (!access(path, F_OK | X_OK))
 			{
-				free(command_args[0]);
-				command_args[0] = path;
+				free(com[0]);
+				com[0] = path;
 				if (0 == pid)
 				{
-					execve(command_args[0], command_args, ft_prep_envp(*my_envp));
+					execve(com[0], com, ft_prep_envp(shell));
 					free(path);
 					ft_free_arr(paths);
 					exit(127);
 				}
 				else if ((0 != pid) && to_wait)
 				{
-					wait_child(pid, exit_stat);
+					wait_child(pid, shell);
 					/*free(path);*/
 					ft_free_arr(paths);
 					return ;
@@ -126,14 +132,14 @@ void	ft_executable(char **command_args, t_list **my_envp, pid_t pid, bool to_wai
 		ft_free_arr(paths);
 		if (0 == pid)
 		{
-			free_my_envp(my_envp);
+			free_my_envp(&shell->my_envp);
 			exit(127);
 		}
 		else
 		{
-			(*exit_stat) = 127;
+			shell->exit_status = 127;
 			/*ft_free_arr(paths);*/
-			perror(command_args[0]);
+			perror(com[0]);
 		}
 	}
 }

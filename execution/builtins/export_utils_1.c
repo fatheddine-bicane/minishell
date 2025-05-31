@@ -12,14 +12,14 @@
 
 #include "../../minishel.h"
 
-void	ft_sort_myenvp(t_list *my_envp)
+void	ft_sort_myenvp(t_shell *shell)
 {
 	char	**envp_sort;
 	char	*tmp;
-	int		i;
+	/*t_list	*tmp_my_envp = shell->my_envp;*/
 
-	envp_sort = ft_prep_envp(my_envp);
-	i = 0;
+	envp_sort = ft_prep_envp(shell);
+	int (i) = 0;
 	while(envp_sort[i])
 	{
 		int (j) = i + 1;
@@ -93,9 +93,10 @@ void	ft_append_to_varriable(t_list **my_envp, char *variable)
 	}
 }
 
-void	ft_add_variable(t_list **my_envp, char *variable)
+void	ft_add_variable(t_shell *shell, char *variable)
 {
 	int	i;
+	t_list	*my_envp;
 
 	i = 0;
 	bool (found_plus) = false;
@@ -112,5 +113,6 @@ void	ft_add_variable(t_list **my_envp, char *variable)
 		i++;
 	}
 	res[i] = '\0';
-	ft_lstadd_back(my_envp, ft_lstnew(ft_strdup(res)));
+	my_envp = shell->my_envp;
+	ft_lstadd_back(&my_envp, ft_lstnew(ft_strdup(res)));
 }

@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:21:00 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/29 16:52:56 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/31 16:40:01 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,21 @@
 
 int main(int argc, char **argv, char **envp)
 {
-	t_list *my_envp;
+	/*t_list *my_envp;*/
 	t_cmd	*cmd;
-	int		exit_stat = 0;
+	/*int		exit_stat = 0;*/
 
 
 
-	/*t_shell shell;*/
+	t_shell shell;
 
-	/*shell.exit_status = 0;*/
-	/*shell.my_envp = ft_set_env(envp);*/
-	/*shell.cmd = NULL;*/
+	shell.exit_status = 0;
+	shell.my_envp = ft_set_env(envp);
 
 	(void)argc;
 	(void)argv;
 
-	my_envp = ft_set_env(envp);
+	/*my_envp = ft_set_env(envp);*/
 	setup_signals();
 	cmd = NULL;
 	while (1)
@@ -50,7 +49,7 @@ int main(int argc, char **argv, char **envp)
 		if (!rl)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
-			free_my_envp(&my_envp);
+			free_my_envp(&shell.my_envp);
 			exit(0);
 		}
 
@@ -61,19 +60,20 @@ int main(int argc, char **argv, char **envp)
 			add_history(rl);
 			if (cmd == NULL)
 				continue; // INFO: syntax error
+			shell.cmd = cmd;
 			if (cmd->type == C_EXEC)
 			{
-				is_command(cmd, &my_envp, &exit_stat);
-				/*is_command(&shell);*/
+				/*is_command(cmd, &my_envp, &exit_stat);*/
+				is_command(&shell);
 			}
 			else if (cmd->type == C_REDIRECT)
 			{
-				is_redirection(cmd, &my_envp, &exit_stat);
+				is_redirection(&shell);
 			}
-			else if (cmd->type == C_PIPE)
-			{
-				is_pipe(cmd, &my_envp, &exit_stat, 0);
-			}
+			/*else if (cmd->type == C_PIPE)*/
+			/*{*/
+			/*	is_pipe(cmd, &my_envp, &exit_stat, 0);*/
+			/*}*/
 			else
 				printf("not a command\n");
 			ast_free(cmd);

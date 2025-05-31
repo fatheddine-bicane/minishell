@@ -29,6 +29,7 @@ SRCS = 	$(shell ls ./my_library/libft/*.c) \
 		$(shell ls ./parser/libsn/*.c) \
 		$(shell ls ./parser/tokenization/*.c) \
 		$(shell ls ./parser/ast/*.c) \
+		$(shell ls ./execution/throw_error/*.c) \
 		./main.c \
 
 
