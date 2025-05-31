@@ -106,5 +106,6 @@ void	is_command(t_cmd *cmd, t_list **my_envp, int *exit_stat);
 /*void	is_command(t_shell *shell);*/
 void	is_redirection(t_cmd *cmd, t_list **my_envp, int *exit_stat);
 void	ft_save_std_files(bool save);
+void	is_pipe(t_cmd *cmd, t_list **my_envp, int *exit_stat, int depth);
 
 #endif

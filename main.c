@@ -70,6 +70,10 @@ int main(int argc, char **argv, char **envp)
 			{
 				is_redirection(cmd, &my_envp, &exit_stat);
 			}
+			else if (cmd->type == C_PIPE)
+			{
+				is_pipe(cmd, &my_envp, &exit_stat, 0);
+			}
 			else
 				printf("not a command\n");
 			ast_free(cmd);
