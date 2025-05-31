@@ -33,7 +33,6 @@ static bool	ft_variable_exist(t_shell *shell, char *varaible)
 	return (false);
 }
 
-
 static bool	ft_valid_argument(char *variable)
 {
 	int	i;
@@ -41,44 +40,68 @@ static bool	ft_valid_argument(char *variable)
 	i = 0;
 	if (!ft_isalpha(variable[i]) && '_' != variable[i])
 		return (false);
+	i++;
 	while ('=' != variable[i] && variable[i])
 	{
-		if ('+' == variable[i] && '=' != variable[i + 1])
-			return (false);
-		if ('+' == variable[i] && '=' == variable[i + 1])
+		if ('=' == variable[i])
 			break ;
-		if (!ft_isalpha(variable[i]) && !ft_isdigit(variable[i]))
+		if (!ft_isalnum(variable[i]))
 			return (false);
 		i++;
 	}
 	return (true);
 }
 
+static void	ft_sort_myenvp(t_shell *shell)
+{
+	char	**envp_sort;
+	char	*tmp;
+	int		i;
+	int		j;
+
+	envp_sort = ft_prep_envp(shell);
+	i = -1;
+	while(envp_sort[++i])
+	{
+		j = i + 1;
+		while (envp_sort[j])
+		{
+			if (0 < ft_strncmp(envp_sort[i], envp_sort[j], ft_strlen(envp_sort[i])))
+			{
+				tmp = envp_sort[i];
+				envp_sort[i] = envp_sort[j];
+				envp_sort[j] = tmp;
+			}
+			j++;
+		}
+	}
+	i = -1;
+	while (envp_sort[++i])
+		printf("%s\n", envp_sort[i]);
+	ft_free_arr(envp_sort);
+}
+
 void	ft_export(t_shell *shell)
 {
+	int	vars_i;
+
 	if (!shell->cmd->u_as.exec.argv[1]) // INFO: export with no argumets
 		ft_sort_myenvp(shell);
 	else
 	{
-		int (vars_i) = 1;
+		vars_i = 1;
 		while (shell->cmd->u_as.exec.argv[vars_i])
 		{
 			if (!ft_valid_argument(shell->cmd->u_as.exec.argv[vars_i])) // INFO: checking if var name is valid syntax
 			{
-				vars_i++;
-				ft_putstr_fd("not valid argument", 2);
+				export_error(shell, &vars_i);
 				continue;
-				// TODO: error mssg
 			}
 			if (ft_variable_exist(shell, shell->cmd->u_as.exec.argv[vars_i])) // INFO: checking if var name exist in my_envp
 				ft_export_utils_1(shell, shell->cmd->u_as.exec.argv[vars_i]);
 			else
-			{
-				if (ft_to_append(shell->cmd->u_as.exec.argv[vars_i])) // INFO: checking if var need to append (name+=value_to_add)
-					ft_add_variable(shell, shell->cmd->u_as.exec.argv[vars_i]);
-				else
-					ft_lstadd_back(&shell->my_envp, ft_lstnew(ft_strdup(shell->cmd->u_as.exec.argv[vars_i])));
-			}
+				ft_lstadd_back(&shell->my_envp,
+					ft_lstnew(ft_strdup(shell->cmd->u_as.exec.argv[vars_i])));
 			vars_i++;
 		}
 	}
