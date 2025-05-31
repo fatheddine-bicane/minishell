@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/31 16:40:07 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/31 18:44:48 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct s_shell
 	int		exit_status;
 }	t_shell;
 
-// INFO: unset struct
+// NOTE: unset struct
 typedef struct s_unset
 {
 	t_list	*env_to_del;
@@ -51,7 +51,7 @@ typedef struct s_unset
 }	t_unset;
 
 
-// INFO: cd builtin
+// NOTE: cd builtin
 /*-----------------------------------------------*/
 typedef struct s_cd
 {
@@ -59,17 +59,29 @@ typedef struct s_cd
 	char	*oldpwd;
 	t_shell	*shell;
 }	t_cd;
+
 void	ft_cd(t_shell *shell);
 void	cd_error(t_cd *cd, int error_mssg);
 /*-----------------------------------------------*/
+
+// NOTE: echo builtin
+/*-----------------------------------------------*/
+void	ft_echo(t_shell *shell);
+/*-----------------------------------------------*/
+
+// NOTE: exit builtin
+/*-----------------------------------------------------*/
+void	ft_exit(t_shell *shell);
+void	exit_error(t_shell *shell, int error_mssg);
+/*-----------------------------------------------------*/
+
 
 
 // INFO: builtin command
 /*void	ft_cd(char **path, t_list **my_envp, int *exit_stat);*/
 void	ft_pwd(t_shell *shell);
 void	ft_env(t_shell *shell);
-void	ft_echo(t_shell *shell);
-void	ft_exit(t_shell *shell);
+
 void	ft_unset(t_shell *shell);
 
 // INFO: export;
@@ -81,6 +93,7 @@ char	*ft_append_equal(char *variable);
 void	ft_append_to_varriable(t_list **my_envp, char *variable);
 void	ft_add_variable(t_shell *shell, char *variable);
 void	ft_export_utils_1(t_shell *shell, char *variable);
+void	export_error(t_shell *shell, int error_mssg);
 
 
 t_list *ft_set_env(char **envp); //INFO: creat custum envp
