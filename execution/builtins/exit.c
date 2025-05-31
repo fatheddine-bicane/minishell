@@ -26,42 +26,46 @@ bool	argument_is_numeric(char *argument)
 	return (true);
 }
 
-void	ft_exit(int *exit_stat, char **argv, t_list **my_envp)
+/*void	ft_exit(t_shell *shell)*/
+void	ft_exit(t_shell *shell)
 {
 	// TODO: free cmg the ast
-	(void)my_envp;
-	if (!argv[1])
+	if (!shell->cmd->u_as.exec.argv[1])
 	{
-		ft_free_arr(argv);
-		free_my_envp(my_envp);
+		/*free_my_envp();*/
+		ast_free(shell->cmd);
+		free_my_envp(&shell->my_envp);
 		exit(0);
-		(*exit_stat) = 0;
 	}
-	else if (argv[1] && !argv[2])
+	else if (shell->cmd->u_as.exec.argv[1] && !shell->cmd->u_as.exec.argv[2])
 	{
-		if (argument_is_numeric(argv[1]))
+		if (argument_is_numeric(shell->cmd->u_as.exec.argv[1]))
 		{
 			printf("exit\n");
-			ft_free_arr(argv); // TODO: free ast
-			free_my_envp(my_envp);
-			exit(ft_atoi(argv[1]));
+			/*free_my_envp(my_envp);*/
+			ast_free(shell->cmd);
+			free_my_envp(&shell->my_envp);
+			exit(ft_atoi(shell->cmd->u_as.exec.argv[1]));
 		}
 		else
 		{
 			ft_putstr_fd("exit: numeric argument required\n", 2);
+			ast_free(shell->cmd);
+			free_my_envp(&shell->my_envp);
 			exit(255);
 		}
 	}
 	else
 	{
-		if (!argument_is_numeric(argv[1]))
+		if (!argument_is_numeric(shell->cmd->u_as.exec.argv[1]))
 		{
 			ft_putstr_fd("exit: numeric argument required\n", 2);
+			ast_free(shell->cmd);
 			exit(255);
 		}
 		printf("exit\n");
 		ft_putstr_fd("exit: too many arguments\n", 2);
-		(*exit_stat) = 1;
+		shell->exit_status = 1;
 	}
 
 }

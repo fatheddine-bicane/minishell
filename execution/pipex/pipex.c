@@ -25,12 +25,13 @@ int	ft_commands_count(char **commands)
 void	ft_wait_pids(t_list *pids, int *exit_stat)
 {
 	pid_t	pid;
+	(void)*exit_stat;
 
 	while (pids)
 	{
 		pid = ft_atoi((char *)pids->content);
 		/*waitpid(pid, NULL, 0);*/
-		wait_child(pid, exit_stat);
+		/*wait_child(pid, exit_stat);*/
 		pids = pids->next;
 	}
 }

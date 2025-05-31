@@ -13,11 +13,13 @@
 #include "../../minishel.h"
 
 //INFO: this function will transform the envp from a linked list to a cahr ** for the execve()
-char **ft_prep_envp(t_list *my_envp)
+char **ft_prep_envp(t_shell *shell)
 {
 	int		i;
 	char	**arr_envp;
+	t_list	*my_envp;
 
+	my_envp = shell->my_envp;
 	i = ft_lstsize(my_envp);
 	arr_envp = malloc((sizeof(char *) * (i + 1)));
 	if (NULL == arr_envp)

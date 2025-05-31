@@ -12,9 +12,10 @@
 
 #include "../../minishel.h"
 
-static bool	ft_variable_exist(t_list *my_envp, char *varaible)
+static bool	ft_variable_exist(t_shell *shell, char *varaible)
 {
 	int		i;
+	t_list	*tmp;
 
 	i = 0;
 	while (varaible[i] && '=' != varaible[i])
@@ -22,11 +23,12 @@ static bool	ft_variable_exist(t_list *my_envp, char *varaible)
 
 	if ('+' == varaible[i - 1])
 		i--;
-	while (my_envp)
+	tmp = shell->my_envp;
+	while (tmp)
 	{
-		if (!ft_strncmp(my_envp->content, varaible, i))
+		if (!ft_strncmp(tmp->content, varaible, i))
 			return (true);
-		my_envp = my_envp->next;
+		tmp = tmp->next;
 	}
 	return (false);
 }
@@ -52,32 +54,33 @@ static bool	ft_valid_argument(char *variable)
 
 
 
-void	ft_export(t_list **my_envp, char **variables, int *exit_stat)
+/*void	ft_export(t_list **my_envp, char **variables, int *exit_stat)*/
+void	ft_export(t_shell *shell)
 {
-	if (!variables[1])
-		ft_sort_myenvp(*my_envp);
+	if (!shell->cmd->u_as.exec.argv[1])
+		ft_sort_myenvp(shell);
 	else
 	{
 		int (vars_i) = 1;
-		while (variables[vars_i])
+		while (shell->cmd->u_as.exec.argv[vars_i])
 		{
-			if (!ft_valid_argument(variables[vars_i]) == false)
+			if (!ft_valid_argument(shell->cmd->u_as.exec.argv[vars_i]) == false)
 			{
 				vars_i++;
 				continue;
 				// TODO: error mssg
 			}
-			if (ft_variable_exist(*my_envp, variables[vars_i]))
-				ft_export_utils_1(my_envp, variables[vars_i]);
+			if (ft_variable_exist(shell, shell->cmd->u_as.exec.argv[vars_i]))
+				ft_export_utils_1(shell, shell->cmd->u_as.exec.argv[vars_i]);
 			else
 			{
-				if (ft_to_append(variables[vars_i]))
-					ft_add_variable(my_envp, variables[vars_i]);
+				if (ft_to_append(shell->cmd->u_as.exec.argv[vars_i]))
+					ft_add_variable(shell, shell->cmd->u_as.exec.argv[vars_i]);
 				else
-					ft_lstadd_back(my_envp, ft_lstnew(variables[vars_i]));
+					ft_lstadd_back(&shell->my_envp, ft_lstnew(shell->cmd->u_as.exec.argv[vars_i]));
 			}
 			vars_i++;
 		}
 	}
-	(*exit_stat) = 0;
+	shell->exit_status = 0;
 }

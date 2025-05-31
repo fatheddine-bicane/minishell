@@ -12,44 +12,46 @@
 
 #include "../../minishel.h"
 
-void	ft_handl_n(char **arr, int *j, bool *new_line) // INFO: handle -n flag
+static bool	handl_n(char **argv, int *i) // INFO: handle -n flag
 {
-	int	i;
+	int	j;
 
-	i = 0;
-	while ('-' == arr[*j][0] && arr[*j])
-	{
-		i = 1;
-		while ('n' == arr[*j][i] && arr[*j][i])
-			i++;
-		if (arr[*j][i])
-		{
-			(*j)--;
-			break;
-		}
-		else
-			(*new_line) = false;
-		(*j)++;
-	}
+	if (!argv[*i])
+		return (true);
+	j = 0;
+	if ('-' != argv[1][j++])
+		return (true);
+	while ('n' == argv[1][j])
+		j++;
+	if (argv[1][j])
+		return (true);
+	(*i)++;
+	return (false);
 }
 
 void	ft_print_var(int len, char *variable, t_list *my_envp)
 {
-	while (my_envp)
+	t_list *tmp;
+
+	tmp = my_envp;
+	while (tmp)
 	{
-		if (!ft_strncmp(variable, (char *)my_envp->content, len))
+		if (!ft_strncmp(variable, (char *)tmp->content, len))
 		{
-			printf("%s", (char *)my_envp->content + len + 1);
+			printf("%s", (char *)tmp->content + len + 1);
 			return;
 		}
-		my_envp = my_envp->next;
+		tmp = tmp->next;
 	}
 	if (1 == ft_strlen(variable))
 		printf("$");
 }
 
-void	ft_expand_var(char *str, int *j, t_list *my_envp)// INFO: expand the var from envp
+void	ft_expand_var(char *str, int *j, t_shell *shell)// INFO: expand the var from envp
 {
+	t_list *my_envp;
+
+	my_envp = shell->my_envp;
 	int	i;
 
 	if (1 == ft_strlen(str))
@@ -66,38 +68,36 @@ void	ft_expand_var(char *str, int *j, t_list *my_envp)// INFO: expand the var fr
 	(*j)++;
 }
 
-void	ft_echo(char **echo_arg, t_list *my_envp, int *exit_stat)
+void	ft_echo(t_shell *shell)
 {
 	int		i;
 	bool	new_line;
 
 	i = 1;
-	new_line = true;
-	ft_handl_n(echo_arg, &i, &new_line);
-	while (echo_arg[i])
+	new_line = handl_n(shell->cmd->u_as.exec.argv, &i);
+	while (shell->cmd->u_as.exec.argv[i])
 	{
-
-		if ('$' == echo_arg[i][0] && '?' == echo_arg[i][1])
+		if ('$' == shell->cmd->u_as.exec.argv[i][0] && '?' == shell->cmd->u_as.exec.argv[i][1])
 		{
-			printf("%d", (*exit_stat));
-			if (echo_arg[i + 1])
+			printf("%d", shell->exit_status);
+			if (shell->cmd->u_as.exec.argv[i + 1])
 				printf(" ");
 			i++;
 			continue ;
 		}
-		else if ('$' == echo_arg[i][0])
+		else if ('$' == shell->cmd->u_as.exec.argv[i][0])
 		{
-			ft_expand_var(echo_arg[i], &i, my_envp);
-			if (echo_arg[i + 1])
+			ft_expand_var(shell->cmd->u_as.exec.argv[i], &i, shell);
+			if (shell->cmd->u_as.exec.argv[i + 1])
 				printf(" ");
 			continue ;
 		}
-		printf("%s", echo_arg[i]);
-		if (echo_arg[i + 1])
+		printf("%s", shell->cmd->u_as.exec.argv[i]);
+		if (shell->cmd->u_as.exec.argv[i + 1])
 			printf(" ");
 		i++;
 	}
 	if (new_line)
 		printf("\n");
-	(*exit_stat) = 0;
+	shell->exit_status = 0;
 }

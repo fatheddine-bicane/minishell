@@ -12,21 +12,20 @@
 
 #include "../../minishel.h"
 
-void	is_command(t_cmd *cmd, t_list **my_envp, int *exit_stat)
-/*void	is_command(t_shell *shell)*/
+void	is_command(t_shell *shell)
 {
-	if (ft_is_builtin(cmd->u_as.exec.argv[0]))
+	if (ft_is_builtin(shell->cmd->u_as.exec.argv[0]))
 	{
-		run_bultins(cmd->u_as.exec.argv, my_envp, exit_stat);
-		/*run_bultins(shell);*/
+		/*run_bultins(cmd->u_as.exec.argv, my_envp, exit_stat);*/
+		run_bultins(shell);
 	}
 	else
 	{
-		ft_apply_comm(cmd->u_as.exec.argv, my_envp, exit_stat);
+		ft_apply_comm(shell);
 	}
 }
 
-void	is_redirection(t_cmd *cmd, t_list **my_envp, int *exit_stat)
+void	is_redirection(t_shell *shell)
 {
 	t_cmd	*tmp;
 	t_str_builder *sb;
@@ -35,11 +34,10 @@ void	is_redirection(t_cmd *cmd, t_list **my_envp, int *exit_stat)
 	ft_save_std_files(true);
 
 
-	tmp = cmd;
+	tmp = shell->cmd;
 	sb = sb_create(10);
 	if (sb == NULL)
 		return;
-	/*[">", "file", '' "<" "file"] ["> file", "< file"]*/
 	while (tmp != NULL && tmp->type == C_REDIRECT)
 	{
 		sb_append_str(sb, token_type_str(tmp->u_as.redirect.type), 0);
@@ -53,7 +51,10 @@ void	is_redirection(t_cmd *cmd, t_list **my_envp, int *exit_stat)
 
 	if (tmp)
 	{
-		is_command(tmp, my_envp, exit_stat);
+		t_cmd *tmp2 = shell->cmd;
+		shell->cmd = tmp;
+		is_command(shell);
+		shell->cmd = tmp2;
 	}
 	ft_save_std_files(false);
 }
@@ -85,124 +86,124 @@ void	is_redirection(t_cmd *cmd, t_list **my_envp, int *exit_stat)
 
 
 
-static void	ft_wait_pids(t_list *pids, int *exit_stat)
-{
-	pid_t	pid;
-
-	while (pids)
-	{
-		pid = ft_atoi((char *)pids->content);
+/*static void	ft_wait_pids(t_list *pids, int *exit_stat)*/
+/*{*/
+/*	pid_t	pid;*/
+/**/
+/*	while (pids)*/
+/*	{*/
+/*		pid = ft_atoi((char *)pids->content);*/
 		/*waitpid(pid, NULL, 0);*/
-		wait_child(pid, exit_stat);
-		pids = pids->next;
-	}
-}
+/*		wait_child(pid, exit_stat);*/
+/*		pids = pids->next;*/
+/*	}*/
+/*}*/
 
 
-void	is_pipe(t_cmd *cmd, t_list **my_envp, int *exit_stat, int depth)
-{
-	static pid_t	pid;
-	static int		prev_pipe[2]; // INFO: hold pipes fds
-	static int		fd[2];
-	static t_list	*pids;
-
-
-
-	if (depth == 0)
-	{
-		pids = NULL;
-		prev_pipe[0] = -1;
-		prev_pipe[1] = -1;
-	}
-
-
-	if (cmd->u_as.pipe.left->type == C_PIPE)
-	{
-		is_pipe(cmd->u_as.pipe.left, my_envp, exit_stat, depth + 1);
-	}
-
-	if (0 != depth)
-	{
-		if (-1 == pipe(fd))
-		{
-			(*exit_stat) = -1;
-			perror("pipe()");
-			return;
-		}
-	}
-
-	pid = fork();
-	if (pid != 0)
-	{
-		ft_lstadd_back(&pids, ft_lstnew(ft_itoa(pid))); // INFO: save all pids
-	}
-
-	if (0 == pid)
-	{
-		if (-1  != prev_pipe[0])
-		{
-			if (-1 == dup2(prev_pipe[0], STDIN_FILENO))
-				return; // TODO: error mssg
-		}
-		if (0 != depth)
-		{
-			if (-1 == dup2(fd[1], STDOUT_FILENO))
-				return; // TODO: error mssg
-		}
-
-		if (-1 != prev_pipe[0])
-			close(prev_pipe[0]);
-		if (-1 != prev_pipe[1])
-			close(prev_pipe[1]);
-
-		if (0 != depth)
-		{
-			close(fd[0]);
-			close(fd[1]);
-		}
-
-
-
-
-		//INFO: execution
-		if (cmd->u_as.pipe.left->type == C_REDIRECT)
-		{
-			// call redirect
-			is_redirection(cmd->u_as.pipe.left, my_envp, exit_stat);
-		}
+/*void	is_pipe(t_cmd *cmd, t_list **my_envp, int *exit_stat, int depth)*/
+/*{*/
+/*	static pid_t	pid;*/
+/*	static int		prev_pipe[2]; // INFO: hold pipes fds*/
+/*	static int		fd[2];*/
+/*	static t_list	*pids;*/
+/**/
+/**/
+/**/
+/*	if (depth == 0)*/
+/*	{*/
+/*		pids = NULL;*/
+/*		prev_pipe[0] = -1;*/
+/*		prev_pipe[1] = -1;*/
+/*	}*/
+/**/
+/**/
+/*	if (cmd->u_as.pipe.left->type == C_PIPE)*/
+/*	{*/
+/*		is_pipe(cmd->u_as.pipe.left, my_envp, exit_stat, depth + 1);*/
+/*	}*/
+/**/
+/*	if (0 != depth)*/
+/*	{*/
+/*		if (-1 == pipe(fd))*/
+/*		{*/
+/*			(*exit_stat) = -1;*/
+/*			perror("pipe()");*/
+/*			return;*/
+/*		}*/
+/*	}*/
+/**/
+/*	pid = fork();*/
+/*	if (pid != 0)*/
+/*	{*/
+/*		ft_lstadd_back(&pids, ft_lstnew(ft_itoa(pid))); // INFO: save all pids*/
+/*	}*/
+/**/
+/*	if (0 == pid)*/
+/*	{*/
+/*		if (-1  != prev_pipe[0])*/
+/*		{*/
+/*			if (-1 == dup2(prev_pipe[0], STDIN_FILENO))*/
+/*				return; // TODO: error mssg*/
+/*		}*/
+/*		if (0 != depth)*/
+/*		{*/
+/*			if (-1 == dup2(fd[1], STDOUT_FILENO))*/
+/*				return; // TODO: error mssg*/
+/*		}*/
+/**/
+/*		if (-1 != prev_pipe[0])*/
+/*			close(prev_pipe[0]);*/
+/*		if (-1 != prev_pipe[1])*/
+/*			close(prev_pipe[1]);*/
+/**/
+/*		if (0 != depth)*/
+/*		{*/
+/*			close(fd[0]);*/
+/*			close(fd[1]);*/
+/*		}*/
+/**/
+/**/
+/**/
+/**/
+/*		//INFO: execution*/
+/*		if (cmd->u_as.pipe.left->type == C_REDIRECT)*/
+/*		{*/
+/*			// call redirect*/
+/*			is_redirection(shell);*/
+/*		}*/
 		/*if (cmd->u_as.pipe.left->type == C_GROUP)*/
 		/*{*/
 		/*	// call subshell*/
 		/*}*/
-		if (cmd->u_as.pipe.left->type == C_EXEC)
-		{
-			// call exec
-			is_command(cmd->u_as.pipe.left, my_envp, exit_stat);
-		}
-
-
-		if (cmd->u_as.pipe.right->type == C_EXEC)
-			is_command(cmd->u_as.pipe.right, my_envp, exit_stat);
-		if (cmd->u_as.pipe.right->type == C_REDIRECT)
-			is_redirection(cmd->u_as.pipe.right, my_envp, exit_stat);
-	}
-
-
-	else
-	{
-		if (-1 != prev_pipe[0])
-			close(prev_pipe[0]);
-		if (-1 != prev_pipe[1])
-			close(prev_pipe[1]);
-
-		if (0 != depth)
-		{
-			prev_pipe[0] = fd[0];
-			prev_pipe[1] = fd[1];
-		}
-	}
-	ft_wait_pids(pids, exit_stat); // TODO: check if it waits for pids
-}
+/*		if (cmd->u_as.pipe.left->type == C_EXEC)*/
+/*		{*/
+/*			// call exec*/
+/*			is_command(cmd->u_as.pipe.left, my_envp, exit_stat);*/
+/*		}*/
+/**/
+/**/
+/*		if (cmd->u_as.pipe.right->type == C_EXEC)*/
+/*			is_command(cmd->u_as.pipe.right, my_envp, exit_stat);*/
+/*		if (cmd->u_as.pipe.right->type == C_REDIRECT)*/
+/*			is_redirection(cmd->u_as.pipe.right, my_envp, exit_stat);*/
+/*	}*/
+/**/
+/**/
+/*	else*/
+/*	{*/
+/*		if (-1 != prev_pipe[0])*/
+/*			close(prev_pipe[0]);*/
+/*		if (-1 != prev_pipe[1])*/
+/*			close(prev_pipe[1]);*/
+/**/
+/*		if (0 != depth)*/
+/*		{*/
+/*			prev_pipe[0] = fd[0];*/
+/*			prev_pipe[1] = fd[1];*/
+/*		}*/
+/*	}*/
+/*	ft_wait_pids(pids, exit_stat); // TODO: check if it waits for pids*/
+/*}*/
 /*{*/
 /*	t_cmd *tmp;*/
 /**/

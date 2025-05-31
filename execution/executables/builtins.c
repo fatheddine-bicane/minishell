@@ -34,35 +34,36 @@ void	save_std_files(bool save)
 	}
 }
 
-void	run_bultins(char **argv, t_list **my_envp, int *exit_stat)
+/*void	run_bultins(char **argv, t_list **my_envp, int *exit_stat)*/
+void	run_bultins(t_shell *shell)
 {
-	if (!ft_strncmp("unset", argv[0], 5))
+	if (!ft_strncmp("unset", shell->cmd->u_as.exec.argv[0], 5))
 	{
-		ft_unset(my_envp, argv);
+		ft_unset(shell);
 	}
-	else if (!ft_strncmp("cd", argv[0], 2))
+	else if (!ft_strncmp("cd", shell->cmd->u_as.exec.argv[0], 2))
 	{
-		ft_cd(argv, my_envp, exit_stat);
+		ft_cd(shell);
 	}
-	else if (!ft_strncmp("pwd", argv[0], 3))
+	else if (!ft_strncmp("pwd", shell->cmd->u_as.exec.argv[0], 3))
 	{
-		ft_pwd(exit_stat);
+		ft_pwd(shell);
 	}
-	else if (!ft_strncmp("env", argv[0], 3))
+	else if (!ft_strncmp("env", shell->cmd->u_as.exec.argv[0], 3))
 	{
-		ft_env((*my_envp), exit_stat);
+		ft_env(shell);
 	}
-	else if (!ft_strncmp("echo", argv[0], 4))
+	else if (!ft_strncmp("echo", shell->cmd->u_as.exec.argv[0], 4))
 	{
-		ft_echo(argv, *my_envp, exit_stat);
+		ft_echo(shell);
 	}
-	else if (!ft_strncmp("exit", argv[0], 4))
+	else if (!ft_strncmp("exit", shell->cmd->u_as.exec.argv[0], 4))
 	{
-		ft_exit(exit_stat, argv, my_envp);
+		ft_exit(shell);
 	}
-	else if (!ft_strncmp("export", argv[0], 6))
+	else if (!ft_strncmp("export", shell->cmd->u_as.exec.argv[0], 6))
 	{
-		ft_export(my_envp, argv, exit_stat);
+		ft_export(shell);
 	}
 	/*ft_free_arr(argv);*/
 }

@@ -14,45 +14,48 @@
 
 void	ft_exec_builtins(char **command_arg, t_list **my_envp, int *exit_stat)
 {
-	if (!ft_is_builtin(command_arg[0]))
-	{
-		ft_free_arr(command_arg);
-		return ;
-	}
-	if (0 == ft_strncmp(command_arg[0], "echo", 4))
-	{
-		ft_echo(command_arg, (*my_envp), exit_stat);
-		exit(*exit_stat);
-	}
-	else if (0 == ft_strncmp(command_arg[0], "cd", 2))
-	{
-		ft_cd(command_arg, my_envp, exit_stat);
-		exit(*exit_stat);
-	}
-	else if (0 == ft_strncmp(command_arg[0], "pwd", 3))
-	{
-		ft_pwd(exit_stat);
-		exit(*exit_stat);
-	}
-	else if (0 == ft_strncmp(command_arg[0], "export", 6))
-	{
-		ft_export(my_envp, command_arg, exit_stat);
-		exit(*exit_stat);
-	}
-	else if (0 == ft_strncmp(command_arg[0], "unset", 5))
-	{
-		ft_unset(my_envp, command_arg); // TODO: check argument 0
-		exit(*exit_stat);
-	}
-	else if (0 == ft_strncmp(command_arg[0], "env", 3))
-	{
-		ft_env(*my_envp, exit_stat);
-		exit(*exit_stat);
-	}
-	else if (0 == ft_strncmp(command_arg[0], "exit", 4))
-	{
-		ft_exit(exit_stat, command_arg, my_envp);
-		exit(*exit_stat);
-	}
-	// TODO: free used memory (no execve to clean)
+	(void)command_arg;
+	(void)my_envp;
+	(void)exit_stat;
+	/*if (!ft_is_builtin(command_arg[0]))*/
+	/*{*/
+	/*	ft_free_arr(command_arg);*/
+	/*	return ;*/
+	/*}*/
+	/*if (0 == ft_strncmp(command_arg[0], "echo", 4))*/
+	/*{*/
+	/*	ft_echo(command_arg, (*my_envp), exit_stat);*/
+	/*	exit(*exit_stat);*/
+	/*}*/
+	/*else if (0 == ft_strncmp(command_arg[0], "cd", 2))*/
+	/*{*/
+	/*	ft_cd(command_arg, my_envp, exit_stat);*/
+	/*	exit(*exit_stat);*/
+	/*}*/
+	/*else if (0 == ft_strncmp(command_arg[0], "pwd", 3))*/
+	/*{*/
+	/*	ft_pwd(exit_stat);*/
+	/*	exit(*exit_stat);*/
+	/*}*/
+	/*else if (0 == ft_strncmp(command_arg[0], "export", 6))*/
+	/*{*/
+	/*	ft_export(my_envp, command_arg, exit_stat);*/
+	/*	exit(*exit_stat);*/
+	/*}*/
+	/*else if (0 == ft_strncmp(command_arg[0], "unset", 5))*/
+	/*{*/
+	/*	ft_unset(my_envp, command_arg); // TODO: check argument 0*/
+	/*	exit(*exit_stat);*/
+	/*}*/
+	/*else if (0 == ft_strncmp(command_arg[0], "env", 3))*/
+	/*{*/
+	/*	ft_env(*my_envp, exit_stat);*/
+	/*	exit(*exit_stat);*/
+	/*}*/
+	/*else if (0 == ft_strncmp(command_arg[0], "exit", 4))*/
+	/*{*/
+	/*	ft_exit(exit_stat, command_arg, my_envp);*/
+	/*	exit(*exit_stat);*/
+	/*}*/
+	/*// TODO: free used memory (no execve to clean)*/
 }
