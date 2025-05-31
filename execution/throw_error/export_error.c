@@ -12,11 +12,9 @@
 
 #include "../../minishel.h"
 
-void	export_error(t_shell *shell, int error_mssg)
+void	export_error(t_shell *shell, int *vars_i)
 {
-	(void)shell;
-	if (1 == error_mssg)
-	{
-		printf("test");
-	}
+		ft_putstr_fd(shell->cmd->u_as.exec.argv[*vars_i], 2);
+		ft_putstr_fd(": not a valid identifier\n", 2);
+		(*vars_i)++;
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export_utils_2.c                                   :+:      :+:    :+:   */
+/*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:38:03 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/17 15:47:25 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/01 00:22:54 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,5 @@ void	ft_export_utils_1(t_shell *shell, char *variable)
 
 	my_envp = &shell->my_envp;
 	if (ft_equal_in_var(variable))
-	{
-		if (ft_to_append(variable))
-			ft_append_to_varriable(my_envp, variable);
-		else
-			ft_update_var(my_envp, variable);
-	}
+		ft_update_var(my_envp, variable);
 }

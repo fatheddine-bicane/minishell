@@ -6,21 +6,21 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 15:55:55 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/16 14:17:15 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/01 00:26:51 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
+// INFO: check first node
 static bool	ft_first_node(t_unset *unset, t_shell *shell)
 {
-	// INFO: check first node
 	unset->env_cont = (char *)shell->my_envp->content;
 	unset->i = 0;
 	while (unset->env_cont[unset->i] && unset->env_cont[unset->i] != '=')
 		unset->i++;
-
-	if (!ft_strncmp(unset->env_cont, shell->cmd->u_as.exec.argv[unset->v_i], unset->i))
+	if (!ft_strncmp(unset->env_cont,
+			shell->cmd->u_as.exec.argv[unset->v_i], unset->i))
 	{
 		unset->env_to_del = shell->my_envp;
 		shell->my_envp = shell->my_envp->next;
@@ -31,9 +31,9 @@ static bool	ft_first_node(t_unset *unset, t_shell *shell)
 	return (false);
 }
 
+// INFO: check the rest nodes
 static int	ft_rest_nodes(t_unset *unset, t_shell *shell)
 {
-	// INFO: check the rest nodes
 	unset->tmp_envp = shell->my_envp;
 	while (unset->tmp_envp)
 	{
@@ -43,7 +43,8 @@ static int	ft_rest_nodes(t_unset *unset, t_shell *shell)
 		unset->i = 0;
 		while (unset->env_cont[unset->i] && unset->env_cont[unset->i] != '=')
 			unset->i++;
-		if (!ft_strncmp(unset->env_cont, shell->cmd->u_as.exec.argv[unset->v_i], unset->i))
+		if (!ft_strncmp(unset->env_cont,
+				shell->cmd->u_as.exec.argv[unset->v_i], unset->i))
 		{
 			unset->env_to_del = unset->tmp_envp->next;
 			unset->tmp_envp->next = unset->tmp_envp->next->next;
@@ -63,11 +64,9 @@ void	ft_unset(t_shell *shell)
 	int		check;
 
 	if (NULL == shell->cmd->u_as.exec.argv)
-		return;
-
+		return ;
 	unset.v_i = 1;
 	unset.skip_loop = false;
-
 	while (shell->cmd->u_as.exec.argv[unset.v_i])
 	{
 		if (ft_first_node(&unset, shell))

@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:34:38 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/30 18:54:20 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/01 00:29:03 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static bool	handl_n(char **argv, int *i) // INFO: handle -n flag
 
 void	ft_print_var(int len, char *variable, t_list *my_envp)
 {
-	t_list *tmp;
+	t_list	*tmp;
 
 	tmp = my_envp;
 	while (tmp)
@@ -39,7 +39,7 @@ void	ft_print_var(int len, char *variable, t_list *my_envp)
 		if (!ft_strncmp(variable, (char *)tmp->content, len))
 		{
 			printf("%s", (char *)tmp->content + len + 1);
-			return;
+			return ;
 		}
 		tmp = tmp->next;
 	}
@@ -47,13 +47,13 @@ void	ft_print_var(int len, char *variable, t_list *my_envp)
 		printf("$");
 }
 
-void	ft_expand_var(char *str, int *j, t_shell *shell)// INFO: expand the var from envp
+// INFO: expand the var from envp
+void	ft_expand_var(char *str, int *j, t_shell *shell)
 {
-	t_list *my_envp;
+	t_list	*my_envp;
+	int		i;
 
 	my_envp = shell->my_envp;
-	int	i;
-
 	if (1 == ft_strlen(str))
 	{
 		printf("$");
