@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 17:22:24 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/20 17:22:40 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/01 18:12:03 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ char	*random_name(void)
 	return (file_name);
 }
 
+
+// TODO: maybe fock to fix signals
 void	ft_here_doc(char *delimiter)
 {
 	char	*input;

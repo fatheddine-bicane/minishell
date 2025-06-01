@@ -1,0 +1,81 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executable_error.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/01 11:35:10 by fbicane           #+#    #+#             */
+/*   Updated: 2025/06/01 13:03:14 by fbicane          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../minishel.h"
+
+void	executable_error(t_shell *shell, int error_mssg, char **prep_envp)
+{
+	if (1 == error_mssg)
+	{
+		free_my_envp(&shell->my_envp);
+		ast_free(shell->cmd);
+		ft_free_arr(prep_envp);
+		exit(127);
+	}
+	else if (2 == error_mssg)
+	{
+		free_my_envp(&shell->my_envp);
+		ast_free(shell->cmd);
+		exit(127);
+	}
+	else if (3 == error_mssg)
+	{
+		shell->exit_status = 127;
+		perror(shell->cmd->u_as.exec.argv[0]);
+	}
+}
+
+void	executable_error_2(t_shell *shell, t_executable *executable, int error_mssg)
+{
+	if (4 == error_mssg)
+	{
+		free_my_envp(&shell->my_envp);
+		ast_free(shell->cmd);
+		exit(127);
+	}
+	else if (5 == error_mssg)
+	{
+		ft_free_arr(executable->paths);
+		shell->exit_status = 127;
+		ft_putstr_fd(shell->cmd->u_as.exec.argv[0], 2);
+		ft_putstr_fd(":  No such file or director\n", 2);
+	}
+	else if (6 == error_mssg)
+	{
+		free(executable->path);
+		ft_free_arr(executable->paths);
+		free_my_envp(&shell->my_envp);
+		ast_free(shell->cmd);
+		exit(127);
+	}
+}
+
+void	executable_error_3(t_shell *shell, t_executable *executable, int error_mssg, pid_t pid)
+{
+	if (7 == error_mssg)
+	{
+		wait_child(pid, shell);
+		ft_free_arr(executable->paths);
+	}
+	else if (8 == error_mssg)
+	{
+		ast_free(shell->cmd);
+		free_my_envp(&shell->my_envp);
+		exit(127);
+	}
+	else if (9 == error_mssg)
+	{
+		shell->exit_status = 127;
+		ft_putstr_fd(shell->cmd->u_as.exec.argv[0], 2);
+		ft_putstr_fd(":  No such file or director\n", 2);
+	}
+}

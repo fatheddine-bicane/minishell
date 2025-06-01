@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 10:18:48 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/21 10:33:46 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/01 12:24:26 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,27 @@ void	sigint_handler(int signal)
 
 void	setup_signals(void)
 {
-	struct sigaction signals;
+	struct sigaction	signals;
 
-	signals.sa_handler = sigint_handler;
 	sigemptyset(&signals.sa_mask);
 	signals.sa_flags = SA_RESTART;
+	signals.sa_handler = sigint_handler;
 	sigaction(SIGINT, &signals, NULL);
 	signals.sa_handler = SIG_IGN;
 	sigaction(SIGQUIT, &signals, NULL);
 	/*signal(SIGINT, sigint_handler);*/
+}
+
+void	setup_signals_child(void)
+{
+	struct sigaction	signals;
+
+	sigemptyset(&signals.sa_mask);
+	signals.sa_flags = SA_RESTART;
+	signals.sa_handler = SIG_DFL;
+	sigaction(SIGINT, &signals, NULL);
+	signals.sa_handler = SIG_DFL;
+	sigaction(SIGQUIT, &signals, NULL);
 }
 
 void	ignore_signals_parrent(void)
