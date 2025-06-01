@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 15:37:58 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 19:46:50 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/01 23:33:48 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,20 +69,6 @@ void	free_pipex(t_pipex **pipex)
 	}
 }
 
-
-void	wait_pids(t_list *pids, t_shell *shell)
-{
-	pid_t	pid;
-
-	while (pids)
-	{
-		pid = ft_atoi((char *)pids->content);
-		waitpid(pid, NULL, 0);
-		wait_child(pid, shell);
-		pids = pids->next;
-	}
-}
-
 void	is_pipe(t_shell *shell)
 {
 	t_pipex	*pipex = NULL;
@@ -95,7 +81,8 @@ void	is_pipe(t_shell *shell)
 	pid_t	pid;
 	int		prev_pipe[2] = {-1, -1}; // INFO: hold pipes fds
 	int		fd[2];
-	t_list	*pids = NULL;
+	t_wait_pids	*pids = NULL;
+
 
 
 	while(tmp)
@@ -107,7 +94,8 @@ void	is_pipe(t_shell *shell)
 				return ; // TODO: error mssg
 		}
 		pid = fork();
-		ft_lstadd_back(&pids, ft_lstnew(ft_itoa(pid))); // INFO: save all pids
+		if (0 != pid)
+			add_pid(&pids, pid);
 		if (0 == pid)
 		{
 			if (-1 != prev_pipe[0]) // INFO: read from pipe if not first command
@@ -130,12 +118,36 @@ void	is_pipe(t_shell *shell)
 				close(fd[1]);
 			}
 
-			if (C_EXEC == tmp->cmd->type)
-				is_command(shell, false, pid);
-			if (C_REDIRECT == tmp->cmd->type)
-				is_redirection(shell, false, pid);
-			// TODO: execute the command
 		}
+		t_cmd *parent = shell->cmd;
+		shell->cmd = tmp->cmd;
+		if (C_EXEC == tmp->cmd->type)
+		{
+			is_command(shell, false, pid);
+			if (0 == pid)
+			{
+				free_pipex(&pipex);
+				ast_free(parent);
+				exit(shell->exit_status);
+			}
+			shell->cmd = parent;
+			/*if (parent->u_as.pipe.left == tmp->cmd)*/
+			/*	parent->u_as.pipe.left = NULL;*/
+			/*if (parent->u_as.pipe.right == tmp->cmd)*/
+			/*	parent->u_as.pipe.right = NULL;*/
+			/*ast_free(parent);*/
+		}
+		if (C_REDIRECT == tmp->cmd->type)
+		{
+			is_redirection(shell, false, pid);
+			if (0 == pid)
+			{
+				ast_free(parent);
+				exit(shell->exit_status);
+			}
+			shell->cmd = parent;
+		}
+		// TODO: execute the command
 
 
 
@@ -155,6 +167,6 @@ void	is_pipe(t_shell *shell)
 		tmp = tmp->next;
 	}
 
-	wait_pids(pids, shell); // TODO: check if it waits for pids
+	wait_pids(&pids, shell); // TODO: check if it waits for pids
 	free_pipex(&pipex);
 }

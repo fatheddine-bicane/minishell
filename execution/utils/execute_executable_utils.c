@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 12:02:30 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 13:02:31 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/01 22:18:01 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,18 @@ static char	*ft_concat_path(char *arr2, char *command)
 
 static void	path_is_null(pid_t pid, t_shell *shell, t_executable *exec)
 {
-		if (0 == pid)
-			return (executable_error_2(shell, exec, 4));
-		else
-			return (executable_error_2(shell, exec, 5));
+	if (0 == pid)
+		return (executable_error_2(shell, exec, 4));
+	else
+		return (executable_error_2(shell, exec, 5));
+}
+
+void	path_is_null_p(pid_t pid, t_shell *shell, t_executable *exec)
+{
+	if (0 == pid)
+		return (pipe_error_2(shell, 4, exec));
+	else
+		return (pipe_error_2(shell, 5, exec));
 }
 
 static void	comm_path_found(pid_t pid, t_shell *shell, t_executable *exec, bool to_wait)
@@ -68,10 +76,14 @@ static void	comm_path_found(pid_t pid, t_shell *shell, t_executable *exec, bool 
 	if (0 == pid)
 	{
 		execve(exec->com[0], exec->com, ft_prep_envp(shell));
-		return (executable_error_2(shell, exec, 6));
+		if (to_wait)
+			return (executable_error_2(shell, exec, 6));
+		return (pipe_error_2(shell, 6, exec));
 	}
 	else if ((0 != pid) && to_wait)
 		return (executable_error_3(shell, exec, 7, pid));
+	else if (0 != pid && !to_wait)
+		return (ft_free_arr(exec->paths));
 }
 
 void	command_is_path(pid_t pid, t_shell *shell, bool to_wait)
@@ -86,7 +98,9 @@ void	command_is_path(pid_t pid, t_shell *shell, bool to_wait)
 		{
 			prep_envp = ft_prep_envp(shell);
 			execve(com[0], com, prep_envp);
-			executable_error(shell, 1, prep_envp);
+			if (to_wait)
+				executable_error(shell, 1, prep_envp);
+			pipe_error(shell, 1, prep_envp);
 		}
 		else if ((0 != pid) && to_wait)
 			waitpid(pid, NULL, 0);
@@ -94,9 +108,17 @@ void	command_is_path(pid_t pid, t_shell *shell, bool to_wait)
 	else
 	{
 		if (0 == pid)
-			executable_error(shell, 2, NULL);
+		{
+			if (to_wait)
+				executable_error(shell, 2, NULL);
+			pipe_error(shell, 2, NULL);
+		}
 		else
-			executable_error(shell, 3, NULL);
+		{
+			if (to_wait)
+				executable_error(shell, 3, NULL);
+			pipe_error(shell, 3, NULL);
+		}
 	}
 }
 
@@ -108,7 +130,11 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 	exec.paths = ft_find_path(shell);
 	exec.i = 0;
 	if (NULL == exec.paths) // INFO: protection if path is unseted
-		return (path_is_null(pid, shell, &exec));
+	{
+		if (to_wait)
+			return (path_is_null(pid, shell, &exec));
+		return (path_is_null_p(pid, shell, &exec));
+	}
 	while (exec.paths[exec.i]) // INFO: checks if th command is a path
 	{
 		exec.path = ft_concat_path(exec.paths[exec.i], exec.com[0]);
@@ -119,7 +145,15 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 	}
 	ft_free_arr(exec.paths);
 	if (0 == pid)
-		return (executable_error_3(shell,&exec, 8, pid));
+	{
+		if (to_wait)
+			return (executable_error_3(shell,&exec, 8, pid));
+		return (pipe_error_3(shell, &exec, 7, 0));
+	}
 	else
-		return (executable_error_3(shell,&exec, 9, pid));
+	{
+		if (to_wait)
+			return (executable_error_3(shell,&exec, 9, pid));
+		return (pipe_error_3(shell, &exec, 8, 0));
+	}
 }

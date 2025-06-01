@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 15:55:42 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/01 21:44:56 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,21 @@ void	free_my_envp(t_list **my_envp);
 void	ft_free_arr(char **arr_s);
 /*--------------------------------------------*/
 
+
+
+// INFO: pipes
+
+typedef struct s_wait_pids
+{
+	pid_t				pid;
+	struct s_wait_pids	*next;
+}	t_wait_pids;
+
+void	pipe_error(t_shell *shell, int error_mssg, char **prep_envp);
+void	pipe_error_2(t_shell *shell, int error_mssg, t_executable *executable_error);
+void	pipe_error_3(t_shell *shell, t_executable *executable, int error_mssg, pid_t pid);
+void	add_pid(t_wait_pids **pids, pid_t pid);
+void	wait_pids(t_wait_pids **pids, t_shell *shell);
 
 
 
