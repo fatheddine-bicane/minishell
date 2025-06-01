@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:21:00 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/31 16:40:01 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/01 18:34:13 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,16 +64,16 @@ int main(int argc, char **argv, char **envp)
 			if (cmd->type == C_EXEC)
 			{
 				/*is_command(cmd, &my_envp, &exit_stat);*/
-				is_command(&shell);
+				is_command(&shell, true, 0);
 			}
 			else if (cmd->type == C_REDIRECT)
 			{
-				is_redirection(&shell);
+				is_redirection(&shell, true, 0);
 			}
-			/*else if (cmd->type == C_PIPE)*/
-			/*{*/
-			/*	is_pipe(cmd, &my_envp, &exit_stat, 0);*/
-			/*}*/
+			else if (cmd->type == C_PIPE)
+			{
+				is_pipe(&shell);
+			}
 			else
 				printf("not a command\n");
 			ast_free(cmd);

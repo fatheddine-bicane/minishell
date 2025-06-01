@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 15:37:58 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 19:46:17 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/01 19:46:50 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void	is_pipe(t_shell *shell)
 				prev_pipe[0] = fd[0];
 				prev_pipe[1] = fd[1];
 			}
-		}
+			}
 		tmp = tmp->next;
 	}
 

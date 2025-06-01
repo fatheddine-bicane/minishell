@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 00:30:15 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/01 15:55:42 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,24 +95,47 @@ void	ft_env(t_shell *shell);
 void	ft_pwd(t_shell *shell);
 /*-----------------------------------------------*/
 
+// INFO: executables (ls, clear, grep, ...)
+/*---------------------------------------------------------------*/
+typedef struct s_executable
+{
+	char	**paths;
+	char	**com;
+	char	*path;
+	int		i;
+}	t_executable;
 
-t_list *ft_set_env(char **envp); //INFO: creat custum envp
-void	free_my_envp(t_list **my_envp);
-
-/*void	ft_executable(char **command_args, t_list **my_envp, pid_t pid, bool to_wait, int *exit_stat); //INFO: apply commands*/
+void	ft_apply_comm(t_shell *shell, bool to_fork, pid_t pid_r);
 void	ft_executable(t_shell *shell, pid_t pid, bool to_wait);
-void	ft_apply_comm(t_shell *shell);
+void	command_is_path(pid_t pid, t_shell *shell, bool to_wait);
+void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait);
+t_list *ft_set_env(char **envp); //INFO: creat custum envp
+
+void	executable_error(t_shell *shell, int error_mssg, char **prep_envp);
+void	executable_error_2(t_shell *shell, t_executable *executable, int error_mssg);
+void	executable_error_3(t_shell *shell, t_executable *executable, int error_mssg, pid_t pid);
+/*---------------------------------------------------------------*/
+
+
+
+
+// INFO: free fucntions
+/*--------------------------------------------*/
+void	free_my_envp(t_list **my_envp);
+void	ft_free_arr(char **arr_s);
+/*--------------------------------------------*/
+
+
+
+
 void	ft_here_doc(char *rl);
 
-/*void	run_bultins(char **argv, t_list **my_envp, int *exit_stat);*/
 void	run_bultins(t_shell *shell);
 
 
 
-void	ft_free_arr(char **arr_s);
 
 char **ft_prep_envp(t_shell *shell); //INFO: transform the envp to char **
-
 void	ft_pipex(char **commands, t_list **my_envp, int *exit_stat); //INFO: handle pipes
 bool	ft_is_builtin(char *command);
 void	ft_exec_builtins(char **command_arg, t_list **my_envp, int *exit_stat);
@@ -128,13 +151,15 @@ void	ft_handle_redirections(char **redirections);
 void	setup_signals(void);
 void	ignore_signals_parrent(void);
 void	wait_child(pid_t pid, t_shell *shell);
+void	setup_signals_child(void);
 
 
 // INFO: parcing merged code
 /*void	is_command(t_cmd *cmd, t_list **my_envp, int *exit_stat);*/
-void	is_command(t_shell *shell);
-void	is_redirection(t_shell *shell);
+void	is_command(t_shell *shell, bool to_fork, pid_t pid_r);
+void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r);
 void	ft_save_std_files(bool save);
-void	is_pipe(t_cmd *cmd, t_list **my_envp, int *exit_stat, int depth);
+/*void	is_pipe(t_cmd *cmd, t_list **my_envp, int *exit_stat, int depth);*/
+void	is_pipe(t_shell *shell);
 
 #endif
