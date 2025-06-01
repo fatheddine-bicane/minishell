@@ -12,7 +12,7 @@
 
 #include "../parser.h"
 
-char	*ft_get_var_value(int len, char *variable, t_list *my_envp)
+char *ft_get_var_value(int len, char *variable, t_list *my_envp)
 {
 	while (my_envp)
 	{
@@ -23,16 +23,16 @@ char	*ft_get_var_value(int len, char *variable, t_list *my_envp)
 	return (NULL);
 }
 
-char	*param_expand(char *src, t_list *envp)
+char *param_expand(char *src, t_list *envp)
 {
-	t_str_builder	*sb;
-	t_token			*token;
-	t_token			*head;
-	size_t			len;
-	size_t			i;
-	size_t			start;
-	size_t			offset;
-	char			*var;
+	t_str_builder *sb;
+	t_token *token;
+	t_token *head;
+	size_t len;
+	size_t i;
+	size_t start;
+	size_t offset;
+	char *var;
 
 	token = tokens_scan(src);
 	if (token == NULL)
@@ -84,11 +84,11 @@ char	*param_expand(char *src, t_list *envp)
 							return (tokens_free(head), sb_free(sb), NULL);
 						if (var != NULL && !sb_append_str(sb, var, 0))
 							return (tokens_free(head), sb_free(sb), free(var),
-								NULL);
+											NULL);
 						free(var);
 						offset = 0;
 						start = i;
-						continue ;
+						continue;
 					}
 					i++;
 				}
@@ -106,10 +106,10 @@ char	*param_expand(char *src, t_list *envp)
 	return (tokens_free(head), sb_build_str(sb));
 }
 
-bool	expand_params(char **args, t_list *envp)
+bool expand_params(char **args, t_list *envp)
 {
-	size_t	i;
-	char	*src;
+	size_t i;
+	char *src;
 
 	if (args == NULL)
 		return (false);
@@ -135,12 +135,12 @@ bool	expand_params(char **args, t_list *envp)
 	return (true);
 }
 
-char	*param_expand2(char *src)
+char *param_expand2(char *src)
 {
-	size_t			i;
-	size_t			offset;
-	size_t			start;
-	t_str_builder	*sb;
+	size_t i;
+	size_t offset;
+	size_t start;
+	t_str_builder *sb;
 
 	i = 0;
 	if (!src[i])
@@ -161,7 +161,7 @@ char	*param_expand2(char *src)
 			printf("substr = %s\n", sb->buff[sb_len(sb) - 1]);
 			offset = 0;
 			start = i;
-			continue ;
+			continue;
 		}
 		i++;
 	}

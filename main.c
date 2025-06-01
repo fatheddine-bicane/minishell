@@ -52,7 +52,7 @@ int main(int argc, char **argv, char **envp)
 		shell.redirections_status = true;
 		shell.pipex = NULL;
 		g_signal_flag = 0;
-
+		
 
 		char (*rl) = readline("====> ");
 		if (!rl)
@@ -67,7 +67,7 @@ int main(int argc, char **argv, char **envp)
 
 
 
-		if (create_ast(rl, &cmd) != EXIT_EMPTY_AST) // INFO: return status 
+			if (create_ast(rl, &cmd) != EXIT_EMPTY_AST) // INFO: return status
 		{
 			add_history(rl);
 			if (cmd == NULL)
@@ -93,5 +93,5 @@ int main(int argc, char **argv, char **envp)
 			ast_free(cmd);
 		}
 	}
-    return (0);
+	return (0);
 }
