@@ -44,6 +44,9 @@ void	ft_pipex(char **commands, t_list **my_envp, int *exit_stat)
 	int		fd[2];
 	int		c_count; // INFO: commands count
 	t_list	*pids = NULL;
+	
+
+	(void)my_envp;
 
 	c_i = 0;
 	c_count = ft_commands_count(commands);
@@ -82,7 +85,7 @@ void	ft_pipex(char **commands, t_list **my_envp, int *exit_stat)
 			}
 
 
-			ft_exec_builtins(ft_split(commands[c_i], 32), my_envp, exit_stat);
+			/*ft_exec_builtins(ft_split(commands[c_i], 32), my_envp, exit_stat);*/
 			/*ft_executable(commands[c_i], *my_envp, pid, false, exit_stat);*/
 		}
 		else

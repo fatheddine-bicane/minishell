@@ -12,7 +12,7 @@
 
 #include "../../minishel.h"
 
-void	is_command(t_shell *shell)
+void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
 {
 	if (ft_is_builtin(shell->cmd->u_as.exec.argv[0]))
 	{
@@ -21,11 +21,14 @@ void	is_command(t_shell *shell)
 	}
 	else
 	{
-		ft_apply_comm(shell);
+		if (to_fork)
+			ft_apply_comm(shell, true, 0);
+		if (!to_fork)
+			ft_apply_comm(shell, false, pid_r);
 	}
 }
 
-void	is_redirection(t_shell *shell)
+void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 {
 	t_cmd	*tmp;
 	t_str_builder *sb;
@@ -53,7 +56,7 @@ void	is_redirection(t_shell *shell)
 	{
 		t_cmd *tmp2 = shell->cmd;
 		shell->cmd = tmp;
-		is_command(shell);
+		is_command(shell, to_fork,pid_r);
 		shell->cmd = tmp2;
 	}
 	ft_save_std_files(false);

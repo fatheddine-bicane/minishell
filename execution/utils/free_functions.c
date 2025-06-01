@@ -26,3 +26,18 @@ void	ft_free_arr(char **arr_s)
 	}
 	free (arr_s);
 }
+
+void	free_my_envp(t_list **my_envp)
+{
+	t_list *head = *my_envp;
+	t_list	*to_free;
+
+	while (head)
+	{
+		to_free = head;
+		head = head->next;
+		free(to_free->content);
+		free(to_free);
+	}
+}
+
