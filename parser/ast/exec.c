@@ -24,6 +24,7 @@ t_cmd	*append_redirect(t_cmd *root, t_cmd *new)
 	while (tmp->u_as.redirect.next)
 		tmp = tmp->u_as.redirect.next;
 	tmp->u_as.redirect.next = new;
+	new->parent = tmp;
 	return (root);
 }
 
@@ -32,10 +33,10 @@ t_cmd	*combine_cmd(t_str_builder *sb, t_cmd *cmd)
 	t_cmd	*tmp;
 
 	if (cmd == NULL && sb_len(sb) > 0)
-		return (cmd_exec_init(sb_build(sb)));
+		return (cmd_exec_init(sb_build(sb), NULL));
 	if (sb_len(sb) > 0)
 	{
-		tmp = cmd_exec_init(sb_build(sb));
+		tmp = cmd_exec_init(sb_build(sb), NULL);
 		if (tmp == NULL)
 			return (ast_free(cmd), NULL);
 		append_redirect(cmd, tmp);
@@ -56,7 +57,7 @@ t_cmd	*parse_io_redirect(t_token **token, int *status)
 			return ((*status = -1), NULL);
 		type = extract_redirect_type(token);
 		file = sn_strdup((*token)->prev->lexeme);
-		return (cmd_redirect_init(type, file, NULL));
+		return (cmd_redirect_init(type, file, NULL, NULL));
 	}
 	return (NULL);
 }
@@ -81,6 +82,7 @@ t_cmd	*parse_redirect(t_token **token, int *status)
 		if (right == NULL || *status == -1)
 			return (ast_free(left), ast_free(right), NULL);
 		cmd->u_as.redirect.next = right;
+		right->parent = cmd;
 		cmd = right;
 	}
 	return (left);

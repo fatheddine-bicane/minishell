@@ -12,7 +12,7 @@
 
 #include "../parser.h"
 
-t_cmd	*cmd_exec_init(char **argv)
+t_cmd	*cmd_exec_init(char **argv, t_cmd *parent)
 {
 	t_cmd	*cmd;
 
@@ -21,12 +21,13 @@ t_cmd	*cmd_exec_init(char **argv)
 	cmd = malloc(sizeof(t_cmd));
 	if (cmd == NULL)
 		return (NULL);
+	cmd->parent = parent;
 	cmd->type = C_EXEC;
 	cmd->u_as.exec.argv = argv;
 	return (cmd);
 }
 
-t_cmd	*cmd_redirect_init(int type, char *file, t_cmd *next)
+t_cmd	*cmd_redirect_init(int type, char *file, t_cmd *next, t_cmd *parent)
 {
 	t_cmd	*cmd;
 
@@ -35,6 +36,7 @@ t_cmd	*cmd_redirect_init(int type, char *file, t_cmd *next)
 	cmd = malloc(sizeof(t_cmd));
 	if (cmd == NULL)
 		return (NULL);
+	cmd->parent = parent;
 	cmd->type = C_REDIRECT;
 	cmd->u_as.redirect.type = type;
 	cmd->u_as.redirect.file = file;
@@ -42,7 +44,7 @@ t_cmd	*cmd_redirect_init(int type, char *file, t_cmd *next)
 	return (cmd);
 }
 
-t_cmd	*cmd_pipe_init(t_cmd *left, t_cmd *right)
+t_cmd	*cmd_pipe_init(t_cmd *left, t_cmd *right, t_cmd *parent)
 {
 	t_cmd	*cmd;
 
@@ -51,13 +53,14 @@ t_cmd	*cmd_pipe_init(t_cmd *left, t_cmd *right)
 	cmd = malloc(sizeof(t_cmd));
 	if (cmd == NULL)
 		return (NULL);
+	cmd->parent = parent;
 	cmd->type = C_PIPE;
 	cmd->u_as.pipe.left = left;
 	cmd->u_as.pipe.right = right;
 	return (cmd);
 }
 
-t_cmd	*cmd_cmp_init(int op, t_cmd *left, t_cmd *right)
+t_cmd	*cmd_cmp_init(int op, t_cmd *left, t_cmd *right, t_cmd *parent)
 {
 	t_cmd	*cmd;
 
@@ -66,6 +69,7 @@ t_cmd	*cmd_cmp_init(int op, t_cmd *left, t_cmd *right)
 	cmd = malloc(sizeof(t_cmd));
 	if (cmd == NULL)
 		return (NULL);
+	cmd->parent = parent;
 	cmd->type = C_COMPOUND;
 	cmd->u_as.compound.type = op;
 	cmd->u_as.compound.left = left;
@@ -73,7 +77,7 @@ t_cmd	*cmd_cmp_init(int op, t_cmd *left, t_cmd *right)
 	return (cmd);
 }
 
-t_cmd	*cmd_group_init(t_cmd *group)
+t_cmd	*cmd_group_init(t_cmd *group, t_cmd *parent)
 {
 	t_cmd	*cmd;
 
@@ -82,6 +86,7 @@ t_cmd	*cmd_group_init(t_cmd *group)
 	cmd = malloc(sizeof(t_cmd));
 	if (cmd == NULL)
 		return (NULL);
+	cmd->parent = parent;
 	cmd->type = C_GROUP;
 	cmd->u_as.group.cmd = group;
 	return (cmd);

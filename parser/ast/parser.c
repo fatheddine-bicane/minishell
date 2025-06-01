@@ -20,12 +20,17 @@ t_cmd	*append_redirect(t_cmd *root, t_cmd *new);
 t_cmd	*parse_group(t_token **token, int *status)
 {
 	t_cmd	*cmd;
+	t_cmd	*subshell;
 
 	if (match_token(token, 1, T_LEFT_PAREN))
 	{
-		cmd = cmd_group_init(parse_program(token, status));
+		subshell = parse_program(token, status);
+		if (subshell == NULL || *status == -1)
+			return (NULL);
+		cmd = cmd_group_init(subshell, NULL);
 		if (cmd == NULL || *status == -1)
 			return (ast_free(cmd), NULL);
+		subshell->parent = cmd;
 		if (!match_token(token, 1, T_RIGHT_PAREN))
 			return ((*status = -1), ast_free(cmd), NULL);
 		cmd = append_redirect(parse_redirect(token, status), cmd);
@@ -50,9 +55,14 @@ t_cmd	*parse_pipe(t_token **token, int *status)
 		right = parse_group(token, status);
 		if (right == NULL)
 			return (ast_free(left), NULL);
-		cmd = cmd_pipe_init(left, right);
+		cmd = cmd_pipe_init(left, right, NULL);
 		if (cmd == NULL)
 			return (ast_free(left), ast_free(right), NULL);
+		if (cmd != left)
+		{
+			left->parent = cmd;
+			right->parent = cmd;
+		}
 		left = cmd;
 	}
 	return (left);
@@ -74,9 +84,14 @@ t_cmd	*parse_compound(t_token **token, int *status)
 		right = parse_pipe(token, status);
 		if (right == NULL)
 			return (ast_free(left), NULL);
-		cmd = cmd_cmp_init(op, left, right);
+		cmd = cmd_cmp_init(op, left, right, NULL);
 		if (cmd == NULL)
 			return (ast_free(left), ast_free(right), NULL);
+		if (left != cmd)
+		{
+			left->parent = cmd;
+			right->parent = cmd;
+		}
 		left = cmd;
 	}
 	return (left);

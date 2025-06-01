@@ -116,6 +116,7 @@ typedef enum e_cmd_type
 typedef struct s_cmd
 {
 	t_cmd_type			type;
+	t_cmd				*parent;
 	union
 	{
 		t_exec			exec;
@@ -151,11 +152,14 @@ t_token					*extract_identifier(char *src, size_t *current);
 t_token					*extract_var(char *src, size_t *current);
 t_token					*extract_blank(char *src, size_t *current);
 
-t_cmd					*cmd_exec_init(char **argv);
-t_cmd					*cmd_redirect_init(int type, char *file, t_cmd *next);
-t_cmd					*cmd_pipe_init(t_cmd *left, t_cmd *right);
-t_cmd					*cmd_group_init(t_cmd *group);
-t_cmd					*cmd_cmp_init(int op, t_cmd *left, t_cmd *right);
+t_cmd					*cmd_exec_init(char **argv, t_cmd *parent);
+t_cmd					*cmd_redirect_init(int type, char *file, t_cmd *next,
+							t_cmd *parent);
+t_cmd					*cmd_pipe_init(t_cmd *left, t_cmd *right,
+							t_cmd *parent);
+t_cmd					*cmd_group_init(t_cmd *group, t_cmd *parent);
+t_cmd					*cmd_cmp_init(int op, t_cmd *left, t_cmd *right,
+							t_cmd *parent);
 
 int						extract_cmp_op(t_token *token);
 char					*extract_lexeme_err(t_token *token);
@@ -163,5 +167,7 @@ char					*extract_lexeme_err(t_token *token);
 int						create_ast(char *src, t_cmd **ast);
 void					ast_free(t_cmd *root);
 char					*ast_output(t_cmd *cmd, bool print);
+
+char					*param_expand(char *src);
 
 #endif
