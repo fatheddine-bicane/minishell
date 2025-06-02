@@ -14,15 +14,19 @@
 
 void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
 {
+	if (!shell->redirections_status)
+	{
+		shell->exit_status = 1;
+		return ;
+	}
 	if (ft_is_builtin(shell->cmd->u_as.exec.argv[0]))
 	{
-		/*run_bultins(cmd->u_as.exec.argv, my_envp, exit_stat);*/
 		run_bultins(shell);
 	}
 	else
 	{
 		if (to_fork)
-			ft_apply_comm(shell, true, 0);
+			ft_apply_comm(shell, true, -3);
 		if (!to_fork)
 			ft_apply_comm(shell, false, pid_r);
 	}
@@ -35,7 +39,8 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 
 
 	if (to_fork)
-		ft_save_std_files(true);
+		std_files(SAVE);
+		/*ft_save_std_files(true);*/
 
 
 	tmp = shell->cmd;
@@ -50,7 +55,17 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 	}
 	char **redirects = sb_build(sb);// TODO: wait for karim merge for ** support
 
-	ft_handle_redirections(redirects);
+	if (!handle_redirections(redirects))
+	{
+		shell->redirections_status = false;
+		sn_strs_free(redirects);
+		if (0 == pid_r && !to_fork)
+			free_my_envp(&shell->my_envp);
+		if (to_fork)
+			std_files(RESTOR);
+			/*ft_save_std_files(false);*/
+		return ;
+	}
 	sn_strs_free(redirects);
 
 	if (tmp)
@@ -61,7 +76,8 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 		shell->cmd = tmp2;
 	}
 	if (to_fork)
-		ft_save_std_files(false);
+		std_files(RESTOR);
+		/*ft_save_std_files(false);*/
 }
 
 

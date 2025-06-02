@@ -85,7 +85,7 @@ void	ft_here_doc(char *delimiter)
 	char	*file_name;
 	int		inf;
 
-	ft_save_std_files(false);
+	std_files(RESTOR);
 	input = ft_creat_input(delimiter);
 	file_name = random_name();
 	printf("file name: %s\n", file_name);

@@ -30,6 +30,9 @@
 
 #include "./parser/parser.h"
 
+# define SAVE 1
+# define RESTOR 2
+
 static volatile sig_atomic_t g_signal_flag = 0;
 
 typedef struct s_shell
@@ -37,6 +40,8 @@ typedef struct s_shell
 	t_cmd	*cmd;
 	t_list	*my_envp;
 	int		exit_status;
+	bool	redirections_status;
+	bool	is_pipe;
 }	t_shell;
 
 // NOTE: unset builtin
@@ -161,7 +166,7 @@ void	ft_here_doc(char *delimiter); //INFO: creat here_doc input
 
 char	**ft_split_variable(char *variable);
 
-void	ft_handle_redirections(char **redirections);
+bool	handle_redirections(char **redirections);
 
 // INFO: signals
 void	setup_signals(void);
@@ -174,7 +179,7 @@ void	setup_signals_child(void);
 /*void	is_command(t_cmd *cmd, t_list **my_envp, int *exit_stat);*/
 void	is_command(t_shell *shell, bool to_fork, pid_t pid_r);
 void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r);
-void	ft_save_std_files(bool save);
+void	std_files(int what_to_do);
 /*void	is_pipe(t_cmd *cmd, t_list **my_envp, int *exit_stat, int depth);*/
 void	is_pipe(t_shell *shell);
 
