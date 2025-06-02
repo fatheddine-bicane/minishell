@@ -126,6 +126,7 @@ void	is_pipe(t_shell *shell)
 			is_command(shell, false, pid);
 			if (0 == pid)
 			{
+				free_pids(&pids);
 				free_pipex(&pipex);
 				ast_free(parent);
 				exit(shell->exit_status);

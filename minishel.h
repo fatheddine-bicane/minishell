@@ -139,6 +139,7 @@ void	pipe_error(t_shell *shell, int error_mssg, char **prep_envp);
 void	pipe_error_2(t_shell *shell, int error_mssg, t_executable *executable_error);
 void	pipe_error_3(t_shell *shell, t_executable *executable, int error_mssg, pid_t pid);
 void	add_pid(t_wait_pids **pids, pid_t pid);
+void	free_pids(t_wait_pids **pids);
 void	wait_pids(t_wait_pids **pids, t_shell *shell);
 
 

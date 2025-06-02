@@ -34,7 +34,8 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 	t_str_builder *sb;
 
 
-	ft_save_std_files(true);
+	if (to_fork)
+		ft_save_std_files(true);
 
 
 	tmp = shell->cmd;
@@ -59,7 +60,8 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 		is_command(shell, to_fork,pid_r);
 		shell->cmd = tmp2;
 	}
-	ft_save_std_files(false);
+	if (to_fork)
+		ft_save_std_files(false);
 }
 
 
