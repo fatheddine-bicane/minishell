@@ -30,6 +30,7 @@ void	ft_wait_pids(t_list *pids, int *exit_stat)
 	while (pids)
 	{
 		pid = ft_atoi((char *)pids->content);
+		(void)pid;
 		/*waitpid(pid, NULL, 0);*/
 		/*wait_child(pid, exit_stat);*/
 		pids = pids->next;
