@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 15:37:58 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 23:33:48 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/02 15:17:23 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,12 +101,12 @@ void	is_pipe(t_shell *shell)
 			if (-1 != prev_pipe[0]) // INFO: read from pipe if not first command
 			{
 				if (-1 == dup2(prev_pipe[0], STDIN_FILENO))
-					return; // TODO: error mssg
+					exit(1); // TODO: error mssg
 			}
 			if (tmp->next)
 			{
 				if (-1 == dup2(fd[1], STDOUT_FILENO))
-					return; // TODO: error mssg
+					exit(1); // TODO: error mssg
 			}
 			if (-1 != prev_pipe[0])
 				close(prev_pipe[0]);
@@ -114,40 +114,53 @@ void	is_pipe(t_shell *shell)
 				close(prev_pipe[1]);
 			if (tmp->next)
 			{
-				close(fd[0]);
+				//close(fd[0]);
 				close(fd[1]);
 			}
 
+			    // Execute command
+			t_cmd *parent = shell->cmd;
+			shell->cmd = tmp->cmd;
+			if (C_EXEC == tmp->cmd->type)
+				is_command(shell, false, pid);
+			else if (C_REDIRECT == tmp->cmd->type)
+				is_redirection(shell, false, pid);
+
+			// Child exits after command execution
+			free_pids(&pids);
+			free_pipex(&pipex);
+			ast_free(parent);
+			exit(shell->exit_status);
 		}
-		t_cmd *parent = shell->cmd;
-		shell->cmd = tmp->cmd;
-		if (C_EXEC == tmp->cmd->type)
-		{
-			is_command(shell, false, pid);
-			if (0 == pid)
-			{
-				free_pids(&pids);
-				free_pipex(&pipex);
-				ast_free(parent);
-				exit(shell->exit_status);
-			}
-			shell->cmd = parent;
-			/*if (parent->u_as.pipe.left == tmp->cmd)*/
-			/*	parent->u_as.pipe.left = NULL;*/
-			/*if (parent->u_as.pipe.right == tmp->cmd)*/
-			/*	parent->u_as.pipe.right = NULL;*/
-			/*ast_free(parent);*/
-		}
-		if (C_REDIRECT == tmp->cmd->type)
-		{
-			is_redirection(shell, false, pid);
-			if (0 == pid)
-			{
-				ast_free(parent);
-				exit(shell->exit_status);
-			}
-			shell->cmd = parent;
-		}
+		// t_cmd *parent = shell->cmd;
+		// shell->cmd = tmp->cmd;
+		// if (C_EXEC == tmp->cmd->type)
+		// {
+		// 	is_command(shell, false, pid);
+		// 	if (0 == pid)
+		// 	{
+		// 		free_pids(&pids);
+		// 		free_pipex(&pipex);
+		// 		ast_free(parent);
+		// 		exit(shell->exit_status);
+		// 	}
+		// 	shell->cmd = parent;
+		// 	/*if (parent->u_as.pipe.left == tmp->cmd)*/
+		// 	/*	parent->u_as.pipe.left = NULL;*/
+		// 	/*if (parent->u_as.pipe.right == tmp->cmd)*/
+		// 	/*	parent->u_as.pipe.right = NULL;*/
+		// 	/*ast_free(parent);*/
+		// }
+		// if (C_REDIRECT == tmp->cmd->type)
+		// {
+		// 	is_redirection(shell, false, pid);
+		// 	if (0 == pid)
+		// 	{
+		// 		ast_free(parent);
+		// 		exit(shell->exit_status);
+		// 	}
+		// 	shell->cmd = parent;
+		// }
 		// TODO: execute the command
 
 
