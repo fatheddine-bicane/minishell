@@ -84,6 +84,7 @@ void	is_pipe(t_shell *shell)
 	t_wait_pids	*pids = NULL;
 
 
+	shell->is_pipe = true;
 
 	while(tmp)
 	{
@@ -114,7 +115,7 @@ void	is_pipe(t_shell *shell)
 				close(prev_pipe[1]);
 			if (tmp->next)
 			{
-				//close(fd[0]);
+				close(fd[0]);
 				close(fd[1]);
 			}
 

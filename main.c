@@ -41,10 +41,14 @@ int main(int argc, char **argv, char **envp)
 	/*my_envp = ft_set_env(envp);*/
 	setup_signals();
 	cmd = NULL;
-	while (1)
+	while (true)
 	{
-		// TODO: maybe update the exit status here (use global variable)
+
+		shell.is_pipe = false;
+		shell.redirections_status = true;
 		g_signal_flag = 0;
+
+
 		char (*rl) = readline("====> ");
 		if (!rl)
 		{
@@ -52,9 +56,12 @@ int main(int argc, char **argv, char **envp)
 			free_my_envp(&shell.my_envp);
 			exit(0);
 		}
-
 		if (*rl == '\0')
 			continue;
+
+
+
+
 		if (create_ast(rl, &cmd) != EXIT_EMPTY_AST) // INFO: return status 
 		{
 			add_history(rl);
@@ -64,11 +71,13 @@ int main(int argc, char **argv, char **envp)
 			if (cmd->type == C_EXEC)
 			{
 				/*is_command(cmd, &my_envp, &exit_stat);*/
-				is_command(&shell, true, 0);
+				is_command(&shell, true, -3);
 			}
 			else if (cmd->type == C_REDIRECT)
 			{
-				is_redirection(&shell, true, 0);
+				is_redirection(&shell, true, -3);
+				if (!shell.redirections_status)
+					shell.redirections_status = true;
 			}
 			else if (cmd->type == C_PIPE)
 			{

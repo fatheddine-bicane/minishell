@@ -12,12 +12,12 @@
 
 #include "../../minishel.h"
 
-void	ft_save_std_files(bool save)
+void	std_files(int what_to_do)
 {
 	static int	std_in_save;
 	static int	std_out_save;
 
-	if (true == save)
+	if (SAVE == what_to_do)
 	{
 		std_in_save = dup(STDIN_FILENO);
 		if (-1 == std_in_save)
@@ -26,58 +26,70 @@ void	ft_save_std_files(bool save)
 		if (-1 == std_out_save)
 			return ; // TODO: error mssg
 	}
-	else
+	else if (RESTOR == what_to_do)
 	{
 		dup2(std_in_save, STDIN_FILENO);
 		dup2(std_out_save, STDOUT_FILENO);
 	}
-	// TODO: close used files
+	// WARNING: dont close saves files
 }
 
-static void	ft_redirect_output(char *file_name)
+static bool	redirect_output(char *file_name)
 {
 	int	redirect;
 
 	redirect = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	if (-1 == redirect)
-		return ; // TODO: error mssg
+	{
+		perror(file_name);
+		return (false);
+	}
 	if (-1 == dup2(redirect, STDOUT_FILENO))
 	{
-		close(redirect);
-		return; // TODO: error mssg
+		perror("dup2()");
+		return (false);
 	}
 	close(redirect);
+	return (true);
 }
 
-static void	ft_appent_output(char *file_name)
+static bool	appent_output(char *file_name)
 {
 	int	redirect;
 	redirect = open(file_name, O_WRONLY | O_CREAT | O_APPEND, 0664);
 	if (-1 == redirect)
-		return ;
+	{
+		perror(file_name);
+		return (false);
+	}
 	if (-1 == dup2(redirect, STDOUT_FILENO))
 	{
-		close(redirect);
-		return; //TODO:error mssg
+		perror("dup2()");
+		return (false);
 	}
 	close(redirect);
+	return (true);
 }
 
-static void	ft_redirect_input(char *file_name)
+static bool	redirect_input(char *file_name)
 {
 	int	redirect;
 	redirect = open(file_name, O_RDONLY);
 	if (-1 == redirect)
-		return ;
+	{
+		perror(file_name);
+		return (false);
+	}
 	if (-1 == dup2(redirect, STDIN_FILENO))
 	{
-		close(redirect);
-		return; //TODO:error mssg
+		perror("dup2()");
+		return (false);
 	}
 	close(redirect);
+	return (true);
 }
 
-void	ft_handle_redirections(char **redirections)
+bool	handle_redirections(char **redirections)
 {
 	int	i;
 
@@ -87,7 +99,9 @@ void	ft_handle_redirections(char **redirections)
 		if (!ft_strncmp(">>", redirections[i], 2))
 		{
 			i++;
-			ft_appent_output(redirections[i]);
+			/*ft_appent_output(redirections[i]);*/
+			if (!appent_output(redirections[i]))
+				return (false);
 		}
 		else if (!ft_strncmp("<<", redirections[i], 2))
 		{
@@ -97,13 +111,16 @@ void	ft_handle_redirections(char **redirections)
 		else if (!ft_strncmp(">", redirections[i], 1))
 		{
 			i++;
-			ft_redirect_output(redirections[i]);
+			if (!redirect_output(redirections[i]))
+				return (false);
 		}
 		else if (!ft_strncmp("<", redirections[i], 1))
 		{
 			i++;
-			ft_redirect_input(redirections[i]);
+			if (!redirect_input(redirections[i]))
+				return (false);
 		}
 		i++;
 	}
+	return (true);
 }
