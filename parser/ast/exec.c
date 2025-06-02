@@ -24,7 +24,8 @@ t_cmd	*append_redirect(t_cmd *root, t_cmd *new)
 	while (tmp->u_as.redirect.next)
 		tmp = tmp->u_as.redirect.next;
 	tmp->u_as.redirect.next = new;
-	new->parent = tmp;
+	if (new)
+		new->parent = tmp;
 	return (root);
 }
 
@@ -88,6 +89,33 @@ t_cmd	*parse_redirect(t_token **token, int *status)
 	return (left);
 }
 
+bool	append_lexeme(t_str_builder *sb, t_token *t)
+{
+	size_t	len;
+	char	*str;
+	size_t	total_size;
+	int		str_size;
+
+	if (t->type == T_WORD || t->type == T_STR_DOUBLE || t->type == T_STR_SINGLE
+		|| t->type == T_VAR)
+	{
+		len = sb_len(sb);
+		if (t->prev && t->prev->type != T_BLANK && len > 0)
+		{
+			str = NULL;
+			total_size = sb->total_size - sn_strlen(sb->buff[len - 1]);
+			str_size = sn_sprintf(&str, "%s%s", sb->buff[len - 1], t->lexeme);
+			if (str_size == -1 || str == NULL)
+				return (false);
+			sb->total_size = total_size + str_size;
+			free(sb->buff[len - 1]);
+			sb->buff[len - 1] = str;
+			return (true);
+		}
+	}
+	return (sb_append_str(sb, t->lexeme, 0));
+}
+
 t_cmd	*parse_cmd(t_token **token, int *status)
 {
 	t_str_builder	*sb;
@@ -97,9 +125,9 @@ t_cmd	*parse_cmd(t_token **token, int *status)
 	if (*status == -1)
 		return (NULL);
 	sb = sb_create(10);
-	while (match_token(token, 1, T_WORD))
+	while (match_token(token, 4, T_WORD, T_VAR, T_STR_SINGLE, T_STR_DOUBLE))
 	{
-		if (!sb_append_str(sb, (*token)->prev->lexeme, 0))
+		if (!append_lexeme(sb, (*token)->prev))
 			return ((*status = -1), sb_free(sb), ast_free(cmd), NULL);
 		cmd = append_redirect(cmd, parse_redirect(token, status));
 		if (*status == -1)
