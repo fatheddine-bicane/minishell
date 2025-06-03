@@ -50,3 +50,22 @@ int	extract_redirect_type(t_token **token)
 		t = t->prev;
 	return (t->type);
 }
+
+char	*extract_filename(t_token **token)
+{
+	t_str_builder	*sb;
+	t_token			*t;
+
+	sb = sb_create(10);
+	if (sb == NULL)
+		return (NULL);
+	t = (*token)->prev;
+	while (t->type != T_EOF && t->type != T_BLANK)
+	{
+		if (!sb_append_str(sb, t->lexeme, 0))
+			return (sb_free(sb), NULL);
+		t = t->next;
+	}
+	*token = t;
+	return (sb_build_str(sb));
+}
