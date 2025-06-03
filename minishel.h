@@ -31,7 +31,9 @@
 #include "./parser/parser.h"
 
 # define SAVE 1
-# define RESTORE 2
+# define RESTORE_BOTH 2
+# define RESTORE_STDIN 3
+# define RESTORE_STDOUT 4
 
 static volatile sig_atomic_t g_signal_flag = 0;
 

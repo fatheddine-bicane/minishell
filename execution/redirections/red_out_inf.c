@@ -26,9 +26,17 @@ void	std_files(int what_to_do)
 		if (-1 == std_out_save)
 			return ; // TODO: error mssg
 	}
-	else if (RESTORE == what_to_do)
+	else if (RESTORE_BOTH == what_to_do)
 	{
 		dup2(std_in_save, STDIN_FILENO);
+		dup2(std_out_save, STDOUT_FILENO);
+	}
+	else if (RESTORE_STDIN == what_to_do)
+	{
+		dup2(std_in_save, STDIN_FILENO);
+	}
+	else if (RESTORE_STDOUT == what_to_do)
+	{
 		dup2(std_out_save, STDOUT_FILENO);
 	}
 	// WARNING: dont close saves files

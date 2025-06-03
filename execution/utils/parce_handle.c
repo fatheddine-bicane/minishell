@@ -38,8 +38,7 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 	t_str_builder *sb;
 
 
-	if (to_fork)
-		std_files(SAVE);
+	/*if (to_fork)*/
 		/*ft_save_std_files(true);*/
 
 
@@ -62,7 +61,7 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 		if (0 == pid_r && !to_fork)
 			free_my_envp(&shell->my_envp);
 		if (to_fork)
-			std_files(RESTORE);
+			std_files(RESTORE_BOTH);
 			/*ft_save_std_files(false);*/
 		return ;
 	}
@@ -76,7 +75,7 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 		shell->cmd = tmp2;
 	}
 	if (to_fork)
-		std_files(RESTORE);
+		std_files(RESTORE_BOTH);
 		/*ft_save_std_files(false);*/
 }
 
