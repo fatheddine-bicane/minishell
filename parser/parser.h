@@ -169,5 +169,6 @@ void					ast_free(t_cmd *root);
 char					*ast_output(t_cmd *cmd, bool print);
 
 char					*param_expand(char *src);
+bool					expand_params(char **args);
 
 #endif
