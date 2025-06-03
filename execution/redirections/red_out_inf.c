@@ -22,7 +22,7 @@ void	std_files(int what_to_do)
 		std_in_save = dup(STDIN_FILENO);
 		if (-1 == std_in_save)
 			return ; // TODO: error mssg
-		int	std_out_save = dup(STDOUT_FILENO);
+		std_out_save = dup(STDOUT_FILENO);
 		if (-1 == std_out_save)
 			return ; // TODO: error mssg
 	}
@@ -127,7 +127,7 @@ bool	handle_redirections(char **redirections, t_shell *shell)
 		}
 		else if (!ft_strncmp("<", redirections[i], 1))
 		{
-			std_files(RESTORE_STDIN);
+			/*std_files(RESTORE_STDIN);*/
 			i++;
 			if (!redirect_input(redirections[i]))
 			{
