@@ -67,6 +67,7 @@ void	free_pipex(t_pipex **pipex)
 		tmp = tmp->next;
 		free(to_free);
 	}
+	(*pipex) = NULL;
 }
 
 void	is_pipe(t_shell *shell)
@@ -84,7 +85,6 @@ void	is_pipe(t_shell *shell)
 	t_wait_pids	*pids = NULL;
 
 
-	shell->is_pipe = true;
 
 	while(tmp)
 	{
@@ -94,11 +94,16 @@ void	is_pipe(t_shell *shell)
 			if (-1 == pipe(fd))
 				return ; // TODO: error mssg
 		}
+		shell->is_pipe = true;
+		shell->pipe = shell->cmd;
+		shell->pids = pids;
 		pid = fork();
 		if (0 != pid)
 			add_pid(&pids, pid);
 		if (0 == pid)
 		{
+			// WARNING: might be invalid free
+			free_pids(&pids);
 			if (-1 != prev_pipe[0]) // INFO: read from pipe if not first command
 			{
 				if (-1 == dup2(prev_pipe[0], STDIN_FILENO))

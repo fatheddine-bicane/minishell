@@ -14,7 +14,7 @@
 
 void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
 {
-	if (!shell->redirections_status)
+	if (false == shell->redirections_status)
 	{
 		shell->exit_status = 1;
 		return ;
@@ -52,7 +52,7 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 		sb_append_str(sb, tmp->u_as.redirect.file, 0);
 		tmp = tmp->u_as.redirect.next;
 	}
-	char **redirects = sb_build(sb);// TODO: wait for karim merge for ** support
+	char **redirects = sb_build(sb);
 
 	if (!handle_redirections(redirects, shell))
 	{

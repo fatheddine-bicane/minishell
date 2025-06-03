@@ -30,6 +30,7 @@
 
 #include "./parser/parser.h"
 
+// TODO: ifndef, endif
 # define SAVE 1
 # define RESTORE_BOTH 2
 # define RESTORE_STDIN 3
@@ -37,13 +38,20 @@
 
 static volatile sig_atomic_t g_signal_flag = 0;
 
+typedef struct s_wait_pids	t_wait_pids;
+
+
 typedef struct s_shell
 {
 	t_cmd	*cmd;
 	t_list	*my_envp;
+
+	t_wait_pids	*pids;
+	t_cmd	*pipe;
+	bool	is_pipe;
+
 	int		exit_status;
 	bool	redirections_status;
-	bool	is_pipe;
 }	t_shell;
 
 // NOTE: unset builtin

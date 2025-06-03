@@ -117,7 +117,6 @@ bool	handle_redirections(char **redirections, t_shell *shell)
 			/*ft_here_doc(redirections[i]);*/
 			if (!here_doc(redirections, shell, i))
 				return (false);
-			// TODO: check the returned value from here_doc() to stopp other all the redirections
 		}
 		else if (!ft_strncmp(">", redirections[i], 1))
 		{

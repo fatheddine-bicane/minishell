@@ -47,6 +47,8 @@ int main(int argc, char **argv, char **envp)
 	{
 
 		shell.is_pipe = false;
+		shell.pids = NULL;
+		shell.pipe = NULL;
 		shell.redirections_status = true;
 		g_signal_flag = 0;
 
