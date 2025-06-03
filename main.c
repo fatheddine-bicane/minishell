@@ -41,6 +41,7 @@ int main(int argc, char **argv, char **envp)
 	/*my_envp = ft_set_env(envp);*/
 	setup_signals();
 	cmd = NULL;
+	printf("PID: %d\n", getpid());
 	while (true)
 	{
 

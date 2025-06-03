@@ -77,6 +77,93 @@ char	*random_name(void)
 	return (file_name);
 }
 
+bool	here_doc(char *delimiter, t_shell *shell)
+{
+	char	*input;
+	char	*file_name;
+	int		inf;
+	pid_t	pid;
+
+	std_files(RESTORE);
+	ignore_signals_parrent();
+	file_name = random_name();
+	pid = fork();
+	if (-1 == pid)
+	{
+		perror("fork()");
+		setup_signals();
+		return (false);
+		// WARNING: not restoring the the signals for parent
+	}
+	if (0 == pid)
+	{
+		setup_signals_child();
+		input = ft_creat_input(delimiter);
+		printf("file name: %s\n", file_name);
+		inf = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (-1 == inf)
+			return(perror("open()"), false);
+		ft_putstr_fd(input, inf);
+		free(input);
+		close(inf);
+		/*inf = open(file_name, O_RDONLY);*/
+		/*if (-1 == inf)*/
+		/*	return (false); // TODO: error mssg*/
+		/*if (-1 == dup2(inf, STDIN_FILENO))*/
+		/*	return(perror("dup2()"), false);*/
+		/*close(inf);*/
+		/*unlink(file_name);*/
+		/*free(file_name);*/
+		exit(0);
+	}
+	else if (0 != pid)
+	{
+		wait_child(pid, shell);
+		if (!access(file_name, F_OK))
+		{
+			inf = open(file_name, O_RDONLY);
+			if (-1 == inf)
+			{
+				unlink(file_name);
+				perror("open()");
+				return (false);
+			}
+			if (-1 == dup2(inf, STDIN_FILENO))
+			{
+				unlink(file_name);
+				perror("dup2()");
+				return (false);
+			}
+			close(inf);
+			unlink(file_name);
+			setup_signals();
+			return (true);
+		}
+	}
+	setup_signals();
+	return (false);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // TODO: maybe fock to fix signals
 void	ft_here_doc(char *delimiter)
@@ -85,7 +172,8 @@ void	ft_here_doc(char *delimiter)
 	char	*file_name;
 	int		inf;
 
-	std_files(RESTOR);
+	std_files(RESTORE);
+	setup_signals_heredoc(); // WARNING: it sends the sogint to main process
 	input = ft_creat_input(delimiter);
 	file_name = random_name();
 	printf("file name: %s\n", file_name);
