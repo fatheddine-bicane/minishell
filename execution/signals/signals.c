@@ -50,12 +50,24 @@ void	setup_signals_child(void)
 
 void	ignore_signals_parrent(void)
 {
-	struct sigaction	signal;
+	struct sigaction	signals;
 
-	sigemptyset(&signal.sa_mask);
-	signal.sa_flags = SA_RESTART;
-	signal.sa_handler = SIG_IGN;
-	sigaction(SIGINT, &signal, NULL);
-	signal.sa_handler = SIG_IGN;
-	sigaction(SIGQUIT, &signal, NULL);
+	sigemptyset(&signals.sa_mask);
+	signals.sa_flags = SA_RESTART;
+	signals.sa_handler = SIG_IGN;
+	sigaction(SIGINT, &signals, NULL);
+	signals.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &signals, NULL);
+}
+
+void	setup_signals_heredoc(void)
+{
+	struct sigaction	signals;
+
+	sigemptyset(&signals.sa_mask);
+	signals.sa_flags = SA_RESTART;
+	signals.sa_handler = SIG_DFL;
+	sigaction(SIGINT, &signals, NULL);
+	signals.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &signals, NULL);
 }

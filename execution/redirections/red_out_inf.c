@@ -26,7 +26,7 @@ void	std_files(int what_to_do)
 		if (-1 == std_out_save)
 			return ; // TODO: error mssg
 	}
-	else if (RESTOR == what_to_do)
+	else if (RESTORE == what_to_do)
 	{
 		dup2(std_in_save, STDIN_FILENO);
 		dup2(std_out_save, STDOUT_FILENO);
@@ -89,7 +89,7 @@ static bool	redirect_input(char *file_name)
 	return (true);
 }
 
-bool	handle_redirections(char **redirections)
+bool	handle_redirections(char **redirections, t_shell *shell)
 {
 	int	i;
 
@@ -106,7 +106,10 @@ bool	handle_redirections(char **redirections)
 		else if (!ft_strncmp("<<", redirections[i], 2))
 		{
 			i++;
-			ft_here_doc(redirections[i]);
+			/*ft_here_doc(redirections[i]);*/
+			if (!here_doc(redirections[i], shell))
+				return (false);
+			// TODO: check the returned value from here_doc() to stopp other all the redirections
 		}
 		else if (!ft_strncmp(">", redirections[i], 1))
 		{

@@ -31,7 +31,7 @@
 #include "./parser/parser.h"
 
 # define SAVE 1
-# define RESTOR 2
+# define RESTORE 2
 
 static volatile sig_atomic_t g_signal_flag = 0;
 
@@ -150,6 +150,7 @@ void	wait_pids(t_wait_pids **pids, t_shell *shell);
 
 
 void	ft_here_doc(char *rl);
+bool	here_doc(char *delimiter, t_shell *shell);
 
 void	run_bultins(t_shell *shell);
 
@@ -166,13 +167,14 @@ void	ft_here_doc(char *delimiter); //INFO: creat here_doc input
 
 char	**ft_split_variable(char *variable);
 
-bool	handle_redirections(char **redirections);
+bool	handle_redirections(char **redirections, t_shell *shell);
 
 // INFO: signals
 void	setup_signals(void);
 void	ignore_signals_parrent(void);
 void	wait_child(pid_t pid, t_shell *shell);
 void	setup_signals_child(void);
+void	setup_signals_heredoc(void);
 
 
 // INFO: parcing merged code
