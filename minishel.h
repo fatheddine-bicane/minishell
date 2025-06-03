@@ -152,7 +152,7 @@ void	wait_pids(t_wait_pids **pids, t_shell *shell);
 
 
 void	ft_here_doc(char *rl);
-bool	here_doc(char *delimiter, t_shell *shell);
+bool	here_doc(char **redirections, t_shell *shell, int i);
 
 void	run_bultins(t_shell *shell);
 

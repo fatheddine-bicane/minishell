@@ -77,14 +77,13 @@ char	*random_name(void)
 	return (file_name);
 }
 
-bool	here_doc(char *delimiter, t_shell *shell)
+bool	here_doc(char **redirections, t_shell *shell, int i)
 {
 	char	*input;
 	char	*file_name;
 	int		inf;
 	pid_t	pid;
 
-	/*std_files(RESTORE);*/
 	std_files(RESTORE_STDIN);
 	ignore_signals_parrent();
 	file_name = random_name();
@@ -94,12 +93,13 @@ bool	here_doc(char *delimiter, t_shell *shell)
 		perror("fork()");
 		setup_signals();
 		return (false);
+		setup_signals();
 		// WARNING: not restoring the the signals for parent
 	}
 	if (0 == pid)
 	{
 		setup_signals_child();
-		input = ft_creat_input(delimiter);
+		input = ft_creat_input(redirections[i]);
 		printf("file name: %s\n", file_name);
 		inf = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (-1 == inf)
@@ -107,14 +107,11 @@ bool	here_doc(char *delimiter, t_shell *shell)
 		ft_putstr_fd(input, inf);
 		free(input);
 		close(inf);
-		/*inf = open(file_name, O_RDONLY);*/
-		/*if (-1 == inf)*/
-		/*	return (false); // TODO: error mssg*/
-		/*if (-1 == dup2(inf, STDIN_FILENO))*/
-		/*	return(perror("dup2()"), false);*/
-		/*close(inf);*/
-		/*unlink(file_name);*/
-		/*free(file_name);*/
+		ast_free(shell->cmd); // WARNING: not freeing the pipe freeing only the right side 
+		// WARNING: the list created (pipex)
+		sn_strs_free(redirections);
+		free_my_envp(&shell->my_envp);
+		free(file_name);
 		exit(0);
 	}
 	else if (0 != pid)
@@ -137,6 +134,7 @@ bool	here_doc(char *delimiter, t_shell *shell)
 			}
 			close(inf);
 			unlink(file_name);
+			free(file_name);
 			setup_signals();
 			return (true);
 		}
