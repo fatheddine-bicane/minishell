@@ -83,6 +83,8 @@ void	token_str(t_token *t, bool nl, bool all)
 				sn_printf("%s", t->str);
 			if (all && t->next)
 				sn_printf(" -> ");
+			if (!nl && !t->next)
+				write(STDOUT_FILENO, "\n", 1);
 		}
 		if (all)
 			t = t->next;
