@@ -110,6 +110,7 @@ bool	here_doc(char **redirections, t_shell *shell, int i)
 		{
 			ast_free(shell->pipe);
 			free_pids(&shell->pids);
+			free_pipex(&shell->pipex);
 		}
 		else if (!shell->is_pipe)
 			ast_free(shell->cmd); // WARNING: not freeing the pipe freeing only the right side 

@@ -50,6 +50,7 @@ int main(int argc, char **argv, char **envp)
 		shell.pids = NULL;
 		shell.pipe = NULL;
 		shell.redirections_status = true;
+		shell.pipex = NULL;
 		g_signal_flag = 0;
 
 

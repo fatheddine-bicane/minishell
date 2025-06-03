@@ -60,8 +60,8 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 		sn_strs_free(redirects);
 		if (0 == pid_r && !to_fork)
 			free_my_envp(&shell->my_envp);
-		if (to_fork)
-			std_files(RESTORE_BOTH);
+		/*if (to_fork)*/
+		std_files(RESTORE_BOTH);
 			/*ft_save_std_files(false);*/
 		return ;
 	}

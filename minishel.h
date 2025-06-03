@@ -39,6 +39,7 @@
 static volatile sig_atomic_t g_signal_flag = 0;
 
 typedef struct s_wait_pids	t_wait_pids;
+typedef struct s_pipex	t_pipex;
 
 
 typedef struct s_shell
@@ -46,6 +47,7 @@ typedef struct s_shell
 	t_cmd	*cmd;
 	t_list	*my_envp;
 
+	t_pipex	*pipex;
 	t_wait_pids	*pids;
 	t_cmd	*pipe;
 	bool	is_pipe;
@@ -150,12 +152,19 @@ typedef struct s_wait_pids
 	struct s_wait_pids	*next;
 }	t_wait_pids;
 
+typedef struct s_pipex
+{
+	t_cmd			*cmd;
+	struct s_pipex	*next;
+}	t_pipex;
+
 void	pipe_error(t_shell *shell, int error_mssg, char **prep_envp);
 void	pipe_error_2(t_shell *shell, int error_mssg, t_executable *executable_error);
 void	pipe_error_3(t_shell *shell, t_executable *executable, int error_mssg, pid_t pid);
 void	add_pid(t_wait_pids **pids, pid_t pid);
 void	free_pids(t_wait_pids **pids);
 void	wait_pids(t_wait_pids **pids, t_shell *shell);
+void	free_pipex(t_pipex **pipex);
 
 
 

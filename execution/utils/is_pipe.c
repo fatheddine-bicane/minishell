@@ -12,12 +12,6 @@
 
 #include "../../minishel.h"
 
-typedef struct s_pipex
-{
-	t_cmd			*cmd;
-	struct s_pipex	*next;
-}	t_pipex;
-
 t_pipex	*new_cmd_(t_cmd *cmd)
 {
 	t_pipex	*res;
@@ -97,6 +91,7 @@ void	is_pipe(t_shell *shell)
 		shell->is_pipe = true;
 		shell->pipe = shell->cmd;
 		shell->pids = pids;
+		shell->pipex = pipex;
 		pid = fork();
 		if (0 != pid)
 			add_pid(&pids, pid);
