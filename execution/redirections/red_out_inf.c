@@ -85,6 +85,7 @@ static bool	redirect_input(char *file_name)
 	redirect = open(file_name, O_RDONLY);
 	if (-1 == redirect)
 	{
+		ft_putstr_fd("m here =>", 2);
 		perror(file_name);
 		return (false);
 	}
@@ -126,9 +127,13 @@ bool	handle_redirections(char **redirections, t_shell *shell)
 		}
 		else if (!ft_strncmp("<", redirections[i], 1))
 		{
+			std_files(RESTORE_STDIN);
 			i++;
 			if (!redirect_input(redirections[i]))
+			{
+				shell->exit_status = 1;
 				return (false);
+			}
 		}
 		i++;
 	}
