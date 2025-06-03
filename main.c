@@ -25,10 +25,8 @@
 int main(int argc, char **argv, char **envp)
 {
 	/*t_list *my_envp;*/
-	t_cmd	*cmd;
+	t_cmd *cmd;
 	/*int		exit_stat = 0;*/
-
-
 
 	t_shell shell;
 
@@ -52,9 +50,8 @@ int main(int argc, char **argv, char **envp)
 		shell.redirections_status = true;
 		shell.pipex = NULL;
 		g_signal_flag = 0;
-		
 
-		char (*rl) = readline("====> ");
+		char(*rl) = readline("====> ");
 		if (!rl)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
@@ -64,10 +61,7 @@ int main(int argc, char **argv, char **envp)
 		if (*rl == '\0')
 			continue;
 
-
-
-
-			if (create_ast(rl, &cmd) != EXIT_EMPTY_AST) // INFO: return status
+		if (create_ast(rl, &cmd) != EXIT_EMPTY_AST) // INFO: return status
 		{
 			add_history(rl);
 			if (cmd == NULL)
