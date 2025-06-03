@@ -94,7 +94,6 @@ bool	here_doc(char **redirections, t_shell *shell, int i)
 		setup_signals();
 		return (false);
 		setup_signals();
-		// WARNING: not restoring the the signals for parent
 	}
 	if (0 == pid)
 	{
@@ -107,8 +106,13 @@ bool	here_doc(char **redirections, t_shell *shell, int i)
 		ft_putstr_fd(input, inf);
 		free(input);
 		close(inf);
-		ast_free(shell->cmd); // WARNING: not freeing the pipe freeing only the right side 
-		// WARNING: the list created (pipex)
+		if (shell->is_pipe)
+		{
+			ast_free(shell->pipe);
+			free_pids(&shell->pids);
+		}
+		else if (!shell->is_pipe)
+			ast_free(shell->cmd); // WARNING: not freeing the pipe freeing only the right side 
 		sn_strs_free(redirections);
 		free_my_envp(&shell->my_envp);
 		free(file_name);
