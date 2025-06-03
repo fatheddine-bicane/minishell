@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 15:37:58 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/02 15:17:23 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/03 14:18:54 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,14 +109,20 @@ void	is_pipe(t_shell *shell)
 				if (-1 == dup2(fd[1], STDOUT_FILENO))
 					exit(1); // TODO: error mssg
 			}
+			// Child process - only close the unused pipe end
 			if (-1 != prev_pipe[0])
 				close(prev_pipe[0]);
 			if (-1 != prev_pipe[1])
 				close(prev_pipe[1]);
 			if (tmp->next)
 			{
-				close(fd[0]);
-				close(fd[1]);
+				close(fd[0]);  // Close read end in writing process
+				// DON'T close fd[1] - you're writing to it!
+			}
+			else if (prev_pipe[0] != -1)
+			{
+				close(fd[1]);  // Close write end in reading process  
+				// DON'T close fd[0] - you're reading from it!
 			}
 
 			    // Execute command
@@ -164,8 +170,6 @@ void	is_pipe(t_shell *shell)
 		// }
 		// TODO: execute the command
 
-
-
 		else
 		{
 			if (-1 != prev_pipe[0])
@@ -178,7 +182,7 @@ void	is_pipe(t_shell *shell)
 				prev_pipe[0] = fd[0];
 				prev_pipe[1] = fd[1];
 			}
-			}
+		}
 		tmp = tmp->next;
 	}
 

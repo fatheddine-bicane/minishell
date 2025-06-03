@@ -42,6 +42,7 @@ int main(int argc, char **argv, char **envp)
 	setup_signals();
 	cmd = NULL;
 	printf("PID: %d\n", getpid());
+	std_files(SAVE);
 	while (true)
 	{
 

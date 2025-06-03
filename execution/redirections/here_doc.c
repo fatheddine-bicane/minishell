@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 17:22:24 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 18:12:03 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/03 14:30:27 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,8 @@ bool	here_doc(char *delimiter, t_shell *shell)
 	int		inf;
 	pid_t	pid;
 
-	std_files(RESTORE);
+	/*std_files(RESTORE);*/
+	std_files(RESTORE_STDIN);
 	ignore_signals_parrent();
 	file_name = random_name();
 	pid = fork();
@@ -172,7 +173,7 @@ void	ft_here_doc(char *delimiter)
 	char	*file_name;
 	int		inf;
 
-	std_files(RESTORE);
+	std_files(RESTORE_STDIN);
 	setup_signals_heredoc(); // WARNING: it sends the sogint to main process
 	input = ft_creat_input(delimiter);
 	file_name = random_name();
