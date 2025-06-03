@@ -63,8 +63,6 @@ int main(int argc, char **argv, char **envp)
 				continue; // INFO: syntax error
 			if (cmd->type == C_EXEC)
 			{
-				cmd->u_as.exec.argv[0] = param_expand(cmd->u_as.exec.argv[0]);
-				sn_printf("expanded into `%s`\n", cmd->u_as.exec.argv[0]);
 				is_command(cmd, &my_envp, &exit_stat);
 				/*is_command(&shell);*/
 			}
