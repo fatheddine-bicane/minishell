@@ -17,7 +17,7 @@ char	*ft_get_var_value(int len, char *variable, t_list *my_envp)
 	while (my_envp)
 	{
 		if (!ft_strncmp(variable, (char *)my_envp->content, len))
-			return (ft_strdup((char *)my_envp->content + len + 1));
+			return ((char *)my_envp->content + len + 1);
 		my_envp = my_envp->next;
 	}
 	return (NULL);
@@ -34,25 +34,23 @@ bool	parse_param(t_token *token, t_str_builder *sb, t_shell *shell)
 	len = sn_strlen(token->lexeme);
 	if (token->type == T_STR_SINGLE)
 	{
-		if (len == 2 && !sb_append_char(sb, '\0'))
-			return (false);
+		if (len == 2)
+			return (sb_append_char(sb, '\0'));
 		return (sb_append_str(sb, token->lexeme + 1, len - 2));
 	}
 	if (token->type == T_VAR)
 	{
 		if (token->lexeme[1] == '?')
-			return (!sb_append_nbr(sb, shell->exit_status));
+			return (sb_append_nbr(sb, shell->exit_status));
 		var = ft_get_var_value(len - 1, token->lexeme + 1, shell->my_envp);
 		if (var == NULL)
 			return (sb_append_char(sb, '\0'));
-		if (!sb_append_str(sb, var, 0))
-			return (free(var), false);
-		return (free(var), true);
+		return (sb_append_str(sb, var, 0));
 	}
 	if (token->type == T_STR_DOUBLE)
 	{
 		if (len == 2)
-			return (false);
+			return (sb_append_char(sb, '\0'));
 		i = 1;
 		start = 1;
 		offset = 0;
@@ -60,6 +58,9 @@ bool	parse_param(t_token *token, t_str_builder *sb, t_shell *shell)
 		{
 			if (token->lexeme[i] == '$' && token->lexeme[i + 1] == '?')
 			{
+				if (i > start && !sb_append_str(sb, token->lexeme + start, i
+						- start))
+					return (false);
 				if (!sb_append_nbr(sb, shell->exit_status))
 					return (false);
 				i += 2;
@@ -69,18 +70,19 @@ bool	parse_param(t_token *token, t_str_builder *sb, t_shell *shell)
 			}
 			if (token->lexeme[i] == '$' && is_name(token->lexeme, i + 1))
 			{
-				if (i > start && !sb_append_str(sb, token->lexeme + start, i - start))
+				if (i > start && !sb_append_str(sb, token->lexeme + start, i
+						- start))
 					return (false);
 				offset = i + 1;
 				i += 1;
 				while (is_name(token->lexeme, i))
 					i++;
-				var = ft_get_var_value(i - offset, token->lexeme + offset, shell->my_envp);
+				var = ft_get_var_value(i - offset, token->lexeme + offset,
+						shell->my_envp);
 				if (var == NULL && !sb_append_char(sb, '\0'))
 					return (false);
 				if (var != NULL && !sb_append_str(sb, var, 0))
-					return (free(var), false);
-				free(var);
+					return (false);
 				offset = 0;
 				start = i;
 				continue ;
