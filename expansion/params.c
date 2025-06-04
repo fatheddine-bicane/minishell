@@ -41,7 +41,6 @@ char	*param_expand(char *src, t_shell *shell)
 	sb = sb_create(10);
 	if (sb == NULL)
 		return (tokens_free(head), NULL);
-	token_str(token, false, true);
 	while (token && token->type != T_EOF)
 	{
 		len = sn_strlen(token->lexeme);
@@ -81,6 +80,15 @@ char	*param_expand(char *src, t_shell *shell)
 				offset = 0;
 				while (token->lexeme[i] && i < len - 1)
 				{
+					if (token->lexeme[i] == '$' && token->lexeme[i + 1] == '?')
+					{
+						if (!sb_append_nbr(sb, shell->exit_status))
+							return (tokens_free(head), sb_free(sb), NULL);
+						i += 2;
+						offset = 0;
+						start = i;
+						continue ;
+					}
 					if (token->lexeme[i] == '$' && is_name(token->lexeme, i + 1))
 					{
 						if (i > start && !sb_append_str(sb, token->lexeme + start, i - start))
