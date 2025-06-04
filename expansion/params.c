@@ -12,24 +12,71 @@
 
 #include "../minishel.h"
 
-char	*ft_get_var_value(int len, char *variable, t_list *my_envp)
+char	*ft_get_var_value(t_list *my_envp, char *variable, size_t len)
 {
+	char	*curr;
+	char	*p;
+
 	while (my_envp)
 	{
-		if (!ft_strncmp(variable, (char *)my_envp->content, len))
-			return ((char *)my_envp->content + len + 1);
+		curr = (char *)my_envp->content;
+		if (sn_strncmp(curr, variable, len) == 0)
+		{
+			p = sn_strchr(curr, '=');
+			if (p != NULL && (size_t)(p - curr) == len)
+				return (p + 1);
+		}
 		my_envp = my_envp->next;
 	}
 	return (NULL);
 }
 
-bool	parse_param(t_token *token, t_str_builder *sb, t_shell *shell)
+bool	expand_var(t_shell *shell, t_str_builder *sb, char *variable,
+		size_t len)
 {
 	char	*var;
-	size_t	len;
+
+	if (variable[0] == '?')
+		return (sb_append_nbr(sb, shell->exit_status));
+	var = ft_get_var_value(shell->my_envp, variable, len);
+	if (var == NULL)
+		return (sb_append_char(sb, '\0'));
+	return (sb_append_str(sb, var, 0));
+}
+
+bool	parse_quote_param(t_shell *shell, t_str_builder *sb, char *str,
+		size_t len)
+{
 	size_t	i;
-	size_t	start;
 	size_t	offset;
+
+	i = 1;
+	offset = 1;
+	while (str[i] && i < len - 1)
+	{
+		if (str[i] == '$' && (str[i + 1] == '?' || is_name(str, i + 1)))
+		{
+			if (i > offset && !sb_append_str(sb, str + offset, i - offset))
+				return (false);
+			offset = i + 1;
+			i += 2;
+			while (is_name(str, i) && str[offset] != '?')
+				i++;
+			if (!expand_var(shell, sb, str + offset, i - offset))
+				return (false);
+			offset = i;
+			continue ;
+		}
+		i++;
+	}
+	if (i > offset)
+		return (sb_append_str(sb, str + offset, i - offset));
+	return (true);
+}
+
+bool	parse_param(t_token *token, t_str_builder *sb, t_shell *shell)
+{
+	size_t	len;
 
 	len = sn_strlen(token->lexeme);
 	if (token->type == T_STR_SINGLE)
@@ -39,59 +86,12 @@ bool	parse_param(t_token *token, t_str_builder *sb, t_shell *shell)
 		return (sb_append_str(sb, token->lexeme + 1, len - 2));
 	}
 	if (token->type == T_VAR)
-	{
-		if (token->lexeme[1] == '?')
-			return (sb_append_nbr(sb, shell->exit_status));
-		var = ft_get_var_value(len - 1, token->lexeme + 1, shell->my_envp);
-		if (var == NULL)
-			return (sb_append_char(sb, '\0'));
-		return (sb_append_str(sb, var, 0));
-	}
+		return (expand_var(shell, sb, token->lexeme + 1, len - 1));
 	if (token->type == T_STR_DOUBLE)
 	{
 		if (len == 2)
 			return (sb_append_char(sb, '\0'));
-		i = 1;
-		start = 1;
-		offset = 0;
-		while (token->lexeme[i] && i < len - 1)
-		{
-			if (token->lexeme[i] == '$' && token->lexeme[i + 1] == '?')
-			{
-				if (i > start && !sb_append_str(sb, token->lexeme + start, i
-						- start))
-					return (false);
-				if (!sb_append_nbr(sb, shell->exit_status))
-					return (false);
-				i += 2;
-				offset = 0;
-				start = i;
-				continue ;
-			}
-			if (token->lexeme[i] == '$' && is_name(token->lexeme, i + 1))
-			{
-				if (i > start && !sb_append_str(sb, token->lexeme + start, i
-						- start))
-					return (false);
-				offset = i + 1;
-				i += 1;
-				while (is_name(token->lexeme, i))
-					i++;
-				var = ft_get_var_value(i - offset, token->lexeme + offset,
-						shell->my_envp);
-				if (var == NULL && !sb_append_char(sb, '\0'))
-					return (false);
-				if (var != NULL && !sb_append_str(sb, var, 0))
-					return (false);
-				offset = 0;
-				start = i;
-				continue ;
-			}
-			i++;
-		}
-		if (i > start && !sb_append_str(sb, token->lexeme + start, i - start))
-			return (false);
-		return (true);
+		return (parse_quote_param(shell, sb, token->lexeme, len));
 	}
 	return (sb_append_str(sb, token->lexeme, len));
 }
