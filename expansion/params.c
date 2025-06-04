@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expansoin.c                                        :+:      :+:    :+:   */
+/*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../parser.h"
+#include "../minishel.h"
 
-char *ft_get_var_value(int len, char *variable, t_list *my_envp)
+char	*ft_get_var_value(int len, char *variable, t_list *my_envp)
 {
 	while (my_envp)
 	{
@@ -23,16 +23,16 @@ char *ft_get_var_value(int len, char *variable, t_list *my_envp)
 	return (NULL);
 }
 
-char *param_expand(char *src, t_list *envp)
+char	*param_expand(char *src, t_shell *shell)
 {
-	t_str_builder *sb;
-	t_token *token;
-	t_token *head;
-	size_t len;
-	size_t i;
-	size_t start;
-	size_t offset;
-	char *var;
+	t_str_builder	*sb;
+	t_token			*token;
+	t_token			*head;
+	size_t			len;
+	size_t			i;
+	size_t			start;
+	size_t			offset;
+	char			*var;
 
 	token = tokens_scan(src);
 	if (token == NULL)
@@ -41,6 +41,7 @@ char *param_expand(char *src, t_list *envp)
 	sb = sb_create(10);
 	if (sb == NULL)
 		return (tokens_free(head), NULL);
+	token_str(token, false, true);
 	while (token && token->type != T_EOF)
 	{
 		len = sn_strlen(token->lexeme);
@@ -53,12 +54,21 @@ char *param_expand(char *src, t_list *envp)
 		}
 		else if (token->type == T_VAR)
 		{
-			var = ft_get_var_value(len - 1, token->lexeme + 1, envp);
-			if (var == NULL && !sb_append_char(sb, '\0'))
-				return (tokens_free(head), sb_free(sb), NULL);
-			if (var != NULL && !sb_append_str(sb, var, 0))
-				return (tokens_free(head), sb_free(sb), free(var), NULL);
-			free(var);
+			if (token->lexeme[1] == '?')
+			{
+				if (!sb_append_nbr(sb, shell->exit_status))
+					return (tokens_free(head), sb_free(sb), NULL);
+			}
+			else
+			{
+				var = ft_get_var_value(len - 1, token->lexeme + 1,
+						shell->my_envp);
+				if (var == NULL && !sb_append_char(sb, '\0'))
+					return (tokens_free(head), sb_free(sb), NULL);
+				if (var != NULL && !sb_append_str(sb, var, 0))
+					return (tokens_free(head), sb_free(sb), free(var), NULL);
+				free(var);
+			}
 		}
 		else if (token->type == T_STR_DOUBLE)
 		{
@@ -79,16 +89,15 @@ char *param_expand(char *src, t_list *envp)
 						i += 1;
 						while (is_name(token->lexeme, i))
 							i++;
-						var = ft_get_var_value(i - offset, token->lexeme + offset, envp);
+						var = ft_get_var_value(i - offset, token->lexeme + offset, shell->my_envp);
 						if (var == NULL && !sb_append_char(sb, '\0'))
 							return (tokens_free(head), sb_free(sb), NULL);
 						if (var != NULL && !sb_append_str(sb, var, 0))
-							return (tokens_free(head), sb_free(sb), free(var),
-											NULL);
+							return (tokens_free(head), sb_free(sb), free(var), NULL);
 						free(var);
 						offset = 0;
 						start = i;
-						continue;
+						continue ;
 					}
 					i++;
 				}
@@ -106,10 +115,10 @@ char *param_expand(char *src, t_list *envp)
 	return (tokens_free(head), sb_build_str(sb));
 }
 
-bool expand_params(char **args, t_list *envp)
+bool	expand_params(char **args, t_shell *shell)
 {
-	size_t i;
-	char *src;
+	size_t	i;
+	char	*src;
 
 	if (args == NULL)
 		return (false);
@@ -117,7 +126,7 @@ bool expand_params(char **args, t_list *envp)
 	while (args[i] != NULL)
 	{
 		src = args[i];
-		args[i] = param_expand(src, envp);
+		args[i] = param_expand(src, shell);
 		free(src); // maybe resuse src if we fail
 		sn_printf("expanded into (%s)\n", args[i]);
 		if (args[i] == NULL)
@@ -133,40 +142,4 @@ bool expand_params(char **args, t_list *envp)
 		i++;
 	}
 	return (true);
-}
-
-char *param_expand2(char *src)
-{
-	size_t i;
-	size_t offset;
-	size_t start;
-	t_str_builder *sb;
-
-	i = 0;
-	if (!src[i])
-		return (src);
-	sb = sb_create(10);
-	start = 0;
-	while (src[i])
-	{
-		if (src[i] == '$' && is_name(src, i + 1))
-		{
-			if (i > start)
-				sb_append_str(sb, src + start, i - start);
-			offset = i + 1;
-			i += 1;
-			while (is_name(src, i))
-				i++;
-			sb_append_str(sb, src + offset, i - offset);
-			printf("substr = %s\n", sb->buff[sb_len(sb) - 1]);
-			offset = 0;
-			start = i;
-			continue;
-		}
-		i++;
-	}
-	if (i > start)
-		sb_append_str(sb, src + start, i - start);
-	free(src);
-	return (sb_build_str(sb));
 }

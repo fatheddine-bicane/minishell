@@ -70,6 +70,7 @@ int main(int argc, char **argv, char **envp)
 			if (cmd->type == C_EXEC)
 			{
 				/*is_command(cmd, &my_envp, &exit_stat);*/
+				expand_params(shell.cmd->u_as.exec.argv , &shell);
 				is_command(&shell, true, -3);
 			}
 			else if (cmd->type == C_REDIRECT)

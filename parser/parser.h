@@ -13,7 +13,6 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "../my_library/my_library.h"
 # include "libsn/libsn.h"
 # include <errno.h>
 # include <fcntl.h>
@@ -168,8 +167,5 @@ char					*extract_lexeme_err(t_token *token);
 int						create_ast(char *src, t_cmd **ast);
 void					ast_free(t_cmd *root);
 char					*ast_output(t_cmd *cmd, bool print);
-
-char					*param_expand(char *src, t_list *envp);
-bool					expand_params(char **args, t_list *envp);
 
 #endif
