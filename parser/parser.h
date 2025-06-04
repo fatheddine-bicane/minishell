@@ -65,13 +65,6 @@ typedef struct s_token
 	struct s_token		*prev;
 }						t_token;
 
-typedef struct s_quote_state
-{
-	bool				is_quoted;
-	char				quote_start;
-	char				quote_end;
-}						t_quote_state;
-
 typedef struct s_cmd	t_cmd;
 
 typedef struct s_exec

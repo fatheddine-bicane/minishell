@@ -37,28 +37,6 @@ t_token	*extract_str(char *src, size_t *current, bool single)
 	return (token_new(type, substr));
 }
 
-static t_quote_state	init_quote_state(void)
-{
-	static t_quote_state	state;
-
-	state.is_quoted = false;
-	state.quote_start = '\0';
-	state.quote_end = '\0';
-	return (state);
-}
-
-static void	quote_state_quote(t_quote_state *state, char target)
-{
-	if (state->is_quoted)
-		state->quote_end = target;
-	else
-		state->quote_start = target;
-	if (state->quote_start == state->quote_end)
-		state->is_quoted = !state->is_quoted;
-	else
-		state->is_quoted = true;
-}
-
 char	*extract_word(char *src, size_t *current)
 {
 	size_t	start;
@@ -69,29 +47,6 @@ char	*extract_word(char *src, size_t *current)
 		while (match_word(src, current, false))
 			continue ;
 	}
-	return (sn_substr(src, start, *current - start));
-}
-
-char	*extract_quoted_word(char *src, size_t *current)
-{
-	size_t			start;
-	t_quote_state	state;
-
-	start = *current - 1;
-	state = init_quote_state();
-	if (is_quote(src, start))
-	{
-		state.quote_start = src[start];
-		state.is_quoted = true;
-	}
-	while (match_word(src, current, state.is_quoted))
-	{
-		if (is_quote(src, (*current) - 1))
-			quote_state_quote(&state, src[(*current) - 1]);
-	}
-	if (state.is_quoted)
-		return (sn_eprintf("unexpected EOF while looking for matching `%c`\n",
-				state.quote_start), NULL);
 	return (sn_substr(src, start, *current - start));
 }
 
