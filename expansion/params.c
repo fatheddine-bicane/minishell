@@ -23,16 +23,82 @@ char	*ft_get_var_value(int len, char *variable, t_list *my_envp)
 	return (NULL);
 }
 
+bool	parse_param(t_token *token, t_str_builder *sb, t_shell *shell)
+{
+	char	*var;
+	size_t	len;
+	size_t	i;
+	size_t	start;
+	size_t	offset;
+
+	len = sn_strlen(token->lexeme);
+	if (token->type == T_STR_SINGLE)
+	{
+		if (len == 2 && !sb_append_char(sb, '\0'))
+			return (false);
+		return (sb_append_str(sb, token->lexeme + 1, len - 2));
+	}
+	if (token->type == T_VAR)
+	{
+		if (token->lexeme[1] == '?')
+			return (!sb_append_nbr(sb, shell->exit_status));
+		var = ft_get_var_value(len - 1, token->lexeme + 1, shell->my_envp);
+		if (var == NULL)
+			return (sb_append_char(sb, '\0'));
+		if (!sb_append_str(sb, var, 0))
+			return (free(var), false);
+		return (free(var), true);
+	}
+	if (token->type == T_STR_DOUBLE)
+	{
+		if (len == 2)
+			return (false);
+		i = 1;
+		start = 1;
+		offset = 0;
+		while (token->lexeme[i] && i < len - 1)
+		{
+			if (token->lexeme[i] == '$' && token->lexeme[i + 1] == '?')
+			{
+				if (!sb_append_nbr(sb, shell->exit_status))
+					return (false);
+				i += 2;
+				offset = 0;
+				start = i;
+				continue ;
+			}
+			if (token->lexeme[i] == '$' && is_name(token->lexeme, i + 1))
+			{
+				if (i > start && !sb_append_str(sb, token->lexeme + start, i - start))
+					return (false);
+				offset = i + 1;
+				i += 1;
+				while (is_name(token->lexeme, i))
+					i++;
+				var = ft_get_var_value(i - offset, token->lexeme + offset, shell->my_envp);
+				if (var == NULL && !sb_append_char(sb, '\0'))
+					return (false);
+				if (var != NULL && !sb_append_str(sb, var, 0))
+					return (free(var), false);
+				free(var);
+				offset = 0;
+				start = i;
+				continue ;
+			}
+			i++;
+		}
+		if (i > start && !sb_append_str(sb, token->lexeme + start, i - start))
+			return (false);
+		return (true);
+	}
+	return (sb_append_str(sb, token->lexeme, len));
+}
+
 char	*param_expand(char *src, t_shell *shell)
 {
 	t_str_builder	*sb;
 	t_token			*token;
 	t_token			*head;
-	size_t			len;
-	size_t			i;
-	size_t			start;
-	size_t			offset;
-	char			*var;
 
 	token = tokens_scan(src);
 	if (token == NULL)
@@ -43,81 +109,8 @@ char	*param_expand(char *src, t_shell *shell)
 		return (tokens_free(head), NULL);
 	while (token && token->type != T_EOF)
 	{
-		len = sn_strlen(token->lexeme);
-		if (token->type == T_STR_SINGLE)
-		{
-			if (len == 2 && !sb_append_char(sb, '\0'))
-				return (tokens_free(head), sb_free(sb), NULL);
-			if (len > 2 && !sb_append_str(sb, token->lexeme + 1, len - 2))
-				return (tokens_free(head), sb_free(sb), NULL);
-		}
-		else if (token->type == T_VAR)
-		{
-			if (token->lexeme[1] == '?')
-			{
-				if (!sb_append_nbr(sb, shell->exit_status))
-					return (tokens_free(head), sb_free(sb), NULL);
-			}
-			else
-			{
-				var = ft_get_var_value(len - 1, token->lexeme + 1,
-						shell->my_envp);
-				if (var == NULL && !sb_append_char(sb, '\0'))
-					return (tokens_free(head), sb_free(sb), NULL);
-				if (var != NULL && !sb_append_str(sb, var, 0))
-					return (tokens_free(head), sb_free(sb), free(var), NULL);
-				free(var);
-			}
-		}
-		else if (token->type == T_STR_DOUBLE)
-		{
-			if (len == 2 && !sb_append_char(sb, '\0'))
-				return (tokens_free(head), sb_free(sb), NULL);
-			if (len > 2)
-			{
-				i = 1;
-				start = 1;
-				offset = 0;
-				while (token->lexeme[i] && i < len - 1)
-				{
-					if (token->lexeme[i] == '$' && token->lexeme[i + 1] == '?')
-					{
-						if (!sb_append_nbr(sb, shell->exit_status))
-							return (tokens_free(head), sb_free(sb), NULL);
-						i += 2;
-						offset = 0;
-						start = i;
-						continue ;
-					}
-					if (token->lexeme[i] == '$' && is_name(token->lexeme, i + 1))
-					{
-						if (i > start && !sb_append_str(sb, token->lexeme + start, i - start))
-							return (tokens_free(head), sb_free(sb), NULL);
-						offset = i + 1;
-						i += 1;
-						while (is_name(token->lexeme, i))
-							i++;
-						var = ft_get_var_value(i - offset, token->lexeme + offset, shell->my_envp);
-						if (var == NULL && !sb_append_char(sb, '\0'))
-							return (tokens_free(head), sb_free(sb), NULL);
-						if (var != NULL && !sb_append_str(sb, var, 0))
-							return (tokens_free(head), sb_free(sb), free(var), NULL);
-						free(var);
-						offset = 0;
-						start = i;
-						continue ;
-					}
-					i++;
-				}
-				if (i > start && !sb_append_str(sb, token->lexeme + start, i - start))
-					return (tokens_free(head), sb_free(sb), NULL);
-			}
-		}
-		else
-		{
-			if (!sb_append_str(sb, token->lexeme, len))
-				return (tokens_free(head), sb_free(sb), NULL);
-		}
+		if (!parse_param(token, sb, shell))
+			return (tokens_free(head), sb_free(sb), NULL);
 		token = token->next;
 	}
 	return (tokens_free(head), sb_build_str(sb));
@@ -135,8 +128,7 @@ bool	expand_params(char **args, t_shell *shell)
 	{
 		src = args[i];
 		args[i] = param_expand(src, shell);
-		free(src); // maybe resuse src if we fail
-		sn_printf("expanded into (%s)\n", args[i]);
+		free(src); // maybe reuse src if expansion fails
 		if (args[i] == NULL)
 		{
 			i++;
