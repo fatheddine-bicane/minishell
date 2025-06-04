@@ -132,6 +132,17 @@ void	is_pipe(t_shell *shell)
 				is_command(shell, false, pid);
 			else if (C_REDIRECT == tmp->cmd->type)
 				is_redirection(shell, false, pid);
+			ft_putstr_fd("ana hnaya ma hrjtch\n", 2);
+			close(fd[1]);
+			// WARNING: see this case it changes it sends output to pipe maybe
+				/*====> <<s | wc*/
+				/*asdsds*/
+				/*s*/
+				/*ana hnaya ma hrjtch*/
+				/*2       8      41*/
+				/*the exit status : 0*/
+				/*the exit status : 0*/
+				/*====>*/
 
 			// Child exits after command execution
 			free_pids(&pids);
