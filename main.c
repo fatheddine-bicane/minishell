@@ -53,11 +53,11 @@ int main(int argc, char **argv, char **envp)
 		shell.redirections_status = true;
 		shell.pipex = NULL;
 
-		shell.c_exec = NULL;
-		shell.c_redirect = NULL;
-		shell.c_pipe = NULL;
-		shell.c_group = NULL;
-		shell.c_compound = NULL;
+		/*shell.c_exec = NULL;*/
+		/*shell.c_redirect = NULL;*/
+		/*shell.c_pipe = NULL;*/
+		/*shell.c_group = NULL;*/
+		/*shell.c_compound = NULL;*/
 		g_signal_flag = 0;
 
 
@@ -103,6 +103,10 @@ int main(int argc, char **argv, char **envp)
 			else if (C_GROUP == cmd->type)
 			{
 				is_group(&shell);
+			}
+			else if (C_COMPOUND == cmd->type)
+			{
+				is_compound(&shell);
 			}
 			else
 				printf("not a command\n");
