@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:37:37 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/29 16:20:47 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/05 13:09:05 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,10 @@ void	save_std_files(bool save)
 	}
 }
 
-/*void	run_bultins(char **argv, t_list **my_envp, int *exit_stat)*/
 void	run_bultins(t_shell *shell)
 {
+	// TODO: check if pipe to free the child memory, if group...
+
 	if (!ft_strncmp("unset", shell->cmd->u_as.exec.argv[0], 5))
 	{
 		ft_unset(shell);

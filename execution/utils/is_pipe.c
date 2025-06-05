@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 15:37:58 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/03 14:18:54 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/05 14:49:48 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,8 @@ void	is_pipe(t_shell *shell)
 				/*====>*/
 
 			// Child exits after command execution
-			free_pids(&pids);
+			// if (pids)
+			// 	free_pids(&pids);
 			free_pipex(&pipex);
 			ast_free(parent);
 			exit(shell->exit_status);

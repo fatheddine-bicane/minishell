@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:21:00 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 18:34:13 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/05 13:14:14 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,12 @@ int main(int argc, char **argv, char **envp)
 		shell.pipe = NULL;
 		shell.redirections_status = true;
 		shell.pipex = NULL;
+
+		shell.c_exec = NULL;
+		shell.c_redirect = NULL;
+		shell.c_pipe = NULL;
+		shell.c_group = NULL;
+		shell.c_compound = NULL;
 		g_signal_flag = 0;
 
 

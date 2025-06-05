@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 13:43:15 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/29 16:52:57 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/05 13:12:41 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,16 @@
 
 void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
 {
+	// INFO: in case the redirection fails since i call is_command() in is_redirections()
 	if (false == shell->redirections_status)
 	{
 		shell->exit_status = 1;
 		return ;
 	}
+
+
+
+
 	if (ft_is_builtin(shell->cmd->u_as.exec.argv[0]))
 	{
 		run_bultins(shell);

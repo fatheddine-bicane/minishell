@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 21:44:56 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/05 13:49:51 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,15 @@
 # define RESTORE_STDIN 3
 # define RESTORE_STDOUT 4
 
+
+
+
+# define COMMAND_MODE 1
+#define REDIRECTION_MODE 2
+#define PIPE_MODE 3
+#define GROUP_MODE 4
+#define COMPOUND_MODE 5
+
 static volatile sig_atomic_t g_signal_flag = 0;
 
 typedef struct s_wait_pids	t_wait_pids;
@@ -45,11 +54,19 @@ typedef struct s_pipex	t_pipex;
 typedef struct s_shell
 {
 	t_cmd	*cmd;
+	t_cmd	*root_to_free;
+
+	t_cmd	*c_exec;
+	t_cmd	*c_redirect;
+	t_cmd	*c_pipe;
+	t_cmd	*c_group;
+	t_cmd	*c_compound;
+
 	t_list	*my_envp;
 
 	t_pipex	*pipex;
 	t_wait_pids	*pids;
-	t_cmd	*pipe;
+	t_cmd	*pipe;	// maybe remove
 	bool	is_pipe;
 
 	int		exit_status;
@@ -197,7 +214,7 @@ void	setup_signals_heredoc(void);
 
 
 // INFO: parcing merged code
-/*void	is_command(t_cmd *cmd, t_list **my_envp, int *exit_stat);*/
+
 void	is_command(t_shell *shell, bool to_fork, pid_t pid_r);
 void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r);
 void	std_files(int what_to_do);
