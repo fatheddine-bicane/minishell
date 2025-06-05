@@ -191,6 +191,8 @@ bool	here_doc(char **redirections, t_shell *shell, int i);
 void	run_bultins(t_shell *shell);
 
 
+// INFO: group
+void	is_group(t_shell *shell);
 
 
 char **ft_prep_envp(t_shell *shell); //INFO: transform the envp to char **

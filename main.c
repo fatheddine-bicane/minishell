@@ -98,8 +98,11 @@ int main(int argc, char **argv, char **envp)
 			}
 			else if (cmd->type == C_PIPE)
 			{
-				shell.root_to_free = shell.cmd;
 				is_pipe(&shell);
+			}
+			else if (C_GROUP == cmd->type)
+			{
+				is_group(&shell);
 			}
 			else
 				printf("not a command\n");
