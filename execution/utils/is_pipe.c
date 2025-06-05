@@ -12,9 +12,9 @@
 
 #include "../../minishel.h"
 
-t_pipex	*new_cmd_(t_cmd *cmd)
+t_pipex *new_cmd_(t_cmd *cmd)
 {
-	t_pipex	*res;
+	t_pipex *res;
 
 	res = (t_pipex *)malloc(sizeof(t_pipex));
 	if (!res)
@@ -24,9 +24,9 @@ t_pipex	*new_cmd_(t_cmd *cmd)
 	return (res);
 }
 
-void	append_cmd_(t_pipex **pipex, t_cmd *cmd)
+void append_cmd_(t_pipex **pipex, t_cmd *cmd)
 {
-	t_pipex	*tmp;
+	t_pipex *tmp;
 
 	if (!(*pipex))
 		(*pipex) = new_cmd_(cmd);
@@ -39,7 +39,7 @@ void	append_cmd_(t_pipex **pipex, t_cmd *cmd)
 	}
 }
 
-void	creat_pipex(t_cmd *cmd, t_pipex **pipex)
+void creat_pipex(t_cmd *cmd, t_pipex **pipex)
 {
 	if (C_PIPE == cmd->type)
 		creat_pipex(cmd->u_as.pipe.left, pipex);
@@ -49,10 +49,10 @@ void	creat_pipex(t_cmd *cmd, t_pipex **pipex)
 		append_cmd_(pipex, cmd->u_as.pipe.right);
 }
 
-void	free_pipex(t_pipex **pipex)
+void free_pipex(t_pipex **pipex)
 {
-	t_pipex	*tmp;
-	t_pipex	*to_free;
+	t_pipex *tmp;
+	t_pipex *to_free;
 
 	tmp = (*pipex);
 	while (tmp)
@@ -64,31 +64,29 @@ void	free_pipex(t_pipex **pipex)
 	(*pipex) = NULL;
 }
 
-void	is_pipe(t_shell *shell)
+void is_pipe(t_shell *shell)
 {
-	t_pipex	*pipex = NULL;
-	t_pipex	*tmp;
+	t_pipex *pipex = NULL;
+	t_pipex *tmp;
 
 	creat_pipex(shell->cmd, &pipex);
 	tmp = pipex;
 
+	pid_t pid;
+	int prev_pipe[2] = {-1, -1}; // INFO: hold pipes fds
+	int fd[2];
+	t_wait_pids *pids = NULL;
 
-	pid_t	pid;
-	int		prev_pipe[2] = {-1, -1}; // INFO: hold pipes fds
-	int		fd[2];
-	t_wait_pids	*pids = NULL;
+	shell->is_pipe = true;
 
-
-
-	while(tmp)
+	while (tmp)
 	{
 
 		if (tmp->next)
 		{
 			if (-1 == pipe(fd))
-				return ; // TODO: error mssg
+				return; // TODO: error mssg
 		}
-		shell->is_pipe = true;
 		shell->pipe = shell->cmd;
 		shell->pids = pids;
 		shell->pipex = pipex;
@@ -116,22 +114,33 @@ void	is_pipe(t_shell *shell)
 				close(prev_pipe[1]);
 			if (tmp->next)
 			{
-				close(fd[0]);  // Close read end in writing process
-				// DON'T close fd[1] - you're writing to it!
+				close(fd[0]); // Close read end in writing process
+											// DON'T close fd[1] - you're writing to it!
 			}
 			else if (prev_pipe[0] != -1)
 			{
-				close(fd[1]);  // Close write end in reading process  
-				// DON'T close fd[0] - you're reading from it!
+				close(fd[1]); // Close write end in reading process
+											// DON'T close fd[0] - you're reading from it!
 			}
 
-			    // Execute command
+			// Execute command
 			t_cmd *parent = shell->cmd;
 			shell->cmd = tmp->cmd;
 			if (C_EXEC == tmp->cmd->type)
 				is_command(shell, false, pid);
 			else if (C_REDIRECT == tmp->cmd->type)
 				is_redirection(shell, false, pid);
+			ft_putstr_fd("ana hnaya ma hrjtch\n", 2);
+			/*close(fd[1]);*/
+			// WARNING: see this case it changes it sends output to pipe maybe
+			/*====> <<s | wc*/
+			/*asdsds*/
+			/*s*/
+			/*ana hnaya ma hrjtch*/
+			/*2       8      41*/
+			/*the exit status : 0*/
+			/*the exit status : 0*/
+			/*====>*/
 
 			// Child exits after command execution
 			free_pids(&pids);

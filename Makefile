@@ -40,8 +40,8 @@ all: $(NAME)
 %.o: %.c
 	@$(CC) $(FLAGS) -c $< -o $@
 
-$(NAME): $(LIBSN_NAME) $(OFILES)
-	@$(CC) $(FLAGS) $(OFILES) $(LIBSN_NAME) $(EXTRA_FLAGS) -o $(NAME)
+$(NAME): $(LIBSN_NAME) $(LIBSN_NAME) $(OFILES)
+	@$(CC) $(FLAGS) $(OFILES) $(LIBSN_NAME) $(LIBSN_NAME) $(EXTRA_FLAGS) -o $(NAME)
 	@echo "$(GREEN)Minishel compiled successfully!$(RESET)"
 
 

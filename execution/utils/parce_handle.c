@@ -12,12 +12,12 @@
 
 #include "../../minishel.h"
 
-void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
+void is_command(t_shell *shell, bool to_fork, pid_t pid_r)
 {
 	if (false == shell->redirections_status)
 	{
 		shell->exit_status = 1;
-		return ;
+		return;
 	}
 	if (ft_is_builtin(shell->cmd->u_as.exec.argv[0]))
 	{
@@ -32,15 +32,13 @@ void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
 	}
 }
 
-void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
+void is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 {
-	t_cmd	*tmp;
+	t_cmd *tmp;
 	t_str_builder *sb;
 
-
 	/*if (to_fork)*/
-		/*ft_save_std_files(true);*/
-
+	/*ft_save_std_files(true);*/
 
 	tmp = shell->cmd;
 	sb = sb_create(10);
@@ -59,11 +57,14 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 		shell->redirections_status = false;
 		sn_strs_free(redirects);
 		if (0 == pid_r && !to_fork)
+		{
 			free_my_envp(&shell->my_envp);
+			/*exit(shell->exit_status);*/
+		}
 		/*if (to_fork)*/
 		std_files(RESTORE_BOTH);
-			/*ft_save_std_files(false);*/
-		return ;
+		/*ft_save_std_files(false);*/
+		return;
 	}
 	sn_strs_free(redirects);
 
@@ -71,40 +72,13 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 	{
 		t_cmd *tmp2 = shell->cmd;
 		shell->cmd = tmp;
-		is_command(shell, to_fork,pid_r);
+		is_command(shell, to_fork, pid_r);
 		shell->cmd = tmp2;
 	}
 	if (to_fork)
 		std_files(RESTORE_BOTH);
-		/*ft_save_std_files(false);*/
+	/*ft_save_std_files(false);*/
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*static void	ft_wait_pids(t_list *pids, int *exit_stat)*/
 /*{*/
@@ -113,12 +87,11 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 /*	while (pids)*/
 /*	{*/
 /*		pid = ft_atoi((char *)pids->content);*/
-		/*waitpid(pid, NULL, 0);*/
+/*waitpid(pid, NULL, 0);*/
 /*		wait_child(pid, exit_stat);*/
 /*		pids = pids->next;*/
 /*	}*/
 /*}*/
-
 
 /*void	is_pipe(t_cmd *cmd, t_list **my_envp, int *exit_stat, int depth)*/
 /*{*/
@@ -191,10 +164,10 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 /*			// call redirect*/
 /*			is_redirection(shell);*/
 /*		}*/
-		/*if (cmd->u_as.pipe.left->type == C_GROUP)*/
-		/*{*/
-		/*	// call subshell*/
-		/*}*/
+/*if (cmd->u_as.pipe.left->type == C_GROUP)*/
+/*{*/
+/*	// call subshell*/
+/*}*/
 /*		if (cmd->u_as.pipe.left->type == C_EXEC)*/
 /*		{*/
 /*			// call exec*/

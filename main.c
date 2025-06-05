@@ -44,6 +44,7 @@ int main(int argc, char **argv, char **envp)
 	while (true)
 	{
 
+		ft_putstr_fd("new prompt is coming\n", 2);
 		shell.is_pipe = false;
 		shell.pids = NULL;
 		shell.pipe = NULL;
@@ -67,10 +68,12 @@ int main(int argc, char **argv, char **envp)
 			if (cmd == NULL)
 				continue; // INFO: syntax error
 			shell.cmd = cmd;
+			continue; // INFO: syntax error
+			shell.cmd = cmd;
 			if (cmd->type == C_EXEC)
 			{
 				/*is_command(cmd, &my_envp, &exit_stat);*/
-				expand_params(shell.cmd->u_as.exec.argv , &shell);
+				expand_params(shell.cmd->u_as.exec.argv, &shell);
 				is_command(&shell, true, -3);
 			}
 			else if (cmd->type == C_REDIRECT)
