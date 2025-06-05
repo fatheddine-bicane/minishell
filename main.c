@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishel.h"
-#include "parser/parser.h"
-#include <stdio.h>
 
 /*t_data create_data()*/
 /*{*/
