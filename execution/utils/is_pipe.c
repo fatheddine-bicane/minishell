@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 15:37:58 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/03 14:18:54 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/05 14:49:48 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void is_pipe(t_shell *shell)
 			}
 
 			// Execute command
-			t_cmd *parent = shell->cmd;
+			// t_cmd *parent = shell->cmd;
 			shell->cmd = tmp->cmd;
 			if (C_EXEC == tmp->cmd->type)
 				is_command(shell, false, pid);
@@ -143,9 +143,10 @@ void is_pipe(t_shell *shell)
 			/*====>*/
 
 			// Child exits after command execution
-			free_pids(&pids);
+			// if (pids)
+			// 	free_pids(&pids);
 			free_pipex(&pipex);
-			ast_free(parent);
+			ast_free(shell->root_to_free);
 			exit(shell->exit_status);
 		}
 		/*t_cmd *parent = shell->cmd;*/

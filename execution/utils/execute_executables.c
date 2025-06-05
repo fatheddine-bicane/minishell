@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 15:16:21 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 12:51:09 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/05 13:19:12 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ft_executable(t_shell *shell, pid_t pid, bool to_wait)
 {
 	char	**com;
 
-	com = shell->cmd->u_as.exec.argv;
+	com = shell->cmd->u_as.exec.argv; // TODO: change to shell->c_exec
 	if (0 == pid)
 		setup_signals_child();
 

@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 11:35:10 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 20:23:26 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/05 13:20:13 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	executable_error(t_shell *shell, int error_mssg, char **prep_envp)
 	if (1 == error_mssg)
 	{
 		free_my_envp(&shell->my_envp);
-		ast_free(shell->cmd);
+		ast_free(shell->cmd); // TODO: check what type of command to know what to free
 		ft_free_arr(prep_envp);
 		exit(127);
 	}

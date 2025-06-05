@@ -17,7 +17,7 @@ void	exit_error(t_shell *shell, int error_mssg)
 	int	exit_status;
 
 	if (1 == error_mssg)
-		return (ast_free(shell->cmd), free_my_envp(&shell->my_envp), exit(0));
+		return (ast_free(shell->cmd), free_my_envp(&shell->my_envp), exit(shell->exit_status));
 	else if (2 == error_mssg)
 	{
 		printf("exit\n");

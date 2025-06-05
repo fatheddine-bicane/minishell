@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:21:00 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 18:34:13 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/05 13:14:14 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,12 @@ int main(int argc, char **argv, char **envp)
 		shell.pipe = NULL;
 		shell.redirections_status = true;
 		shell.pipex = NULL;
+
+		/*shell.c_exec = NULL;*/
+		/*shell.c_redirect = NULL;*/
+		/*shell.c_pipe = NULL;*/
+		/*shell.c_group = NULL;*/
+		/*shell.c_compound = NULL;*/
 		g_signal_flag = 0;
 
 		char(*rl) = readline("====> ");
@@ -55,7 +61,7 @@ int main(int argc, char **argv, char **envp)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
 			free_my_envp(&shell.my_envp);
-			exit(0);
+			exit(shell.exit_status); // INFO: bash exits with the last exit status
 		}
 		if (*rl == '\0')
 			continue;
@@ -65,7 +71,12 @@ int main(int argc, char **argv, char **envp)
 			add_history(rl);
 			if (cmd == NULL)
 				continue; // INFO: syntax error
+
+
+
 			shell.cmd = cmd;
+			shell.root_to_free = cmd;
+
 			if (cmd->type == C_EXEC)
 			{
 				/*is_command(cmd, &my_envp, &exit_stat);*/
@@ -75,12 +86,20 @@ int main(int argc, char **argv, char **envp)
 			else if (cmd->type == C_REDIRECT)
 			{
 				is_redirection(&shell, true, -3);
-				if (!shell.redirections_status)
-					shell.redirections_status = true;
+				// if (!shell.redirections_status)
+				// 	shell.redirections_status = true;
 			}
 			else if (cmd->type == C_PIPE)
 			{
 				is_pipe(&shell);
+			}
+			else if (C_GROUP == cmd->type)
+			{
+				is_group(&shell);
+			}
+			else if (C_COMPOUND == cmd->type)
+			{
+				is_compound(&shell);
 			}
 			else
 				printf("not a command\n");
