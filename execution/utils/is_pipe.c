@@ -126,7 +126,7 @@ void	is_pipe(t_shell *shell)
 			}
 
 			    // Execute command
-			t_cmd *parent = shell->cmd;
+			// t_cmd *parent = shell->cmd;
 			shell->cmd = tmp->cmd;
 			if (C_EXEC == tmp->cmd->type)
 				is_command(shell, false, pid);
@@ -148,7 +148,7 @@ void	is_pipe(t_shell *shell)
 			// if (pids)
 			// 	free_pids(&pids);
 			free_pipex(&pipex);
-			ast_free(parent);
+			ast_free(shell->root_to_free);
 			exit(shell->exit_status);
 		}
 		/*t_cmd *parent = shell->cmd;*/

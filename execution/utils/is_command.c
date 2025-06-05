@@ -1,28 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   group.c                                            :+:      :+:    :+:   */
+/*   is_command.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 12:43:32 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/05 13:18:16 by fbicane          ###   ########.fr       */
+/*   Created: 2025/06/05 16:23:44 by fbicane           #+#    #+#             */
+/*   Updated: 2025/06/05 16:24:22 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-// void	is_group(t_shell *shell)
-// {
-// 	pid_t	pid;
-// 	t_cmd	*tmp;
-//
-// 	pid = fork();
-// 	if (0 == pid)
-// 	{
-// 		if (C_EXEC == shell->cmd->u_as.group.cmd->type)
-// 		{
-// 			shell.
-// 		}
-// 	}
-// }
+void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
+{
+	// INFO: in case the redirection fails since i call is_command() in is_redirections()
+	if (false == shell->redirections_status)
+	{
+		shell->exit_status = 1;
+		return ;
+	}
+
+
+
+
+	if (ft_is_builtin(shell->cmd->u_as.exec.argv[0]))
+	{
+		run_bultins(shell);
+	}
+	else
+	{
+		if (to_fork)
+			ft_apply_comm(shell, true, -3);
+		if (!to_fork)
+			ft_apply_comm(shell, false, pid_r);
+	}
+}

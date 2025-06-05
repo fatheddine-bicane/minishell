@@ -165,47 +165,49 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 	exec.i = 0;
 	if (NULL == exec.paths) // INFO: protection if path is unseted
 	{
-		if (to_wait)
-		{
-			if (0 == pid)
-			{
-				free_my_envp(&shell->my_envp);
-				ast_free(shell->cmd);
-				exit(127);
-				// return (executable_error_2(shell, exec, 4));
-			}
-			else
-			{
-				ft_free_arr(exec.paths);
-				shell->exit_status = 127;
-				ft_putstr_fd(shell->cmd->u_as.exec.argv[0], 2);
-				ft_putstr_fd(":  No such file or director\n", 2);
-				return;
-
-				// return (executable_error_2(shell, exec, 5));
-			}
-			// return (path_is_null(pid, shell, &exec));
-		}
-		else
-		{
-			if (0 == pid)
-			{
-				free_my_envp(&shell->my_envp);
-				shell->exit_status = 127;
-				return;
-				// return (pipe_error_2(shell, 4, exec));
-			}
-			else
-			{
-				ft_free_arr(exec.paths);
-				ft_putstr_fd(shell->cmd->u_as.exec.argv[0], 2);
-				ft_putstr_fd(":  No such file or director\n", 2);
-				shell->exit_status = 127;
-				return;
-				// return (pipe_error_2(shell, 5, exec));
-			}
-		}
-
+		exec.paths = ft_split("/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", ':');
+		// // char *path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
+		// if (to_wait)
+		// {
+		// 	if (0 == pid)
+		// 	{
+		// 		free_my_envp(&shell->my_envp);
+		// 		ast_free(shell->cmd);
+		// 		exit(127);
+		// 		// return (executable_error_2(shell, exec, 4));
+		// 	}
+		// 	else
+		// 	{
+		// 		ft_free_arr(exec.paths);
+		// 		shell->exit_status = 127;
+		// 		ft_putstr_fd(shell->cmd->u_as.exec.argv[0], 2);
+		// 		ft_putstr_fd(":  No such file or director\n", 2);
+		// 		return;
+		//
+		// 		// return (executable_error_2(shell, exec, 5));
+		// 	}
+		// 	// return (path_is_null(pid, shell, &exec));
+		// }
+		// else
+		// {
+		// 	if (0 == pid)
+		// 	{
+		// 		free_my_envp(&shell->my_envp);
+		// 		shell->exit_status = 127;
+		// 		return;
+		// 		// return (pipe_error_2(shell, 4, exec));
+		// 	}
+		// 	else
+		// 	{
+		// 		ft_free_arr(exec.paths);
+		// 		ft_putstr_fd(shell->cmd->u_as.exec.argv[0], 2);
+		// 		ft_putstr_fd(":  No such file or director\n", 2);
+		// 		shell->exit_status = 127;
+		// 		return;
+		// 		// return (pipe_error_2(shell, 5, exec));
+		// 	}
+		// }
+		//
 		// return (path_is_null_p(pid, shell, &exec));
 	}
 	while (exec.paths[exec.i]) // INFO: checks if th command is a path
@@ -223,7 +225,8 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 					free(exec.path);
 					ft_free_arr(exec.paths);
 					free_my_envp(&shell->my_envp);
-					ast_free(shell->cmd);
+					// ast_free(shell->cmd);
+					ast_free(shell->root_to_free);
 					exit(127);
 					return;
 					// return (executable_error_2(shell, exec, 6));
@@ -258,7 +261,8 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 	{
 		if (to_wait)
 		{
-			ast_free(shell->cmd);
+			// ast_free(shell->cmd);
+			ast_free(shell->root_to_free);
 			free_my_envp(&shell->my_envp);
 			exit(127);
 			// return (executable_error_3(shell,&exec, 8, pid));

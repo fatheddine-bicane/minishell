@@ -79,7 +79,12 @@ int main(int argc, char **argv, char **envp)
 			add_history(rl);
 			if (cmd == NULL)
 				continue; // INFO: syntax error
+
+
+
 			shell.cmd = cmd;
+			shell.root_to_free = cmd;
+
 			if (cmd->type == C_EXEC)
 			{
 				/*is_command(cmd, &my_envp, &exit_stat);*/
@@ -88,11 +93,12 @@ int main(int argc, char **argv, char **envp)
 			else if (cmd->type == C_REDIRECT)
 			{
 				is_redirection(&shell, true, -3);
-				if (!shell.redirections_status)
-					shell.redirections_status = true;
+				// if (!shell.redirections_status)
+				// 	shell.redirections_status = true;
 			}
 			else if (cmd->type == C_PIPE)
 			{
+				shell.root_to_free = shell.cmd;
 				is_pipe(&shell);
 			}
 			else
