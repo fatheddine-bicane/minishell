@@ -66,7 +66,7 @@ int main(int argc, char **argv, char **envp)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
 			free_my_envp(&shell.my_envp);
-			exit(0);
+			exit(shell.exit_status); // INFO: bash exits with the last exit status
 		}
 		if (*rl == '\0')
 			continue;
