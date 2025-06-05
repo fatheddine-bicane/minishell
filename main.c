@@ -68,8 +68,6 @@ int main(int argc, char **argv, char **envp)
 			if (cmd == NULL)
 				continue; // INFO: syntax error
 			shell.cmd = cmd;
-			continue; // INFO: syntax error
-			shell.cmd = cmd;
 			if (cmd->type == C_EXEC)
 			{
 				/*is_command(cmd, &my_envp, &exit_stat);*/
@@ -89,6 +87,8 @@ int main(int argc, char **argv, char **envp)
 			else
 				printf("not a command\n");
 			ast_free(cmd);
+			cmd = NULL;
+			shell.cmd = NULL;
 		}
 	}
 	return (0);
