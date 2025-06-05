@@ -79,6 +79,7 @@ void	is_pipe(t_shell *shell)
 	t_wait_pids	*pids = NULL;
 
 
+	shell->is_pipe = true;
 
 	while(tmp)
 	{
@@ -88,7 +89,6 @@ void	is_pipe(t_shell *shell)
 			if (-1 == pipe(fd))
 				return ; // TODO: error mssg
 		}
-		shell->is_pipe = true;
 		shell->pipe = shell->cmd;
 		shell->pids = pids;
 		shell->pipex = pipex;
@@ -133,7 +133,7 @@ void	is_pipe(t_shell *shell)
 			else if (C_REDIRECT == tmp->cmd->type)
 				is_redirection(shell, false, pid);
 			ft_putstr_fd("ana hnaya ma hrjtch\n", 2);
-			close(fd[1]);
+			/*close(fd[1]);*/
 			// WARNING: see this case it changes it sends output to pipe maybe
 				/*====> <<s | wc*/
 				/*asdsds*/
