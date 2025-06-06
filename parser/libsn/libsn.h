@@ -101,5 +101,6 @@ size_t			sb_total_size(t_str_builder *sb);
 const char		*sb_str(t_str_builder *sb, size_t index);
 char			**sb_build(t_str_builder *sb);
 char			*sb_build_str(t_str_builder *sb);
+char			*sb_str_at(t_str_builder *sb, size_t i);
 
 #endif

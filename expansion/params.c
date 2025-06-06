@@ -14,6 +14,7 @@
 
 bool	expand_var(t_shell *shell, t_str_builder *sb, char *variable,
 			size_t len);
+char	*get_ifs_var(t_list *envp);
 
 bool	parse_quote_param(t_shell *shell, t_str_builder *sb, char *str,
 		size_t len)
@@ -45,29 +46,34 @@ bool	parse_quote_param(t_shell *shell, t_str_builder *sb, char *str,
 	return (true);
 }
 
-bool	parse_param(t_token *token, t_str_builder *sb, t_shell *shell)
+bool	parse_param(t_token *t, t_str_builder *sb, t_shell *shell, char **ifs)
 {
 	size_t	len;
 
-	len = sn_strlen(token->lexeme);
-	if (token->type == T_STR_SINGLE)
+	len = sn_strlen(t->lexeme);
+	if (t->type == T_STR_SINGLE)
 	{
 		if (len == 2)
 			return (sb_append_char(sb, '\0'));
-		return (sb_append_str(sb, token->lexeme + 1, len - 2));
+		return (sb_append_str(sb, t->lexeme + 1, len - 2));
 	}
-	if (token->type == T_VAR)
-		return (expand_var(shell, sb, token->lexeme + 1, len - 1));
-	if (token->type == T_STR_DOUBLE)
+	if (t->type == T_VAR)
+	{
+		if (!expand_var(shell, sb, t->lexeme + 1, len - 1))
+			return (false);
+		*ifs = get_ifs_var(shell->my_envp);
+		return (true);
+	}
+	if (t->type == T_STR_DOUBLE)
 	{
 		if (len == 2)
 			return (sb_append_char(sb, '\0'));
-		return (parse_quote_param(shell, sb, token->lexeme, len));
+		return (parse_quote_param(shell, sb, t->lexeme, len));
 	}
-	return (sb_append_str(sb, token->lexeme, len));
+	return (sb_append_str(sb, t->lexeme, len));
 }
 
-char	*param_expand(char *src, t_shell *shell)
+char	*param_expand(char *src, t_shell *shell, char **ifs)
 {
 	t_str_builder	*sb;
 	t_token			*token;
@@ -82,11 +88,27 @@ char	*param_expand(char *src, t_shell *shell)
 		return (tokens_free(head), NULL);
 	while (token && token->type != T_EOF)
 	{
-		if (!parse_param(token, sb, shell))
+		if (!parse_param(token, sb, shell, ifs))
 			return (tokens_free(head), sb_free(sb), NULL);
 		token = token->next;
 	}
 	return (tokens_free(head), sb_build_str(sb));
+}
+
+bool	word_split(char *ifs, char **args, size_t i)
+{
+	sn_printf("IFS = `%s`\n", ifs);
+	sn_printf("target = `%s`\n", args[i]);
+	return (true);
+}
+
+void	clean_args(char **args, size_t i)
+{
+	while (args[i] != NULL)
+	{
+		free(args[i]);
+		args[i++] = NULL;
+	}
 }
 
 // NOTE(karim): // maybe reuse src if expansion fails
@@ -94,24 +116,24 @@ bool	expand_params(char **args, t_shell *shell)
 {
 	size_t	i;
 	char	*src;
+	char	*ifs;
 
 	if (args == NULL)
 		return (false);
+	ifs = NULL;
 	i = 0;
 	while (args[i] != NULL)
 	{
 		src = args[i];
-		args[i] = param_expand(src, shell);
+		args[i] = param_expand(src, shell, &ifs);
 		free(src);
 		if (args[i] == NULL)
+			return (clean_args(args, ++i), false);
+		if (ifs != NULL)
 		{
-			i++;
-			while (args[i] != NULL)
-			{
-				free(args[i]);
-				args[i++] = NULL;
-			}
-			return (false);
+			if (!word_split(ifs, args, i))
+				return (clean_args(args, i), false);
+			ifs = NULL;
 		}
 		i++;
 	}

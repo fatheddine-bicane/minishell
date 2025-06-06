@@ -31,6 +31,18 @@ char	*ft_get_var_value(t_list *my_envp, char *variable, size_t len)
 	return (NULL);
 }
 
+char	*get_ifs_var(t_list *envp)
+{
+	char	*ifs;
+
+	ifs = ft_get_var_value(envp, "IFS", 3);
+	if (ifs == NULL)
+		return (" \t\n");
+	if (sn_strlen(ifs) == 0)
+		return (NULL);
+	return (ifs);
+}
+
 bool	expand_var(t_shell *shell, t_str_builder *sb, char *variable,
 		size_t len)
 {
