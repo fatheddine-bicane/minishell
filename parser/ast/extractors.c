@@ -60,7 +60,8 @@ char	*extract_filename(t_token **token)
 	if (sb == NULL)
 		return (NULL);
 	t = (*token)->prev;
-	while (t->type != T_EOF && t->type != T_BLANK)
+	while (t->type == T_WORD || t->type == T_VAR || t->type == T_STR_SINGLE
+		|| t->type == T_STR_DOUBLE)
 	{
 		if (!sb_append_str(sb, t->lexeme, 0))
 			return (sb_free(sb), NULL);
