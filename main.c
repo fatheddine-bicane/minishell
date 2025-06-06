@@ -46,7 +46,7 @@ int main(int argc, char **argv, char **envp)
 	while (true)
 	{
 
-		ft_putstr_fd("new prompt is coming\n",2);
+		/*ft_putstr_fd("new prompt is coming\n",2);*/
 		shell.is_pipe = false;
 		shell.pids = NULL;
 		shell.pipe = NULL;
