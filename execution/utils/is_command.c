@@ -32,7 +32,7 @@ void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
 	{
 		if (to_fork)
 			ft_apply_comm(shell, true, -3);
-		if (!to_fork)
+		else if (!to_fork)
 			ft_apply_comm(shell, false, pid_r);
 	}
 }
