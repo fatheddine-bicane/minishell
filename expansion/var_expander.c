@@ -51,7 +51,7 @@ bool	expand_var(t_shell *shell, t_str_builder *sb, char *variable,
 	if (variable[0] == '?')
 		return (sb_append_nbr(sb, shell->exit_status));
 	var = ft_get_var_value(shell->my_envp, variable, len);
-	if (var == NULL)
+	if (var == NULL || *var == '\0')
 		return (sb_append_char(sb, '\0'));
 	return (sb_append_str(sb, var, 0));
 }

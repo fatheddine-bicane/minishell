@@ -61,6 +61,8 @@ bool	parse_param(t_token *t, t_str_builder *sb, t_shell *shell, char **ifs)
 	{
 		if (!expand_var(shell, sb, t->lexeme + 1, len - 1))
 			return (false);
+		if (*sb_str_at(sb, sb_len(sb) - 1) == '\0')
+			return (true);
 		*ifs = get_ifs_var(shell->my_envp);
 		return (true);
 	}
@@ -97,8 +99,32 @@ char	*param_expand(char *src, t_shell *shell, char **ifs)
 
 bool	word_split(char *ifs, char **args, size_t i)
 {
+	size_t	word_count;
+	size_t	j;
+	size_t	k;
+
+	word_count = 0;
+	j = 0;
+	while (args[i][j])
+	{
+		k = 0;
+		while (ifs[k])
+		{
+			if (args[i][j] == ifs[k])
+			{
+				word_count++;
+				while (args[i][j] && args[i][j] == ifs[k])
+					j++;
+			}
+			k++;
+		}
+		j++;
+	}
+	if (word_count == 0)
+		return (true);
 	sn_printf("IFS = `%s`\n", ifs);
 	sn_printf("target = `%s`\n", args[i]);
+	sn_printf("word count = %d\n", word_count);
 	return (true);
 }
 
