@@ -21,7 +21,6 @@ SRCS = 	$(shell ls ./my_library/libft/*.c) \
 		$(shell ls ./execution/utils/*c) \
 		$(shell ls ./execution/executables/*c) \
 		$(shell ls ./execution/redirections/*c) \
-		$(shell ls ./execution/pipex/*c) \
 		$(shell ls ./execution/signals/*c) \
 		$(shell ls ./parser/libsn/*.c) \
 		$(shell ls ./parser/tokenization/*.c) \

@@ -217,12 +217,14 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 		{
 			free(exec.com[0]);
 			exec.com[0] = exec.path;
+			char **prep_envp = ft_prep_envp(shell);
 			if (0 == pid)
 			{
-				execve(exec.com[0], exec.com, ft_prep_envp(shell));
+				execve(exec.com[0], exec.com, prep_envp);
 				if (to_wait)
 				{
-					free(exec.path);
+					// free(exec.path);
+					ft_free_arr(prep_envp);
 					ft_free_arr(exec.paths);
 					free_my_envp(&shell->my_envp);
 					// ast_free(shell->cmd);
@@ -233,7 +235,8 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 				}
 				else
 				{
-					free(exec.path);
+					// free(exec.path);
+					ft_free_arr(prep_envp);
 					ft_free_arr(exec.paths);
 					free_my_envp(&shell->my_envp);
 					shell->exit_status = 127;
