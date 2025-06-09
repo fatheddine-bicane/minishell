@@ -25,6 +25,7 @@ SRCS = 	$(shell ls ./my_library/libft/*.c) \
 		$(shell ls ./parser/libsn/*.c) \
 		$(shell ls ./parser/tokenization/*.c) \
 		$(shell ls ./parser/ast/*.c) \
+		$(shell ls ./expansion/*.c) \
 		$(shell ls ./execution/throw_error/*.c) \
 		$(shell ls ./execution/compound/*.c) \
 		$(shell ls ./execution/group/*.c) \
@@ -42,7 +43,7 @@ all: $(NAME)
 %.o: %.c
 	@$(CC) $(FLAGS) -c $< -o $@
 
-$(NAME): $(LIBSN_NAME) $(OFILES)
+$(NAME): $(LIBSN_NAME) $(LIBSN_NAME) $(OFILES)
 	@$(CC) $(FLAGS) $(OFILES) $(LIBSN_NAME) $(EXTRA_FLAGS) -o $(NAME)
 	@echo "$(GREEN)Minishel compiled successfully!$(RESET)"
 

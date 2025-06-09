@@ -44,6 +44,15 @@ void	sb_free(t_str_builder *sb)
 	free(sb);
 }
 
+char	*sb_str_at(t_str_builder *sb, size_t i)
+{
+	if (sb == NULL || sb->buff == NULL)
+		return (NULL);
+	if (i >= sb->len)
+		return (NULL);
+	return (sb->buff[i]);
+}
+
 char	**sb_build(t_str_builder *sb)
 {
 	char	**str;

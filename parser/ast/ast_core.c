@@ -12,19 +12,23 @@
 
 #include "../parser.h"
 
+t_cmd	*parse_program(t_token **token, int *status);
+
 int	create_ast(char *src, t_cmd **ast)
 {
 	t_token	*tokens;
 	t_token	*head;
 	char	*lexeme;
+	int		status;
 
+	status = 0;
 	tokens = tokens_scan(src);
 	if (tokens == NULL)
 		return (EXIT_SYNTAX_ERROR);
 	if (is_end(tokens))
 		return (tokens_free(tokens), EXIT_EMPTY_AST);
 	head = tokens;
-	*ast = parse_program(&tokens);
+	*ast = parse_program(&tokens, &status);
 	if (*ast == NULL || !is_end(tokens))
 	{
 		lexeme = extract_lexeme_err(tokens);

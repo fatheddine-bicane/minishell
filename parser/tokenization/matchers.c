@@ -24,11 +24,11 @@ bool	match_char(char *src, size_t *current, char expected)
 	return (false);
 }
 
-bool	match_word(char *src, size_t *current)
+bool	match_word(char *src, size_t *current, bool is_quoted)
 {
 	if (!src[*current])
 		return (false);
-	if (is_metachar(src, *current))
+	if (is_metachar(src, *current, is_quoted))
 		return (false);
 	*current += 1;
 	return (true);

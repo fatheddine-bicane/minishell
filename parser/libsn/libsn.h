@@ -67,6 +67,8 @@ int				sn_vprintf(va_list args, const char *format, ...);
 int				sn_printf_fd(int fd, const char *format, ...);
 int				sn_sprintf(char **buff, const char *format, ...);
 int				sn_vsprintf(va_list args, char **buff, const char *s, ...);
+int				sn_print_parse(va_list ap, t_str_builder *sb, const char *s,
+					size_t *i);
 char			*sn_strchr(const char *s, int c);
 int				sn_putstr_fd(char *str, int fd);
 int				sn_putchr(char c);
@@ -99,5 +101,6 @@ size_t			sb_total_size(t_str_builder *sb);
 const char		*sb_str(t_str_builder *sb, size_t index);
 char			**sb_build(t_str_builder *sb);
 char			*sb_build_str(t_str_builder *sb);
+char			*sb_str_at(t_str_builder *sb, size_t i);
 
 #endif

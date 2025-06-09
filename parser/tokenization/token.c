@@ -76,7 +76,16 @@ void	token_str(t_token *t, bool nl, bool all)
 		if (nl)
 			sn_printf("%s\n", t->str);
 		else
-			sn_printf("%s", t->str);
+		{
+			if (t->type == T_BLANK)
+				sn_printf("%s ' '", token_type_str(t->type));
+			else
+				sn_printf("%s", t->str);
+			if (all && t->next)
+				sn_printf(" -> ");
+			if (!nl && !t->next)
+				write(STDOUT_FILENO, "\n", 1);
+		}
 		if (all)
 			t = t->next;
 		else

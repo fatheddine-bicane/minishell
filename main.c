@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishel.h"
-#include "parser/parser.h"
-#include <stdio.h>
 
 /*t_data create_data()*/
 /*{*/
@@ -22,7 +20,7 @@
 /*	return data;*/
 /*}*/
 
-void	set_shell(t_shell *shell, int argc, char **argv, char **envp)
+void set_shell(t_shell *shell, int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
@@ -31,25 +29,23 @@ void	set_shell(t_shell *shell, int argc, char **argv, char **envp)
 	shell->cmd = NULL;
 }
 
-void	reset_shell(t_shell *shell)
+void reset_shell(t_shell *shell)
 {
 	shell->is_pipe = false;
 	shell->pids = NULL;
 	shell->pipe = NULL; // TODO: eleminate
 	shell->redirections_status = true;
 	shell->pipex = NULL;
+	shell->cmd = NULL;
 }
 
 int main(int argc, char **argv, char **envp)
 {
-	t_shell	shell;
-	char	*rl;
+	t_shell shell;
+	char *rl;
 	/*t_list *my_envp;*/
 	/*t_cmd	*cmd;*/
 	/*int		exit_stat = 0;*/
-
-
-
 
 	/*shell.exit_status = 0;*/
 	/*shell.my_envp = ft_set_env(envp);*/
@@ -82,7 +78,6 @@ int main(int argc, char **argv, char **envp)
 		/*shell.c_compound = NULL;*/
 		g_signal_flag = 0;
 
-
 		// rl = readline("╭─ ~folder name exit status\n╰─ ");
 		// rl = readline("====> ");
 		char *prompt = custum_prompt(shell);
@@ -97,16 +92,11 @@ int main(int argc, char **argv, char **envp)
 		if (*rl == '\0')
 			continue;
 
-
-
-
-		if (create_ast(rl, &shell.cmd) != EXIT_EMPTY_AST) // INFO: return status 
+		if (create_ast(rl, &shell.cmd) != EXIT_EMPTY_AST) // INFO: return status
 		{
 			add_history(rl);
 			if (shell.cmd == NULL)
 				continue; // INFO: syntax error
-
-
 
 			/*shell.cmd = cmd;*/
 			shell.root_to_free = shell.cmd;
@@ -140,5 +130,5 @@ int main(int argc, char **argv, char **envp)
 			write(STDOUT_FILENO, "\n", 1);
 		}
 	}
-    return (0);
+	return (0);
 }

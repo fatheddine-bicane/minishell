@@ -26,18 +26,14 @@ t_token	*extract_str(char *src, size_t *current, bool single)
 	{
 		quote = '\'';
 		type = T_STR_SINGLE;
-		start = *current;
 	}
 	while (src[*current] && src[*current] != quote)
 		*current += 1;
 	if (!src[*current])
 		return (sn_eprintf("unexpected EOF while looking for matching `%c`\n",
 				quote), NULL);
-	if (!single)
-		*current += 1;
+	*current += 1;
 	substr = sn_substr(src, start, *current - start);
-	if (single)
-		*current += 1;
 	return (token_new(type, substr));
 }
 
@@ -46,9 +42,9 @@ char	*extract_word(char *src, size_t *current)
 	size_t	start;
 
 	start = *current - 1;
-	if (match_word(src, current))
+	if (match_word(src, current, false))
 	{
-		while (match_word(src, current))
+		while (match_word(src, current, false))
 			continue ;
 	}
 	return (sn_substr(src, start, *current - start));

@@ -17,19 +17,27 @@ bool	is_name(char *src, size_t current)
 	return (sn_isalpha(src[current]) || src[current] == '_');
 }
 
-bool	is_metachar(char *src, size_t current)
+bool	is_quote(char *src, size_t current)
 {
 	if (!src[current])
 		return (false);
+	return (src[current] == '\'' || src[current] == '"');
+}
+
+bool	is_metachar(char *src, size_t current, bool is_quoted)
+{
 	if (src[current] == '\'' || src[current] == '"')
 		return (true);
-	if (src[current] == ' ' || src[current] == '\t' || src[current] == '\n')
+	if (src[current] == '$' && is_name(src, current + 1))
 		return (true);
-	if (src[current] == '|' || src[current] == '&')
+	if (!is_quoted && (src[current] == ' ' || src[current] == '\t'
+			|| src[current] == '\n'))
 		return (true);
-	if (src[current] == '(' || src[current] == ')')
+	if (!is_quoted && (src[current] == '|' || src[current] == '&'))
 		return (true);
-	if (src[current] == '<' || src[current] == '>')
+	if (!is_quoted && (src[current] == '(' || src[current] == ')'))
+		return (true);
+	if (!is_quoted && (src[current] == '<' || src[current] == '>'))
 		return (true);
 	return (false);
 }

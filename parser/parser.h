@@ -109,6 +109,7 @@ typedef enum e_cmd_type
 typedef struct s_cmd
 {
 	t_cmd_type			type;
+	t_cmd				*parent;
 	union
 	{
 		t_exec			exec;
@@ -126,12 +127,13 @@ void					token_str(t_token *t, bool nl, bool all);
 const char				*token_type_str(t_token_type type);
 t_token					*tokens_scan(char *src);
 
-bool					is_metachar(char *src, size_t current);
+bool					is_metachar(char *src, size_t current, bool is_quoted);
 bool					is_name(char *src, size_t current);
 bool					is_end(t_token *token);
+bool					is_quote(char *src, size_t current);
 bool					is_redirect(t_token *token);
 bool					match_char(char *src, size_t *current, char expected);
-bool					match_word(char *src, size_t *current);
+bool					match_word(char *src, size_t *current, bool is_quoted);
 bool					match_identifier(char *src, size_t *current);
 bool					match_var(char *src, size_t *current);
 bool					match_token(t_token **head, size_t count, ...);
@@ -143,16 +145,18 @@ t_token					*extract_identifier(char *src, size_t *current);
 t_token					*extract_var(char *src, size_t *current);
 t_token					*extract_blank(char *src, size_t *current);
 
-t_cmd					*cmd_exec_init(char **argv);
-t_cmd					*cmd_redirect_init(int type, char *file, t_cmd *next);
-t_cmd					*cmd_pipe_init(t_cmd *left, t_cmd *right);
-t_cmd					*cmd_group_init(t_cmd *group);
-t_cmd					*cmd_cmp_init(int op, t_cmd *left, t_cmd *right);
+t_cmd					*cmd_exec_init(char **argv, t_cmd *parent);
+t_cmd					*cmd_redirect_init(int type, char *file, t_cmd *next,
+							t_cmd *parent);
+t_cmd					*cmd_pipe_init(t_cmd *left, t_cmd *right,
+							t_cmd *parent);
+t_cmd					*cmd_group_init(t_cmd *group, t_cmd *parent);
+t_cmd					*cmd_cmp_init(int op, t_cmd *left, t_cmd *right,
+							t_cmd *parent);
 
 int						extract_cmp_op(t_token *token);
 char					*extract_lexeme_err(t_token *token);
 
-t_cmd					*parse_program(t_token **token);
 int						create_ast(char *src, t_cmd **ast);
 void					ast_free(t_cmd *root);
 char					*ast_output(t_cmd *cmd, bool print);

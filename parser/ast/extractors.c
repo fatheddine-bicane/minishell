@@ -40,3 +40,33 @@ char	*extract_lexeme_err(t_token *token)
 		lexeme = token->next->lexeme;
 	return (lexeme);
 }
+
+int	extract_redirect_type(t_token **token)
+{
+	t_token	*t;
+
+	t = *token;
+	while (!is_redirect(t))
+		t = t->prev;
+	return (t->type);
+}
+
+char	*extract_filename(t_token **token)
+{
+	t_str_builder	*sb;
+	t_token			*t;
+
+	sb = sb_create(10);
+	if (sb == NULL)
+		return (NULL);
+	t = (*token)->prev;
+	while (t->type == T_WORD || t->type == T_VAR || t->type == T_STR_SINGLE
+		|| t->type == T_STR_DOUBLE)
+	{
+		if (!sb_append_str(sb, t->lexeme, 0))
+			return (sb_free(sb), NULL);
+		t = t->next;
+	}
+	*token = t;
+	return (sb_build_str(sb));
+}
