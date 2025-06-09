@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/05 18:28:15 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/09 16:30:08 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@
 # define RESTORE_STDOUT 4
 
 
+#define BLUE  "\001\033[34m\002"
+#define GREEN "\001\033[32m\002"
+#define RED   "\001\033[31m\002"
+#define RESET "\001\033[0m\002"
 
 
 /*# define COMMAND_MODE 1*/
@@ -226,5 +230,10 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r);
 void	std_files(int what_to_do);
 /*void	is_pipe(t_cmd *cmd, t_list **my_envp, int *exit_stat, int depth);*/
 void	is_pipe(t_shell *shell);
+
+
+// INFO: custum prompt
+char	*custum_prompt(t_shell shell);
+
 
 #endif

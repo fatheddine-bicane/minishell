@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:21:00 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/05 13:14:14 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/09 16:28:52 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	reset_shell(t_shell *shell)
 	shell->redirections_status = true;
 	shell->pipex = NULL;
 }
+
 int main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
@@ -82,7 +83,11 @@ int main(int argc, char **argv, char **envp)
 		g_signal_flag = 0;
 
 
-		rl = readline("====> ");
+		// rl = readline("╭─ ~folder name exit status\n╰─ ");
+		// rl = readline("====> ");
+		char *prompt = custum_prompt(shell);
+		rl = readline(prompt);
+		free(prompt);
 		if (!rl)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
@@ -132,6 +137,7 @@ int main(int argc, char **argv, char **envp)
 			else
 				printf("not a command\n");
 			ast_free(shell.root_to_free);
+			write(STDOUT_FILENO, "\n", 1);
 		}
 	}
     return (0);

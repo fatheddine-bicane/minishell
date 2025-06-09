@@ -29,6 +29,7 @@ SRCS = 	$(shell ls ./my_library/libft/*.c) \
 		$(shell ls ./execution/compound/*.c) \
 		$(shell ls ./execution/group/*.c) \
 		$(shell ls ./execution/pipes/*.c) \
+		$(shell ls ./execution/custum_prompt/*.c) \
 		./main.c \
 
 
