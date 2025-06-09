@@ -22,36 +22,57 @@
 /*	return data;*/
 /*}*/
 
+void	set_shell(t_shell *shell, int argc, char **argv, char **envp)
+{
+	(void)argc;
+	(void)argv;
+	shell->exit_status = 0;
+	shell->my_envp = ft_set_env(envp);
+	shell->cmd = NULL;
+}
+
+void	reset_shell(t_shell *shell)
+{
+	shell->is_pipe = false;
+	shell->pids = NULL;
+	shell->pipe = NULL; // TODO: eleminate
+	shell->redirections_status = true;
+	shell->pipex = NULL;
+}
 int main(int argc, char **argv, char **envp)
 {
+	t_shell	shell;
+	char	*rl;
 	/*t_list *my_envp;*/
-	t_cmd	*cmd;
+	/*t_cmd	*cmd;*/
 	/*int		exit_stat = 0;*/
 
 
 
-	t_shell shell;
 
-	shell.exit_status = 0;
-	shell.my_envp = ft_set_env(envp);
-
-	(void)argc;
-	(void)argv;
+	/*shell.exit_status = 0;*/
+	/*shell.my_envp = ft_set_env(envp);*/
+	/**/
+	/*(void)argc;*/
+	/*(void)argv;*/
 
 	/*my_envp = ft_set_env(envp);*/
-	setup_signals();
-	cmd = NULL;
-	printf("PID: %d\n", getpid());
+	/*cmd = NULL;*/
+	/*shell.cmd = NULL;*/
+
+	set_shell(&shell, argc, argv, envp);
 	std_files(SAVE);
+	setup_signals();
 	while (true)
 	{
 
+		reset_shell(&shell);
 		/*ft_putstr_fd("new prompt is coming\n",2);*/
-		shell.is_pipe = false;
-		shell.pids = NULL;
-		shell.pipe = NULL;
-		shell.redirections_status = true;
-		shell.pipex = NULL;
+		/*shell.is_pipe = false;*/
+		/*shell.pids = NULL;*/
+		/*shell.pipe = NULL;*/
+		/*shell.redirections_status = true;*/
+		/*shell.pipex = NULL;*/
 
 		/*shell.c_exec = NULL;*/
 		/*shell.c_redirect = NULL;*/
@@ -61,7 +82,7 @@ int main(int argc, char **argv, char **envp)
 		g_signal_flag = 0;
 
 
-		char (*rl) = readline("====> ");
+		rl = readline("====> ");
 		if (!rl)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
@@ -74,43 +95,43 @@ int main(int argc, char **argv, char **envp)
 
 
 
-		if (create_ast(rl, &cmd) != EXIT_EMPTY_AST) // INFO: return status 
+		if (create_ast(rl, &shell.cmd) != EXIT_EMPTY_AST) // INFO: return status 
 		{
 			add_history(rl);
-			if (cmd == NULL)
+			if (shell.cmd == NULL)
 				continue; // INFO: syntax error
 
 
 
-			shell.cmd = cmd;
-			shell.root_to_free = cmd;
+			/*shell.cmd = cmd;*/
+			shell.root_to_free = shell.cmd;
 
-			if (cmd->type == C_EXEC)
+			if (shell.cmd->type == C_EXEC)
 			{
 				/*is_command(cmd, &my_envp, &exit_stat);*/
 				is_command(&shell, true, -3);
 			}
-			else if (cmd->type == C_REDIRECT)
+			else if (shell.cmd->type == C_REDIRECT)
 			{
 				is_redirection(&shell, true, -3);
 				// if (!shell.redirections_status)
 				// 	shell.redirections_status = true;
 			}
-			else if (cmd->type == C_PIPE)
+			else if (shell.cmd->type == C_PIPE)
 			{
 				is_pipe(&shell);
 			}
-			else if (C_GROUP == cmd->type)
+			else if (C_GROUP == shell.cmd->type)
 			{
 				is_group(&shell);
 			}
-			else if (C_COMPOUND == cmd->type)
+			else if (C_COMPOUND == shell.cmd->type)
 			{
 				is_compound(&shell);
 			}
 			else
 				printf("not a command\n");
-			ast_free(cmd);
+			ast_free(shell.root_to_free);
 		}
 	}
     return (0);

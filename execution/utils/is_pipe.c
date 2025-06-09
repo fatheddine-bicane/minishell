@@ -89,7 +89,7 @@ void	is_pipe(t_shell *shell)
 			if (-1 == pipe(fd))
 				return ; // TODO: error mssg
 		}
-		shell->pipe = shell->cmd;
+		/*shell->pipe = shell->cmd;*/
 		shell->pids = pids;
 		shell->pipex = pipex;
 		pid = fork();
