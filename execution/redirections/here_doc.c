@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 17:22:24 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/03 14:30:27 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/09 17:33:51 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ bool	here_doc(char **redirections, t_shell *shell, int i)
 		perror("fork()");
 		setup_signals();
 		return (false);
-		setup_signals();
 	}
 	if (0 == pid)
 	{

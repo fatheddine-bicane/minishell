@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:34:38 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 00:29:03 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/09 17:34:01 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,21 +77,6 @@ void	ft_echo(t_shell *shell)
 	new_line = handl_n(shell->cmd->u_as.exec.argv, &i);
 	while (shell->cmd->u_as.exec.argv[i])
 	{
-		if ('$' == shell->cmd->u_as.exec.argv[i][0] && '?' == shell->cmd->u_as.exec.argv[i][1])
-		{
-			printf("%d", shell->exit_status);
-			if (shell->cmd->u_as.exec.argv[i + 1])
-				printf(" ");
-			i++;
-			continue ;
-		}
-		else if ('$' == shell->cmd->u_as.exec.argv[i][0])
-		{
-			ft_expand_var(shell->cmd->u_as.exec.argv[i], &i, shell);
-			if (shell->cmd->u_as.exec.argv[i + 1])
-				printf(" ");
-			continue ;
-		}
 		printf("%s", shell->cmd->u_as.exec.argv[i]);
 		if (shell->cmd->u_as.exec.argv[i + 1])
 			printf(" ");
