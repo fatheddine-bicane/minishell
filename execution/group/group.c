@@ -40,6 +40,11 @@ void	is_group(t_shell *shell)
 			shell->cmd = shell->cmd->u_as.group.cmd;
 			is_group(shell);
 		}
+		else if (C_COMPOUND == shell->cmd->u_as.group.cmd->type)
+		{
+			shell->cmd = shell->cmd->u_as.group.cmd;
+			is_compound(shell);
+		}
 		free_my_envp(&shell->my_envp);
 		ast_free(shell->root_to_free);
 		exit(shell->exit_status);
