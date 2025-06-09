@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 17:22:24 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/03 14:30:27 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/09 18:39:42 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,21 @@ static char	*ft_creat_input(char *limiter)
 	join = ft_strdup("");
 	limiter_n = ft_apend_new_line(limiter);
 	str = get_next_line(0);
+	// str = readline("heredoc> ");
 	while (str && ft_strncmp(str, limiter_n, ft_strlen(limiter_n)))
 	{
 		join_m = join;
 		join = ft_strjoin(join, str);
 		free(join_m);
 		free(str);
+		// str = readline("heredoc> ");
 		str = get_next_line(0);
+		if (NULL == str)
+		{
+			ft_putstr_fd("warning: heredoc delimited by end-of-file", 2);
+			free(limiter_n);
+			return (join);
+		}
 	}
 	free(str);
 	get_next_line(-1);
@@ -93,11 +101,11 @@ bool	here_doc(char **redirections, t_shell *shell, int i)
 		perror("fork()");
 		setup_signals();
 		return (false);
-		setup_signals();
 	}
 	if (0 == pid)
 	{
-		setup_signals_child();
+		// setup_signals_child();
+		setup_signals_heredoc();
 		input = ft_creat_input(redirections[i]);
 		printf("file name: %s\n", file_name);
 		inf = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -108,7 +116,7 @@ bool	here_doc(char **redirections, t_shell *shell, int i)
 		close(inf);
 		if (shell->is_pipe)
 		{
-			ast_free(shell->pipe);
+			// ast_free(shell->pipe);
 			free_pids(&shell->pids);
 			free_pipex(&shell->pipex);
 		}
@@ -116,6 +124,7 @@ bool	here_doc(char **redirections, t_shell *shell, int i)
 			ast_free(shell->cmd); // WARNING: not freeing the pipe freeing only the right side 
 		sn_strs_free(redirections);
 		free_my_envp(&shell->my_envp);
+		ast_free(shell->root_to_free);
 		free(file_name);
 		exit(0);
 	}

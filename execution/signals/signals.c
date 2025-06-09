@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 10:18:48 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 12:24:26 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/09 18:40:25 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,12 @@ void	ignore_signals_parrent(void)
 	sigaction(SIGQUIT, &signals, NULL);
 }
 
+void	sigint_heredoc_handler(int signal)
+{
+	(void) signal;
+	write(STDOUT_FILENO, "\n", 1);
+}
+
 void	setup_signals_heredoc(void)
 {
 	struct sigaction	signals;
@@ -68,6 +74,6 @@ void	setup_signals_heredoc(void)
 	signals.sa_flags = SA_RESTART;
 	signals.sa_handler = SIG_DFL;
 	sigaction(SIGINT, &signals, NULL);
-	signals.sa_handler = SIG_IGN;
+	signals.sa_handler = sigint_heredoc_handler;
 	sigaction(SIGQUIT, &signals, NULL);
 }
