@@ -3,6 +3,7 @@ FLAGS = -Wall -Wextra -Werror -g
 EXTRA_FLAGS = -lreadline
 NAME = minishell
 BNAME = minishell_bonus
+LIBSN_NAME = ./parser/libsn/libsn.a
 
 # Colors
 GREEN = \033[0;32m
@@ -20,7 +21,16 @@ SRCS = 	$(shell ls ./my_library/libft/*.c) \
 		$(shell ls ./execution/utils/*c) \
 		$(shell ls ./execution/executables/*c) \
 		$(shell ls ./execution/redirections/*c) \
-		$(shell ls ./execution/pipex/*c) \
+		$(shell ls ./execution/signals/*c) \
+		$(shell ls ./parser/libsn/*.c) \
+		$(shell ls ./parser/tokenization/*.c) \
+		$(shell ls ./parser/ast/*.c) \
+		$(shell ls ./expansion/*.c) \
+		$(shell ls ./execution/throw_error/*.c) \
+		$(shell ls ./execution/compound/*.c) \
+		$(shell ls ./execution/group/*.c) \
+		$(shell ls ./execution/pipes/*.c) \
+		$(shell ls ./execution/custum_prompt/*.c) \
 		./main.c \
 
 
@@ -33,8 +43,8 @@ all: $(NAME)
 %.o: %.c
 	@$(CC) $(FLAGS) -c $< -o $@
 
-$(NAME): $(OFILES)
-	@$(CC) $(FLAGS) $(OFILES) $(EXTRA_FLAGS) -o $(NAME)
+$(NAME): $(LIBSN_NAME) $(LIBSN_NAME) $(OFILES)
+	@$(CC) $(FLAGS) $(OFILES) $(LIBSN_NAME) $(EXTRA_FLAGS) -o $(NAME)
 	@echo "$(GREEN)Minishel compiled successfully!$(RESET)"
 
 
@@ -51,6 +61,9 @@ clean:
 fclean: clean
 	@rm -f $(NAME) $(BNAME)
 	@echo "$(YELLOW)Cleaning executables$(RESET)"
+
+leaks:
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=./ignore_readline.supp -s ./$(NAME)
 
 re: fclean all
 

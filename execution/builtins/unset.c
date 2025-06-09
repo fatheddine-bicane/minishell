@@ -6,36 +6,35 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 15:55:55 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/30 19:01:18 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/01 00:26:51 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-static bool	ft_first_node(t_unset *unset, t_list **my_envp, char **variables)
+// INFO: check first node
+static bool	ft_first_node(t_unset *unset, t_shell *shell)
 {
-	// INFO: check first node
-	unset->env_cont = (char *)(*my_envp)->content;
+	unset->env_cont = (char *)shell->my_envp->content;
 	unset->i = 0;
 	while (unset->env_cont[unset->i] && unset->env_cont[unset->i] != '=')
 		unset->i++;
-
-	if (!ft_strncmp(unset->env_cont, variables[unset->v_i], unset->i))
+	if (!ft_strncmp(unset->env_cont,
+			shell->cmd->u_as.exec.argv[unset->v_i], unset->i))
 	{
-		unset->env_to_del = (*my_envp);
-		(*my_envp) = (*my_envp)->next;
-		(void)unset->env_to_del;
-		// TODO: free env_to_del content
+		unset->env_to_del = shell->my_envp;
+		shell->my_envp = shell->my_envp->next;
+		free(unset->env_to_del->content);
 		free(unset->env_to_del);
 		return (true);
 	}
 	return (false);
 }
 
-static int	ft_rest_nodes(t_unset *unset, t_list **my_envp, char **variables)
+// INFO: check the rest nodes
+static int	ft_rest_nodes(t_unset *unset, t_shell *shell)
 {
-	// INFO: check the rest nodes
-	unset->tmp_envp = (*my_envp);
+	unset->tmp_envp = shell->my_envp;
 	while (unset->tmp_envp)
 	{
 		if (NULL == unset->tmp_envp->next)
@@ -44,12 +43,12 @@ static int	ft_rest_nodes(t_unset *unset, t_list **my_envp, char **variables)
 		unset->i = 0;
 		while (unset->env_cont[unset->i] && unset->env_cont[unset->i] != '=')
 			unset->i++;
-		if (!ft_strncmp(unset->env_cont, variables[unset->v_i], unset->i))
+		if (!ft_strncmp(unset->env_cont,
+				shell->cmd->u_as.exec.argv[unset->v_i], unset->i))
 		{
 			unset->env_to_del = unset->tmp_envp->next;
 			unset->tmp_envp->next = unset->tmp_envp->next->next;
-			(void)unset->env_to_del;
-			// TODO: free env_to_del content
+			free(unset->env_to_del->content);
 			free(unset->env_to_del);
 			unset->skip_loop = true;
 			break ;
@@ -59,22 +58,20 @@ static int	ft_rest_nodes(t_unset *unset, t_list **my_envp, char **variables)
 	return (2);
 }
 
-void	ft_unset(t_list **my_envp, char **variables)
+void	ft_unset(t_shell *shell)
 {
 	t_unset	unset;
 	int		check;
 
-	if (NULL == variables)
-		return;
-
+	if (NULL == shell->cmd->u_as.exec.argv)
+		return ;
 	unset.v_i = 1;
 	unset.skip_loop = false;
-
-	while (variables[unset.v_i])
+	while (shell->cmd->u_as.exec.argv[unset.v_i])
 	{
-		if (ft_first_node(&unset, my_envp, variables))
+		if (ft_first_node(&unset, shell))
 			continue ;
-		check = ft_rest_nodes(&unset, my_envp, variables);
+		check = ft_rest_nodes(&unset, shell);
 		if (0 == check)
 			return ;
 		if (unset.skip_loop)

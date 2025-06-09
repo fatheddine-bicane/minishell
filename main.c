@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/06 21:54:56 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/14 22:55:46 by fbicane          ###   ########.fr       */
+/*   Created: 2025/05/20 14:21:00 by fbicane           #+#    #+#             */
+/*   Updated: 2025/06/09 16:28:52 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,38 +20,115 @@
 /*	return data;*/
 /*}*/
 
-int main(int argc, char **argv, char **envp)
+void set_shell(t_shell *shell, int argc, char **argv, char **envp)
 {
-	t_list *my_envp;
-
 	(void)argc;
 	(void)argv;
+	shell->exit_status = 0;
+	shell->my_envp = ft_set_env(envp);
+	shell->cmd = NULL;
+}
 
-	my_envp = ft_set_env(envp);
-	while (1)
+void reset_shell(t_shell *shell)
+{
+	shell->is_pipe = false;
+	shell->pids = NULL;
+	shell->pipe = NULL; // TODO: eleminate
+	shell->redirections_status = true;
+	shell->pipex = NULL;
+	shell->cmd = NULL;
+}
+
+int main(int argc, char **argv, char **envp)
+{
+	t_shell shell;
+	char *rl;
+	/*t_list *my_envp;*/
+	/*t_cmd	*cmd;*/
+	/*int		exit_stat = 0;*/
+
+	/*shell.exit_status = 0;*/
+	/*shell.my_envp = ft_set_env(envp);*/
+	/**/
+	/*(void)argc;*/
+	/*(void)argv;*/
+
+	/*my_envp = ft_set_env(envp);*/
+	/*cmd = NULL;*/
+	/*shell.cmd = NULL;*/
+
+	set_shell(&shell, argc, argv, envp);
+	std_files(SAVE);
+	setup_signals();
+	while (true)
 	{
-		char (*rl) = readline("====> ");
-		/*rl = readline("╭─ minishell \n╰─> ");*/
-		//BUG: if an empty line is set to rl there is segfault
 
-		// INFO: to test pipes
-		/*ft_pipex(ft_split(rl, '|'), &my_envp);*/
-		/*continue;*/
+		reset_shell(&shell);
+		/*ft_putstr_fd("new prompt is coming\n",2);*/
+		/*shell.is_pipe = false;*/
+		/*shell.pids = NULL;*/
+		/*shell.pipe = NULL;*/
+		/*shell.redirections_status = true;*/
+		/*shell.pipex = NULL;*/
 
-		if (ft_check_bultins(rl, &my_envp))
+		/*shell.c_exec = NULL;*/
+		/*shell.c_redirect = NULL;*/
+		/*shell.c_pipe = NULL;*/
+		/*shell.c_group = NULL;*/
+		/*shell.c_compound = NULL;*/
+		g_signal_flag = 0;
+
+		// rl = readline("╭─ ~folder name exit status\n╰─ ");
+		// rl = readline("====> ");
+		char *prompt = custum_prompt(shell);
+		rl = readline(prompt);
+		free(prompt);
+		if (!rl)
 		{
-			continue ;
-			add_history(rl);
+			write(STDOUT_FILENO, "exit\n", 5);
+			free_my_envp(&shell.my_envp);
+			exit(shell.exit_status); // INFO: bash exits with the last exit status
 		}
+		if (*rl == '\0')
+			continue;
 
-		/*ft_here_doc(rl);*/
-		ft_apply_comm(rl, my_envp);
+		if (create_ast(rl, &shell.cmd) != EXIT_EMPTY_AST) // INFO: return status
+		{
+			add_history(rl);
+			if (shell.cmd == NULL)
+				continue; // INFO: syntax error
 
-		/*if (errno != 0)*/
-		/*	perror(strerror(errno));*/
+			/*shell.cmd = cmd;*/
+			shell.root_to_free = shell.cmd;
 
-		add_history(rl);
-		printf("\n");
+			if (shell.cmd->type == C_EXEC)
+			{
+				/*is_command(cmd, &my_envp, &exit_stat);*/
+				is_command(&shell, true, -3);
+			}
+			else if (shell.cmd->type == C_REDIRECT)
+			{
+				is_redirection(&shell, true, -3);
+				// if (!shell.redirections_status)
+				// 	shell.redirections_status = true;
+			}
+			else if (shell.cmd->type == C_PIPE)
+			{
+				is_pipe(&shell);
+			}
+			else if (C_GROUP == shell.cmd->type)
+			{
+				is_group(&shell);
+			}
+			else if (C_COMPOUND == shell.cmd->type)
+			{
+				is_compound(&shell);
+			}
+			else
+				printf("not a command\n");
+			ast_free(shell.root_to_free);
+			write(STDOUT_FILENO, "\n", 1);
+		}
 	}
-    return (0);
+	return (0);
 }

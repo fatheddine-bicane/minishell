@@ -14,18 +14,12 @@
 
 char	*token_str_create(t_token *t)
 {
-	char	*str;
 	char	*type;
-	int		bytes;
 
-	str = NULL;
 	type = (char *)token_type_str(t->type);
 	if (!t->lexeme)
 		return (type);
-	bytes = sn_sprintf(&str, "%s %s", type, t->lexeme);
-	if (bytes == -1)
-		return (type);
-	return (str);
+	return (sn_strjoin(type, t->lexeme, ' '));
 }
 
 t_token	*token_new(t_token_type type, char *lexeme)
@@ -52,9 +46,9 @@ void	token_free(t_token *t)
 	if (t == NULL)
 		return ;
 	type = t->type;
-	if (t->lexeme)
+	if (t->lexeme != NULL && t->str != NULL)
 		free(t->str);
-	if (type == T_STRING_SINGLE || type == T_STRING_DOUBLE)
+	if (type == T_STR_SINGLE || type == T_STR_DOUBLE)
 		free(t->lexeme);
 	if (type == T_WORD || type == T_VAR)
 		free(t->lexeme);
@@ -82,7 +76,16 @@ void	token_str(t_token *t, bool nl, bool all)
 		if (nl)
 			sn_printf("%s\n", t->str);
 		else
-			sn_printf("%s", t->str);
+		{
+			if (t->type == T_BLANK)
+				sn_printf("%s ' '", token_type_str(t->type));
+			else
+				sn_printf("%s", t->str);
+			if (all && t->next)
+				sn_printf(" -> ");
+			if (!nl && !t->next)
+				write(STDOUT_FILENO, "\n", 1);
+		}
 		if (all)
 			t = t->next;
 		else

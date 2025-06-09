@@ -27,16 +27,24 @@
 # include <sys/wait.h>
 # include <sysexits.h>
 
+# ifndef EXIT_SYNTAX_ERROR
+#  define EXIT_SYNTAX_ERROR 2
+# endif //  EXIT_SYNTAX_ERROR
+
+# ifndef EXIT_EMPTY_AST
+#  define EXIT_EMPTY_AST 3
+# endif //  EXIT_EMPTY_AST
+
 typedef enum e_token_type
 {
 	T_LEFT_PAREN,
 	T_RIGHT_PAREN,
-	T_REDIRECT_IN,
-	T_REDIRECT_OUT,
-	T_REDIRECT_OUT_APPEND,
+	T_REDIR_IN,
+	T_REDIR_OUT,
+	T_REDIR_OUT_APPEND,
 	T_HEREDOC,
-	T_STRING_SINGLE,
-	T_STRING_DOUBLE,
+	T_STR_SINGLE,
+	T_STR_DOUBLE,
 	T_PIPE,
 	T_OR,
 	T_AND,
@@ -64,17 +72,9 @@ typedef struct s_exec
 	char				**argv;
 }						t_exec;
 
-typedef enum e_redirect_type
-{
-	R_REDIRECT_IN,
-	R_REDIRECT_OUT,
-	R_REDIRECT_OUT_APPEND,
-	R_HEREDOC,
-}						t_redirect_type;
-
 typedef struct s_redirect
 {
-	t_redirect_type		type;
+	int					type;
 	char				*file;
 	t_cmd				*next;
 }						t_redirect;
@@ -84,6 +84,13 @@ typedef struct s_pipe
 	t_cmd				*left;
 	t_cmd				*right;
 }						t_pipe;
+
+typedef struct s_compound_cmd
+{
+	int					type;
+	t_cmd				*left;
+	t_cmd				*right;
+}						t_compound;
 
 typedef struct s_group
 {
@@ -96,16 +103,19 @@ typedef enum e_cmd_type
 	C_PIPE,
 	C_REDIRECT,
 	C_GROUP,
+	C_COMPOUND,
 }						t_cmd_type;
 
 typedef struct s_cmd
 {
 	t_cmd_type			type;
+	t_cmd				*parent;
 	union
 	{
 		t_exec			exec;
 		t_redirect		redirect;
 		t_pipe			pipe;
+		t_compound		compound;
 		t_group			group;
 	} u_as;
 }						t_cmd;
@@ -117,10 +127,13 @@ void					token_str(t_token *t, bool nl, bool all);
 const char				*token_type_str(t_token_type type);
 t_token					*tokens_scan(char *src);
 
-bool					is_metachar(char *src, size_t current);
+bool					is_metachar(char *src, size_t current, bool is_quoted);
 bool					is_name(char *src, size_t current);
+bool					is_end(t_token *token);
+bool					is_quote(char *src, size_t current);
+bool					is_redirect(t_token *token);
 bool					match_char(char *src, size_t *current, char expected);
-bool					match_word(char *src, size_t *current);
+bool					match_word(char *src, size_t *current, bool is_quoted);
 bool					match_identifier(char *src, size_t *current);
 bool					match_var(char *src, size_t *current);
 bool					match_token(t_token **head, size_t count, ...);
@@ -132,14 +145,20 @@ t_token					*extract_identifier(char *src, size_t *current);
 t_token					*extract_var(char *src, size_t *current);
 t_token					*extract_blank(char *src, size_t *current);
 
-t_cmd					*cmd_exec_init(char **argv);
-t_cmd					*cmd_redirect_init(t_redirect_type type, char *file,
-							t_cmd *next);
-t_cmd					*cmd_pipe_init(t_cmd *left, t_cmd *right);
-t_cmd					*cmd_group_init(t_cmd *group);
-void					cmd_free(t_cmd *root);
+t_cmd					*cmd_exec_init(char **argv, t_cmd *parent);
+t_cmd					*cmd_redirect_init(int type, char *file, t_cmd *next,
+							t_cmd *parent);
+t_cmd					*cmd_pipe_init(t_cmd *left, t_cmd *right,
+							t_cmd *parent);
+t_cmd					*cmd_group_init(t_cmd *group, t_cmd *parent);
+t_cmd					*cmd_cmp_init(int op, t_cmd *left, t_cmd *right,
+							t_cmd *parent);
 
-t_cmd					*parse_program(t_token **token);
-void					ast_print(t_cmd *cmd);
+int						extract_cmp_op(t_token *token);
+char					*extract_lexeme_err(t_token *token);
+
+int						create_ast(char *src, t_cmd **ast);
+void					ast_free(t_cmd *root);
+char					*ast_output(t_cmd *cmd, bool print);
 
 #endif

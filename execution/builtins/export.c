@@ -6,62 +6,64 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/09 19:41:07 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/31 18:59:55 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-bool	ft_variable_exist(t_list *my_envp, char *varaible)
+static bool	ft_variable_exist(t_shell *shell, char *varaible)
 {
 	int		i;
+	t_list	*tmp;
 
 	i = 0;
 	while (varaible[i] && '=' != varaible[i])
 		i++;
 
-	while (my_envp)
+	if ('+' == varaible[i - 1])
+		i--;
+	tmp = shell->my_envp;
+	while (tmp)
 	{
-		if (!ft_strncmp(my_envp->content, varaible, i))
+		if (!ft_strncmp(tmp->content, varaible, i))
 			return (true);
-		my_envp = my_envp->next;
+		tmp = tmp->next;
 	}
 	return (false);
 }
 
-void	ft_var_exist(t_list **my_envp, char *variable)
+static bool	ft_valid_argument(char *variable)
 {
-	t_list	*tmp_ptr;
-	int		i;
+	int	i;
 
 	i = 0;
-	while (variable[i] && '=' != variable[i])
-		i++;
-
-	tmp_ptr = *my_envp;
-	while (tmp_ptr)
+	if (!ft_isalpha(variable[i]) && '_' != variable[i])
+		return (false);
+	i++;
+	while ('=' != variable[i] && variable[i])
 	{
-		if (!ft_strncmp(tmp_ptr->content, variable, i))
-		{
-			free(tmp_ptr->content);
-			tmp_ptr->content = ft_strdup(variable);
-			return ;
-		}
-		tmp_ptr = tmp_ptr->next;
+		if ('=' == variable[i])
+			break ;
+		if (!ft_isalnum(variable[i]))
+			return (false);
+		i++;
 	}
+	return (true);
 }
 
-void	ft_sort_myenvp(t_list *my_envp)
+static void	ft_sort_myenvp(t_shell *shell)
 {
 	char	**envp_sort;
 	char	*tmp;
 	int		i;
+	int		j;
 
-	envp_sort = ft_prep_envp(my_envp);
-	i = 0;
-	while(envp_sort[i])
+	envp_sort = ft_prep_envp(shell);
+	i = -1;
+	while(envp_sort[++i])
 	{
-		int (j) = i + 1;
+		j = i + 1;
 		while (envp_sort[j])
 		{
 			if (0 < ft_strncmp(envp_sort[i], envp_sort[j], ft_strlen(envp_sort[i])))
@@ -72,7 +74,6 @@ void	ft_sort_myenvp(t_list *my_envp)
 			}
 			j++;
 		}
-		i++;
 	}
 	i = -1;
 	while (envp_sort[++i])
@@ -80,28 +81,29 @@ void	ft_sort_myenvp(t_list *my_envp)
 	ft_free_arr(envp_sort);
 }
 
-void	ft_export(t_list **my_envp, char **variables)
+void	ft_export(t_shell *shell)
 {
-	int		vars_i; // INFO: variables_index
+	int	vars_i;
 
-	if (!variables[1])
-	{
-		ft_sort_myenvp(*my_envp);
-		/*ft_env(*my_envp);*/
-		// TODO: print envp in alphabetical order
-	}
+	if (!shell->cmd->u_as.exec.argv[1]) // INFO: export with no argumets
+		ft_sort_myenvp(shell);
 	else
 	{
 		vars_i = 1;
-		while (variables[vars_i])
+		while (shell->cmd->u_as.exec.argv[vars_i])
 		{
-			if (ft_variable_exist(*my_envp, variables[vars_i]))
+			if (!ft_valid_argument(shell->cmd->u_as.exec.argv[vars_i])) // INFO: checking if var name is valid syntax
 			{
-				ft_var_exist(my_envp, variables[vars_i]);
+				export_error(shell, &vars_i);
+				continue;
 			}
+			if (ft_variable_exist(shell, shell->cmd->u_as.exec.argv[vars_i])) // INFO: checking if var name exist in my_envp
+				ft_export_utils_1(shell, shell->cmd->u_as.exec.argv[vars_i]);
 			else
-				ft_lstadd_back(my_envp, ft_lstnew(variables[vars_i]));
+				ft_lstadd_back(&shell->my_envp,
+					ft_lstnew(ft_strdup(shell->cmd->u_as.exec.argv[vars_i])));
 			vars_i++;
 		}
 	}
+	shell->exit_status = 0;
 }

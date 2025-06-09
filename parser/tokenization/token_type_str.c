@@ -14,10 +14,10 @@
 
 static const char	*token_type_str2(t_token_type type)
 {
-	if (type == T_STRING_SINGLE)
-		return ("T_STRING_SINGLE");
-	if (type == T_STRING_DOUBLE)
-		return ("T_STRING_DOUBLE");
+	if (type == T_STR_SINGLE)
+		return ("T_STR_SINGLE");
+	if (type == T_STR_DOUBLE)
+		return ("T_STR_DOUBLE");
 	if (type == T_PIPE)
 		return ("T_PIPE");
 	if (type == T_AND)
@@ -39,14 +39,14 @@ const char	*token_type_str(t_token_type type)
 		return ("T_LEFT_PAREN");
 	if (type == T_RIGHT_PAREN)
 		return ("T_RIGHT_PAREN");
-	if (type == T_REDIRECT_IN)
-		return ("T_REDIRECT_IN");
-	if (type == T_REDIRECT_OUT)
-		return ("T_REDIRECT_OUT");
-	if (type == T_REDIRECT_OUT_APPEND)
-		return ("T_REDIRECT_OUT_APPEND");
+	if (type == T_REDIR_IN)
+		return ("<");
+	if (type == T_REDIR_OUT)
+		return (">");
+	if (type == T_REDIR_OUT_APPEND)
+		return (">>");
 	if (type == T_HEREDOC)
-		return ("T_HEREDOC");
+		return ("<<");
 	if (type == T_BLANK)
 		return ("T_BLANK");
 	if (type == T_WORD)

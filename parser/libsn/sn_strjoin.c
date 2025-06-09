@@ -20,7 +20,7 @@ char	*sn_strjoin(char *start, char *end, char join)
 
 	if (start == NULL || end == NULL)
 		return (NULL);
-	result = malloc(sizeof(char) * sn_strlen(start) + sn_strlen(end) + 2);
+	result = malloc(sizeof(char) * (sn_strlen(start) + sn_strlen(end) + 2));
 	if (result == NULL)
 		return (NULL);
 	i = 0;

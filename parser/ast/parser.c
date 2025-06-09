@@ -12,151 +12,96 @@
 
 #include "../parser.h"
 
-t_cmd	*parse_program(t_token **token);
-t_cmd	*parse_cmd(t_token **token);
+t_cmd	*parse_program(t_token **token, int *status);
+t_cmd	*parse_cmd(t_token **token, int *status);
+t_cmd	*parse_redirect(t_token **token, int *status);
+t_cmd	*append_redirect(t_cmd *root, t_cmd *new);
 
-t_cmd	*parse_group(t_token **token)
+t_cmd	*parse_group(t_token **token, int *status)
 {
 	t_cmd	*cmd;
+	t_cmd	*subshell;
 
-	if (match_token(token, 1, T_LEFT_PAREN) || (match_tokens(token, 2, T_BLANK,
-				T_LEFT_PAREN)))
+	if (match_token(token, 1, T_LEFT_PAREN))
 	{
-		cmd = cmd_group_init(parse_program(token));
-		if (cmd == NULL)
+		subshell = parse_program(token, status);
+		if (subshell == NULL || *status == -1)
 			return (NULL);
-		if (!match_token(token, 1, T_RIGHT_PAREN) || !match_tokens(token, 2,
-				T_BLANK, T_RIGHT_PAREN))
-		{
-			sn_printf_fd(STDERR_FILENO, "Expect ')' to end subshell.");
-			return (cmd_free(cmd), NULL);
-		}
+		cmd = cmd_group_init(subshell, NULL);
+		if (cmd == NULL || *status == -1)
+			return (ast_free(cmd), NULL);
+		subshell->parent = cmd;
+		if (!match_token(token, 1, T_RIGHT_PAREN))
+			return ((*status = -1), ast_free(cmd), NULL);
+		cmd = append_redirect(parse_redirect(token, status), cmd);
+		if (*status == -1)
+			return (ast_free(cmd), NULL);
 		return (cmd);
 	}
-	return (parse_cmd(token));
+	return (parse_cmd(token, status));
 }
 
-t_cmd	*parse_io_redirect(t_token **token)
-{
-	(void)token;
-	return (NULL);
-}
-
-t_cmd	*parse_redirect(t_token **token)
-{
-	t_cmd	*cmd;
-	t_cmd	*next;
-
-	if (match_token(token, 1, T_REDIRECT_IN) || match_tokens(token, 2, T_BLANK,
-			T_REDIRECT_IN))
-	{
-		if (!match_token(token, 5, T_BLANK, T_WORD, T_VAR, T_STRING_SINGLE,
-				T_STRING_DOUBLE))
-		{
-			if ((*token)->prev->type == T_BLANK && !match_token(token, 4,
-					T_WORD, T_VAR, T_STRING_SINGLE, T_STRING_DOUBLE))
-			{
-				sn_printf_fd(STDERR_FILENO,
-					"syntax error near unexpected token `%s`",
-					(*token)->lexeme);
-				return (NULL);
-			}
-			sn_printf_fd(STDERR_FILENO,
-				"syntax error near unexpected token `%s`", (*token)->lexeme);
-			return (NULL);
-		}
-		next = parse_redirect(token);
-		cmd = cmd_redirect_init(R_REDIRECT_IN,
-				sn_strdup((*token)->prev->lexeme), next);
-		if (cmd == NULL)
-			return (cmd_free(next), NULL);
-		return (cmd);
-	}
-	return (parse_group(token));
-}
-
-t_cmd	*parse_cmd(t_token **token)
-{
-	char	**argv;
-	int		matches;
-	int		i;
-	t_token	*current;
-
-	if (match_token(token, 5, T_BLANK, T_WORD, T_VAR, T_STRING_SINGLE,
-			T_STRING_DOUBLE))
-	{
-		if ((*token)->prev->type == T_BLANK && !match_token(token, 4, T_WORD,
-				T_VAR, T_STRING_SINGLE, T_STRING_DOUBLE))
-			*token = (*token)->prev;
-		else
-		{
-			matches = 1;
-			current = (*token)->prev;
-			while (match_token(token, 5, T_BLANK, T_WORD, T_VAR,
-					T_STRING_SINGLE, T_STRING_DOUBLE))
-			{
-				if ((*token)->prev->type == T_BLANK && !match_token(token, 4,
-						T_WORD, T_VAR, T_STRING_SINGLE, T_STRING_DOUBLE))
-				{
-					*token = (*token)->prev;
-					break ;
-				}
-				matches++;
-				continue ;
-			}
-			argv = malloc(sizeof(char *) * matches + 1);
-			if (argv == NULL)
-				return (NULL);
-			i = 0;
-			while (i < matches)
-			{
-				argv[i] = sn_strdup(current->lexeme);
-				if (argv[i] == NULL)
-				{
-					while (i > 0)
-						free(argv[--i]);
-					return (NULL);
-				}
-				current = current->next;
-				if (current->type == T_BLANK)
-					current = current->next;
-				i++;
-			}
-			argv[matches] = NULL;
-			return (cmd_exec_init(argv));
-		}
-	}
-	return (NULL);
-}
-
-t_cmd	*parse_pipe(t_token **token)
+t_cmd	*parse_pipe(t_token **token, int *status)
 {
 	t_cmd	*cmd;
 	t_cmd	*left;
 	t_cmd	*right;
 
-	left = parse_cmd(token);
+	left = parse_group(token, status);
 	if (left == NULL)
 		return (NULL);
-	while (match_token(token, 1, T_PIPE) || (match_tokens(token, 2, T_BLANK,
-				T_PIPE)))
+	while (match_token(token, 1, T_PIPE))
 	{
-		right = parse_cmd(token);
+		right = parse_group(token, status);
 		if (right == NULL)
-			return (cmd_free(left), NULL);
-		cmd = cmd_pipe_init(left, right);
+			return (ast_free(left), NULL);
+		cmd = cmd_pipe_init(left, right, NULL);
 		if (cmd == NULL)
-			return (cmd_free(left), cmd_free(right), NULL);
+			return (ast_free(left), ast_free(right), NULL);
+		if (cmd != left)
+		{
+			left->parent = cmd;
+			right->parent = cmd;
+		}
 		left = cmd;
 	}
 	return (left);
 }
 
-t_cmd	*parse_program(t_token **token)
+t_cmd	*parse_compound(t_token **token, int *status)
+{
+	t_cmd	*cmd;
+	t_cmd	*left;
+	t_cmd	*right;
+	int		op;
+
+	left = parse_pipe(token, status);
+	if (left == NULL)
+		return (NULL);
+	while (match_token(token, 1, T_AND) || match_token(token, 1, T_OR))
+	{
+		op = extract_cmp_op((*token)->prev);
+		right = parse_pipe(token, status);
+		if (right == NULL)
+			return (ast_free(left), NULL);
+		cmd = cmd_cmp_init(op, left, right, NULL);
+		if (cmd == NULL)
+			return (ast_free(left), ast_free(right), NULL);
+		if (left != cmd)
+		{
+			left->parent = cmd;
+			right->parent = cmd;
+		}
+		left = cmd;
+	}
+	return (left);
+}
+
+t_cmd	*parse_program(t_token **token, int *status)
 {
 	if (token == NULL || *token == NULL)
 		return (NULL);
 	if ((*token)->type == T_EOF)
 		return (NULL);
-	return (parse_pipe(token));
+	return (parse_compound(token, status));
 }

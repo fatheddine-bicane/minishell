@@ -3,18 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/23 18:21:46 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/23 18:28:33 by fbicane          ###   ########.fr       */
+/*   Created: 2024/10/25 22:18:11 by klaayoun          #+#    #+#             */
+/*   Updated: 2024/10/25 22:21:05 by klaayoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishel.h"
+#include "../parser.h"
 
-void	ft_redirection_utils(char *rl)
+t_cmd	*parse_program(t_token **token, int *status);
+
+char	*ast_gen(char *src)
 {
-	char **arr = ft_split(rl, 32);
+	t_token	*tokens;
+	t_token	*head;
+	t_cmd	*ast;
+	char	*got;
+	int		status;
 
-	(void)arr;
+	tokens = tokens_scan(src);
+	head = tokens;
+	status = 0;
+	ast = parse_program(&tokens, &status);
+	got = ast_output(ast, false);
+	return (tokens_free(head), ast_free(ast), got);
 }

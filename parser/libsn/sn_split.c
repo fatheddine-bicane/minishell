@@ -12,17 +12,16 @@
 
 #include "libsn.h"
 
-char	**sn_split_free(char **arr)
+void	sn_strs_free(char **strs)
 {
-	char	**t;
+	size_t	i;
 
-	if (arr == NULL)
-		return (NULL);
-	t = arr;
-	while (*t != NULL)
-		free(*t++);
-	free(arr);
-	return (NULL);
+	i = 0;
+	if (strs == NULL)
+		return ;
+	while (strs[i] != NULL)
+		free(strs[i++]);
+	free(strs);
 }
 
 static char	**sn_allocate(char **lst, char const *s, char sep)
@@ -43,7 +42,7 @@ static char	**sn_allocate(char **lst, char const *s, char sep)
 		{
 			*t = sn_substr(s, 0, tmp - s);
 			if (*t == NULL)
-				return (sn_split_free(lst));
+				return (sn_strs_free(lst), NULL);
 			s = tmp;
 			++t;
 		}

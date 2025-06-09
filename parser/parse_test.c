@@ -23,29 +23,23 @@ void	catch_int(int sig)
 	rl_redisplay();
 }
 
-int	run(char *src, char **envp)
+int	run(char *src)
 {
-	t_token	*tokens;
-	t_token	*head;
-	t_cmd	*cmd;
+	t_cmd	*ast;
+	int		status;
 
-	(void)envp;
-	tokens = tokens_scan(src);
-	if (tokens == NULL)
-		return (EX_DATAERR);
-	// token_str(tokens, true, true);
-	head = tokens;
-	cmd = parse_program(&tokens);
-	if (cmd == NULL)
-		return (token_free(head), EXIT_FAILURE);
-	ast_print(cmd);
-	return (cmd_free(cmd), token_free(head), EXIT_SUCCESS);
+	ast = NULL;
+	status = create_ast(src, &ast);
+	if (status != EXIT_EMPTY_AST && status != EXIT_SYNTAX_ERROR)
+		ast_output(ast, true);
+	return (ast_free(ast), status);
 }
 
 void	run_prompt(char *envp[])
 {
 	char	*line;
 
+	(void)envp;
 	while (1)
 	{
 		line = readline("shell> ");
@@ -57,8 +51,8 @@ void	run_prompt(char *envp[])
 		}
 		if (*line)
 		{
-			add_history(line);
-			run(line, envp);
+			if (run(line) != EXIT_EMPTY_AST)
+				add_history(line);
 		}
 		free(line);
 	}

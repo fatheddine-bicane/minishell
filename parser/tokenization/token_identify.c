@@ -23,20 +23,26 @@ static t_token	*token_identify_multi(char *src, size_t *current, char c)
 	if (c == '>')
 	{
 		if (match_char(src, current, '>'))
-			return (token_new(T_REDIRECT_OUT_APPEND, ">>"));
-		return (token_new(T_REDIRECT_OUT, ">"));
+			return (token_new(T_REDIR_OUT_APPEND, ">>"));
+		return (token_new(T_REDIR_OUT, ">"));
 	}
 	if (c == '<')
 	{
 		if (match_char(src, current, '<'))
 			return (token_new(T_HEREDOC, "<<"));
-		return (token_new(T_REDIRECT_IN, "<"));
+		return (token_new(T_REDIR_IN, "<"));
 	}
 	if (c == '$' && match_var(src, current))
 		return (extract_var(src, current));
 	return (token_new(T_WORD, extract_word(src, current)));
 }
 
+// if (c == '*')
+// 	return (token_new(T_WILDCARD, "*"));
+// if (c == '\'' || c == '"')
+// 	return (extract_str(src, current, c == '\''));
+// if (c == '$' && match_var(src, current))
+// 	return (extract_var(src, current));
 t_token	*token_identify(char *src, size_t *current)
 {
 	char	c;
@@ -52,8 +58,6 @@ t_token	*token_identify(char *src, size_t *current)
 		return (token_new(T_LEFT_PAREN, "("));
 	if (c == ')')
 		return (token_new(T_RIGHT_PAREN, ")"));
-	if (c == '*')
-		return (token_new(T_WILDCARD, "*"));
 	if (c == '&' && match_char(src, current, '&'))
 		return (token_new(T_AND, "&&"));
 	return (token_identify_multi(src, current, c));

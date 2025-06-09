@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 18:45:52 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/06 19:08:18 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/05/31 16:35:12 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,24 @@
 
 char	*ft_home_path(t_list *my_envp)
 {
-	while (my_envp)
+	t_list *tmp;
+
+	tmp = my_envp;
+	while (tmp)
 	{
-		if (!ft_strncmp(my_envp->content, "HOME=", 5))
-			return (ft_strdup(my_envp->content + 5));
-		my_envp = my_envp->next;
+		if (!ft_strncmp(tmp->content, "HOME=", 5))
+			return (ft_strdup(tmp->content + 5));
+		tmp = tmp->next;
 	}
 	return (NULL);
 }
 
-void	ft_change_oldpwd(t_list **my_envp, char *oldpwd)
+void	ft_change_oldpwd(t_shell *shell, char *oldpwd)
 {
 	t_list	*tmp;
+	t_list	*my_envp;
 
-	tmp = (*my_envp);
+	tmp = shell->my_envp;
 	while (tmp)
 	{
 		if (!ft_strncmp(tmp->content, "OLDPWD=", 7))
@@ -38,8 +42,9 @@ void	ft_change_oldpwd(t_list **my_envp, char *oldpwd)
 		}
 		tmp = tmp->next;
 	}
+	my_envp = shell->my_envp;
 	if (NULL == tmp)
-		ft_lstadd_back(my_envp, ft_lstnew(oldpwd));
+		ft_lstadd_back(&my_envp, ft_lstnew(oldpwd));
 }
 
 char	*ft_set_oldpwd(void)
@@ -51,50 +56,32 @@ char	*ft_set_oldpwd(void)
 		return (ft_strjoin("OLDPWD=", oldpwd));
 	}
 	else
-	{
-		perror("getcwd() error");
-		// TODO: exit
-	}
+		perror("getcwd()");
 	return (NULL);
-
 }
 
-void	ft_cd(char *path, t_list **my_envp)
+void	ft_cd(t_shell *shell)
 {
-	char	*home_path;
-	char	*oldpwd;
+	t_cd	cd;
 
-	home_path = ft_home_path(*my_envp);
-	oldpwd = ft_set_oldpwd();
-	if (!path)
+	cd.home_path = ft_home_path(shell->my_envp);
+	cd.oldpwd = ft_set_oldpwd();
+	cd.shell = shell;
+	if (!shell->cmd->u_as.exec.argv[1])
 	{
-		if (!home_path)
-		{
-			perror("minishell: cd: HOME not set\n");
-			free(home_path);
-			free(oldpwd);
-			return ;
-		}
-		if (-1 == chdir(home_path))
-		{
-			perror("minishell: chdir() error\n");
-			free(home_path);
-			free(oldpwd);
-			return ;
-		}
-		ft_change_oldpwd(my_envp, oldpwd);
+		if (!cd.home_path)
+			return (cd_error(&cd, 1));
+		if (-1 == chdir(cd.home_path))
+			return (cd_error(&cd, 2));
+		ft_change_oldpwd(shell, cd.oldpwd);
+		free(cd.home_path);
 	}
 	else
 	{
-		if (-1 == chdir(path))
-		{
-			perror("minishell: cd: ");
-			perror(path);
-			perror(": No such file or directory\n");
-			free(home_path);
-			free(oldpwd);
-			return;
-		}
-		ft_change_oldpwd(my_envp, oldpwd);
+		if (-1 == chdir(shell->cmd->u_as.exec.argv[1]))
+			return (cd_error(&cd, 3));
+		ft_change_oldpwd(shell, cd.oldpwd);
+		free(cd.home_path);
 	}
+	shell->exit_status = 0;
 }

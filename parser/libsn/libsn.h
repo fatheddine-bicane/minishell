@@ -24,9 +24,10 @@
 
 typedef struct s_str_builder
 {
-	char		*buff;
+	char		**buff;
 	size_t		cap;
 	size_t		len;
+	size_t		total_size;
 }				t_str_builder;
 
 # ifndef BUFFER_SIZE
@@ -55,16 +56,19 @@ int				sn_strncmp(const char *s1, const char *s2, size_t n);
 char			**sn_split(char const *s, char c);
 char			*sn_strjoin(char *start, char *end, char join);
 char			*sn_strsearch(char *haystack[], char *needle);
-char			**sn_split_free(char **arr);
+void			sn_strs_free(char **arr);
 char			*sn_strndup(const char *src, size_t n);
 char			*sn_readfile(char *file);
 
 int				sn_vprintf_fd(va_list args, int fd, const char *format, ...);
 int				sn_printf(const char *format, ...);
+int				sn_eprintf(const char *format, ...);
 int				sn_vprintf(va_list args, const char *format, ...);
 int				sn_printf_fd(int fd, const char *format, ...);
 int				sn_sprintf(char **buff, const char *format, ...);
 int				sn_vsprintf(va_list args, char **buff, const char *s, ...);
+int				sn_print_parse(va_list ap, t_str_builder *sb, const char *s,
+					size_t *i);
 char			*sn_strchr(const char *s, int c);
 int				sn_putstr_fd(char *str, int fd);
 int				sn_putchr(char c);
@@ -83,6 +87,8 @@ bool			sb_ensure_size(t_str_builder *sb, size_t len);
 void			sb_truncate(t_str_builder *sb, size_t len);
 void			sb_clear(t_str_builder *sb);
 void			sb_drop(t_str_builder *sb, size_t len);
+
+char			**sb_split(t_str_builder *sb, char c);
 bool			sb_append_str(t_str_builder *sb, const char *str, size_t len);
 bool			sb_append_char(t_str_builder *sb, char c);
 bool			sb_append_nbr(t_str_builder *sb, int n);
@@ -91,7 +97,10 @@ bool			sb_append_ptr(t_str_builder *sb, void *ptr);
 bool			sb_append_hex(t_str_builder *sb, unsigned long num,
 					int uppercase);
 size_t			sb_len(t_str_builder *sb);
-const char		*sb_str(t_str_builder *sb);
-char			*sb_build(t_str_builder *sb);
+size_t			sb_total_size(t_str_builder *sb);
+const char		*sb_str(t_str_builder *sb, size_t index);
+char			**sb_build(t_str_builder *sb);
+char			*sb_build_str(t_str_builder *sb);
+char			*sb_str_at(t_str_builder *sb, size_t i);
 
 #endif

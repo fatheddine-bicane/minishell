@@ -12,38 +12,130 @@
 
 #include "../../minishel.h"
 
-void	ft_redirect_out(char *ouf_name)
+void	std_files(int what_to_do)
 {
-	int	ouf;
+	static int	std_in_save;
+	static int	std_out_save;
 
-	ouf = open(ouf_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (-1 == ouf)
-		return ;
-	if (-1 == dup2(ouf, STDOUT_FILENO))
-		return ;
-	// TODO: close ouf
+	if (SAVE == what_to_do)
+	{
+		std_in_save = dup(STDIN_FILENO);
+		if (-1 == std_in_save)
+			return ; // TODO: error mssg
+		std_out_save = dup(STDOUT_FILENO);
+		if (-1 == std_out_save)
+			return ; // TODO: error mssg
+	}
+	else if (RESTORE_BOTH == what_to_do)
+	{
+		dup2(std_in_save, STDIN_FILENO);
+		dup2(std_out_save, STDOUT_FILENO);
+	}
+	else if (RESTORE_STDIN == what_to_do)
+	{
+		dup2(std_in_save, STDIN_FILENO);
+	}
+	else if (RESTORE_STDOUT == what_to_do)
+	{
+		dup2(std_out_save, STDOUT_FILENO);
+	}
+	// WARNING: dont close saves files
 }
 
-void	ft_redirect_inf(char *inf_file)
+static bool	redirect_output(char *file_name)
 {
-	int	inf;
+	int	redirect;
 
-	inf = open(inf_file, O_RDONLY);
-	if (-1 == inf)
-		return ;
-	if (-1 == dup2(inf, STDIN_FILENO))
-		return ;
-	// TODO: close inf
+	redirect = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+	if (-1 == redirect)
+	{
+		perror(file_name);
+		return (false);
+	}
+	if (-1 == dup2(redirect, STDOUT_FILENO))
+	{
+		perror("dup2()");
+		return (false);
+	}
+	close(redirect);
+	return (true);
 }
 
-void	ft_append_out(char *ouf_file)
+static bool	appent_output(char *file_name)
 {
-	int	ouf;
+	int	redirect;
+	redirect = open(file_name, O_WRONLY | O_CREAT | O_APPEND, 0664);
+	if (-1 == redirect)
+	{
+		perror(file_name);
+		return (false);
+	}
+	if (-1 == dup2(redirect, STDOUT_FILENO))
+	{
+		perror("dup2()");
+		return (false);
+	}
+	close(redirect);
+	return (true);
+}
 
-	ouf = open(ouf_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (-1 == ouf)
-		return ;
-	if (-1 == dup2(ouf, STDOUT_FILENO))
-		return ;
-	// TODO: close ouf
+static bool	redirect_input(char *file_name)
+{
+	int	redirect;
+	redirect = open(file_name, O_RDONLY);
+	if (-1 == redirect)
+	{
+		ft_putstr_fd("m here =>", 2);
+		perror(file_name);
+		return (false);
+	}
+	if (-1 == dup2(redirect, STDIN_FILENO))
+	{
+		perror("dup2()");
+		return (false);
+	}
+	close(redirect);
+	return (true);
+}
+
+bool	handle_redirections(char **redirections, t_shell *shell)
+{
+	int	i;
+
+	i = 0;
+	while (redirections[i])
+	{
+		if (!ft_strncmp(">>", redirections[i], 2))
+		{
+			i++;
+			/*ft_appent_output(redirections[i]);*/
+			if (!appent_output(redirections[i]))
+				return (false);
+		}
+		else if (!ft_strncmp("<<", redirections[i], 2))
+		{
+			i++;
+			/*ft_here_doc(redirections[i]);*/
+			if (!here_doc(redirections, shell, i))
+				return (false);
+		}
+		else if (!ft_strncmp(">", redirections[i], 1))
+		{
+			i++;
+			if (!redirect_output(redirections[i]))
+				return (false);
+		}
+		else if (!ft_strncmp("<", redirections[i], 1))
+		{
+			/*std_files(RESTORE_STDIN);*/
+			i++;
+			if (!redirect_input(redirections[i]))
+			{
+				shell->exit_status = 1;
+				return (false);
+			}
+		}
+		i++;
+	}
+	return (true);
 }
