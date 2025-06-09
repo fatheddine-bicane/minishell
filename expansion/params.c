@@ -12,8 +12,8 @@
 
 #include "../minishel.h"
 
-bool	expand_var(t_shell *shell, t_str_builder *sb, char *variable,
-			size_t len);
+bool	expand_var(t_shell *shell, t_str_builder *sb, char *var, size_t len);
+bool	word_split(char *ifs, char ***args, size_t *i);
 char	*get_ifs_var(t_list *envp);
 
 bool	parse_quote_param(t_shell *shell, t_str_builder *sb, char *str,
@@ -97,38 +97,7 @@ char	*param_expand(char *src, t_shell *shell, char **ifs)
 	return (tokens_free(head), sb_build_str(sb));
 }
 
-bool	word_split(char *ifs, char **args, size_t i)
-{
-	size_t	word_count;
-	size_t	j;
-	size_t	k;
-
-	word_count = 0;
-	j = 0;
-	while (args[i][j])
-	{
-		k = 0;
-		while (ifs[k])
-		{
-			if (args[i][j] == ifs[k])
-			{
-				word_count++;
-				while (args[i][j] && args[i][j] == ifs[k])
-					j++;
-			}
-			k++;
-		}
-		j++;
-	}
-	if (word_count == 0)
-		return (true);
-	sn_printf("IFS = `%s`\n", ifs);
-	sn_printf("target = `%s`\n", args[i]);
-	sn_printf("word count = %d\n", word_count);
-	return (true);
-}
-
-void	clean_args(char **args, size_t i)
+void	clean_args_leftover(char **args, size_t i)
 {
 	while (args[i] != NULL)
 	{
@@ -138,28 +107,29 @@ void	clean_args(char **args, size_t i)
 }
 
 // NOTE(karim): // maybe reuse src if expansion fails
-bool	expand_params(char **args, t_shell *shell)
+bool	expand_params(char ***argvp, t_shell *shell)
 {
 	size_t	i;
 	char	*src;
 	char	*ifs;
+	char	**argv;
 
-	if (args == NULL)
-		return (false);
 	ifs = NULL;
 	i = 0;
-	while (args[i] != NULL)
+	argv = *argvp;
+	while (argv[i] != NULL)
 	{
-		src = args[i];
-		args[i] = param_expand(src, shell, &ifs);
+		src = argv[i];
+		argv[i] = param_expand(src, shell, &ifs);
 		free(src);
-		if (args[i] == NULL)
-			return (clean_args(args, ++i), false);
+		if (argv[i] == NULL)
+			return (clean_args_leftover(argv, ++i), false);
 		if (ifs != NULL)
 		{
-			if (!word_split(ifs, args, i))
-				return (clean_args(args, i), false);
+			if (!word_split(ifs, argvp, &i))
+				return (clean_args_leftover(argv, i), false);
 			ifs = NULL;
+			argv = *argvp;
 		}
 		i++;
 	}

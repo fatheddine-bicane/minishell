@@ -208,7 +208,7 @@ void	ft_here_doc(char *delimiter); //INFO: creat here_doc input
 
 
 char	**ft_split_variable(char *variable);
-bool	expand_params(char **args, t_shell *shell);
+bool	expand_params(char ***args, t_shell *shell);
 
 bool	handle_redirections(char **redirections, t_shell *shell);
 
