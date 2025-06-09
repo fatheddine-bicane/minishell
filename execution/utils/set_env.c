@@ -96,12 +96,9 @@ void	envp_is_empty(t_list **my_envp)
 {
 	char	pwd[PATH_MAX];
 
-	if (getcwd(pwd, PATH_MAX))
-		ft_lstadd_back(my_envp, ft_lstnew(ft_strjoin("PWD=", pwd)));
-	else
-	{
-		// TODO: error mssg
-	}
+	if (NULL == getcwd(pwd, PATH_MAX))
+		perror("getcwd failed");
+	ft_lstadd_back(my_envp, ft_lstnew(ft_strjoin("PWD=", pwd)));
 	ft_lstadd_back(my_envp, ft_lstnew(ft_strdup("SHLVL=1")));
 }
 
@@ -110,8 +107,10 @@ t_list *ft_set_env(char **envp)
 {
 	t_list	*my_envp = NULL;
 	int		i;
+	char	*shlvl_var;
+	int		lvl;
 
-	if (!(*envp))
+	if (NULL == (*envp))
 	{
 		envp_is_empty(&my_envp);
 		return (my_envp);
@@ -125,16 +124,20 @@ t_list *ft_set_env(char **envp)
 			i++;
 			continue ;
 		}
-		if (!ft_strncmp(envp[i], "SHLVL=", 6))
+		else if (!ft_strncmp(envp[i], "SHLVL=", 6))
 		{
-			int lvl = ft_atoi(envp[i] + 6);
-			char (*shlvl_var) = ft_itoa(lvl + 1);
+			lvl = ft_atoi(envp[i] + 6);
+			shlvl_var = ft_itoa(lvl + 1);
 			printf("lvl = %d, %s, %s\n", lvl, envp[i] + 6, shlvl_var);
 			ft_lstadd_back(&my_envp, ft_lstnew(ft_strjoin("SHLVL=", shlvl_var)));
 			free(shlvl_var);
 			i++;
 			continue ;
-			// BUG: the shlvl variable does not update when runing ./minishel (subshell)
+		}
+		else if (!ft_strncmp(envp[i], "_=", 2))
+		{
+			i++;
+			continue ;
 		}
 		ft_lstadd_back(&my_envp, ft_lstnew(ft_strdup((envp[i]))));
 		i++;
