@@ -73,10 +73,10 @@ char	*random_name(void)
 		return (NULL);
 	random_file = open("/dev/urandom", O_RDONLY);
 	if (-1 == random_file)
-		return (perror("read()"), NULL);
+		return (perror("read()"), free(file_name), NULL);
 	ssize_t b_read = read(random_file, file_name, 9);
 	if (-1 == b_read)
-		return (perror("read()"), NULL);
+		return (perror("read()"), free(file_name), NULL);
 	file_name[b_read] = '\0';
 	i = -1;
 	while (file_name[++i])
@@ -107,21 +107,23 @@ bool	here_doc(char **redirections, t_shell *shell, int i)
 		// setup_signals_child();
 		setup_signals_heredoc();
 		input = ft_creat_input(redirections[i]);
-		printf("file name: %s\n", file_name);
+		// printf("file name: %s\n", file_name);
 		inf = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (-1 == inf)
 			return(perror("open()"), false);
 		ft_putstr_fd(input, inf);
 		free(input);
 		close(inf);
-		if (shell->is_pipe)
+		if (true == shell->is_pipe)
 		{
 			// ast_free(shell->pipe);
-			free_pids(&shell->pids);
+			// free_pids(&shell->pids);
 			free_pipex(&shell->pipex);
+			// free_my_envp(&shell->my_envp);
 		}
-		else if (!shell->is_pipe)
-			ast_free(shell->cmd); // WARNING: not freeing the pipe freeing only the right side 
+		// else if (false == shell->is_pipe)
+		// 	ast_free(shell->root_to_free);
+			// ast_free(shell->cmd); // WARNING: not freeing the pipe freeing only the right side 
 		sn_strs_free(redirections);
 		free_my_envp(&shell->my_envp);
 		ast_free(shell->root_to_free);
@@ -178,30 +180,30 @@ bool	here_doc(char **redirections, t_shell *shell, int i)
 
 
 
-// TODO: maybe fock to fix signals
-void	ft_here_doc(char *delimiter)
-{
-	char	*input;
-	char	*file_name;
-	int		inf;
-
-	std_files(RESTORE_STDIN);
-	setup_signals_heredoc(); // WARNING: it sends the sogint to main process
-	input = ft_creat_input(delimiter);
-	file_name = random_name();
-	printf("file name: %s\n", file_name);
-	inf = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (-1 == inf)
-		return(perror("open()"));
-	ft_putstr_fd(input, inf);
-	free(input);
-	close(inf);
-	inf = open(file_name, O_RDONLY);
-	if (-1 == inf)
-		return; // TODO: error mssg
-	if (-1 == dup2(inf, STDIN_FILENO))
-		return(perror("dup2()"));
-	close(inf);
-	unlink(file_name);
-	free(file_name);
-}
+// // TODO: maybe fock to fix signals
+// void	ft_here_doc(char *delimiter)
+// {
+// 	char	*input;
+// 	char	*file_name;
+// 	int		inf;
+//
+// 	std_files(RESTORE_STDIN);
+// 	setup_signals_heredoc(); // WARNING: it sends the sogint to main process
+// 	input = ft_creat_input(delimiter);
+// 	file_name = random_name();
+// 	printf("file name: %s\n", file_name);
+// 	inf = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// 	if (-1 == inf)
+// 		return(perror("open()"));
+// 	ft_putstr_fd(input, inf);
+// 	free(input);
+// 	close(inf);
+// 	inf = open(file_name, O_RDONLY);
+// 	if (-1 == inf)
+// 		return; // TODO: error mssg
+// 	if (-1 == dup2(inf, STDIN_FILENO))
+// 		return(perror("dup2()"));
+// 	close(inf);
+// 	unlink(file_name);
+// 	free(file_name);
+// }

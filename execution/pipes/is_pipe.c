@@ -145,6 +145,7 @@ void is_pipe(t_shell *shell)
 			// Child exits after command execution
 			// if (pids)
 			// 	free_pids(&pids);
+			free_my_envp(&shell->my_envp);
 			free_pipex(&pipex);
 			ast_free(shell->root_to_free);
 			exit(shell->exit_status);
