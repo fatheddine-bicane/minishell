@@ -27,6 +27,9 @@ void set_shell(t_shell *shell, int argc, char **argv, char **envp)
 	shell->exit_status = 0;
 	shell->my_envp = ft_set_env(envp);
 	shell->cmd = NULL;
+	shell->heredocs_delemiters = NULL;
+	shell->heredocs_files = NULL;
+	shell->herdocs_index = 0;
 }
 
 void reset_shell(t_shell *shell)
@@ -37,6 +40,25 @@ void reset_shell(t_shell *shell)
 	shell->redirections_status = true;
 	shell->pipex = NULL;
 	shell->cmd = NULL;
+	shell->heredocs_delemiters = NULL;
+	shell->heredocs_files = NULL;
+	shell->herdocs_index = 0;
+}
+
+void	unlink_files(t_shell *shell)
+{
+	int	i;
+
+	if (NULL == shell->heredocs_files)
+		return ;
+	i = 0;
+	while (shell->heredocs_files[i])
+	{
+		unlink(shell->heredocs_files[i]);
+		i++;
+	}
+	ft_free_arr(shell->heredocs_files);
+	shell->heredocs_files = NULL;
 }
 
 int main(int argc, char **argv, char **envp)
@@ -64,22 +86,8 @@ int main(int argc, char **argv, char **envp)
 	{
 
 		reset_shell(&shell);
-		/*ft_putstr_fd("new prompt is coming\n",2);*/
-		/*shell.is_pipe = false;*/
-		/*shell.pids = NULL;*/
-		/*shell.pipe = NULL;*/
-		/*shell.redirections_status = true;*/
-		/*shell.pipex = NULL;*/
-
-		/*shell.c_exec = NULL;*/
-		/*shell.c_redirect = NULL;*/
-		/*shell.c_pipe = NULL;*/
-		/*shell.c_group = NULL;*/
-		/*shell.c_compound = NULL;*/
 		g_signal_flag = 0;
 
-		// rl = readline("╭─ ~folder name exit status\n╰─ ");
-		// rl = readline("====> ");
 		char *prompt = custum_prompt(shell);
 		rl = readline(prompt);
 		free(prompt);
@@ -103,8 +111,11 @@ int main(int argc, char **argv, char **envp)
 
 			/*shell.cmd = cmd;*/
 			shell.root_to_free = shell.cmd;
+			
+			ast_output(shell.cmd, true);
 
-			creat_heredocs(&shell);
+			herdocs_delemiters(&shell);
+			handle_herdocs(&shell);
 			if (shell.cmd->type == C_EXEC)
 			{
 				/*is_command(cmd, &my_envp, &exit_stat);*/
@@ -130,6 +141,7 @@ int main(int argc, char **argv, char **envp)
 			}
 			else
 				printf("not a command\n");
+			unlink_files(&shell);
 			ast_free(shell.root_to_free);
 			write(STDOUT_FILENO, "\n", 1);
 		}

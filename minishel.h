@@ -40,6 +40,7 @@
 #define BLUE  "\001\033[34m\002"
 #define GREEN "\001\033[32m\002"
 #define RED   "\001\033[31m\002"
+#define YELLOW "\001\033[0;33m\002"
 #define RESET "\001\033[0m\002"
 
 
@@ -65,6 +66,9 @@ typedef struct s_shell
 	/*t_cmd	*c_pipe;*/
 	/*t_cmd	*c_group;*/
 	/*t_cmd	*c_compound;*/
+	char	**heredocs_files;
+	char	**heredocs_delemiters;
+	int		herdocs_index;
 
 	t_list	*my_envp;
 
@@ -190,9 +194,28 @@ void	creat_pipex(t_cmd *cmd, t_pipex **pipex);
 
 
 
+// INFO: herdocs
 void	ft_here_doc(char *rl);
-bool	here_doc(char **redirections, t_shell *shell, int i);
+/*void	here_doc(char *delimiter, t_shell *shell);*/
+char *creat_here_doc(char *delimiter, t_shell *shell);
+
+bool	here_doc(t_shell *shell);
+/*bool	here_doc(char **redirections, t_shell *shell, int i);*/
+
 /*bool	here_doc(char *delemiter, t_shell *shell);*/
+void	handle_herdocs(t_shell *shell);
+
+void	ft_here_doc(char *delimiter); //INFO: creat here_doc input
+void	herdocs_delemiters(t_shell *shell);
+
+
+
+
+
+
+
+
+
 
 void	run_bultins(t_shell *shell);
 
@@ -210,8 +233,6 @@ void	ft_pipex(char **commands, t_list **my_envp, int *exit_stat); //INFO: handle
 bool	ft_is_builtin(char *command);
 void	ft_exec_builtins(char **command_arg, t_list **my_envp, int *exit_stat);
 
-void	ft_here_doc(char *delimiter); //INFO: creat here_doc input
-void	creat_heredocs(t_shell *shell);
 
 
 char	**ft_split_variable(char *variable);

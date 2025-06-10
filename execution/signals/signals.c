@@ -17,7 +17,7 @@ void	sigint_handler(int signal)
 	(void) signal;
 	g_signal_flag = SIGINT;
 	write(STDOUT_FILENO, "\n", 1);
-	rl_replace_line("", 0);
+	/*rl_replace_line("", 0);*/
 	/*write(STDOUT_FILENO, "====> ", 6); // PERF: rl_replace_line() not available on mac*/
 	rl_on_new_line();
 	rl_redisplay();
