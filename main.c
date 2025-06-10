@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:21:00 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/09 16:28:52 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/10 13:49:08 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ int main(int argc, char **argv, char **envp)
 			/*shell.cmd = cmd;*/
 			shell.root_to_free = shell.cmd;
 
+			creat_heredocs(&shell);
 			if (shell.cmd->type == C_EXEC)
 			{
 				/*is_command(cmd, &my_envp, &exit_stat);*/
