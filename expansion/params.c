@@ -112,7 +112,7 @@ char	*expand_single_param(char *src, t_shell *shell)
 		return (free(src), NULL);
 	if (ifs == NULL)
 		return (free(src), result);
-	count = word_count(src, ifs);
+	count = word_count(result, ifs);
 	if (count == 0 || count > 1)
 		return (free(src), free(result), NULL);
 	count = 0;
