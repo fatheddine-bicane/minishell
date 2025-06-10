@@ -128,7 +128,7 @@ t_list *ft_set_env(char **envp)
 		{
 			lvl = ft_atoi(envp[i] + 6);
 			shlvl_var = ft_itoa(lvl + 1);
-			printf("lvl = %d, %s, %s\n", lvl, envp[i] + 6, shlvl_var);
+			/*printf("lvl = %d, %s, %s\n", lvl, envp[i] + 6, shlvl_var);*/
 			ft_lstadd_back(&my_envp, ft_lstnew(ft_strjoin("SHLVL=", shlvl_var)));
 			free(shlvl_var);
 			i++;

@@ -90,7 +90,10 @@ int main(int argc, char **argv, char **envp)
 			exit(shell.exit_status); // INFO: bash exits with the last exit status
 		}
 		if (*rl == '\0')
+		{
+			write(STDOUT_FILENO, "\n", 1);
 			continue;
+		}
 
 		if (create_ast(rl, &shell.cmd) != EXIT_EMPTY_AST) // INFO: return status
 		{
