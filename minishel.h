@@ -211,8 +211,10 @@ void	ft_exec_builtins(char **command_arg, t_list **my_envp, int *exit_stat);
 void	ft_here_doc(char *delimiter); //INFO: creat here_doc input
 
 
+char	*get_ifs_var(t_list *envp);
 char	**ft_split_variable(char *variable);
 bool	expand_params(char ***args, t_shell *shell);
+char	*expand_single_param(char *src, t_shell *shell);
 
 bool	handle_redirections(char **redirections, t_shell *shell);
 

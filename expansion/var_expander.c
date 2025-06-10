@@ -12,6 +12,15 @@
 
 #include "../minishel.h"
 
+void	clean_args_leftover(char **args, size_t i)
+{
+	while (args[i] != NULL)
+	{
+		free(args[i]);
+		args[i++] = NULL;
+	}
+}
+
 char	*ft_get_var_value(t_list *my_envp, char *variable, size_t len)
 {
 	char	*curr;
