@@ -222,6 +222,7 @@ void	run_bultins(t_shell *shell);
 
 // INFO: group
 void	is_group(t_shell *shell);
+void	creat_heredoc_group(t_shell *shell, t_str_builder **sb);
 
 // INFO: compound
 void	is_compound(t_shell *shell);

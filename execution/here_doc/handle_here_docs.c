@@ -40,7 +40,10 @@ void	creat_heredoc_pipe(t_shell *shell, t_str_builder **sb)
 	while (pipex)
 	{
 		shell->cmd = pipex->cmd;
-		creat_heredoc_command(shell, sb);
+		if (C_REDIRECT == shell->cmd->type)
+			creat_heredoc_command(shell, sb);
+		else if (C_GROUP == shell->cmd->type)
+			creat_heredoc_group(shell, sb);
 		pipex = pipex->next;
 	}
 	free_pipex(&pipex_to_free);
@@ -60,6 +63,8 @@ void	creat_heredoc_compound(t_shell *shell, t_str_builder **sb)
 		creat_heredoc_pipe(shell, sb);
 	else if (C_COMPOUND == tmp->type)
 		creat_heredoc_compound(shell, sb);
+	else if (C_GROUP == shell->cmd->type)
+		creat_heredoc_group(shell, sb);
 
 	shell->cmd = original_cmd;
 	tmp = shell->cmd->u_as.compound.right;
@@ -68,6 +73,31 @@ void	creat_heredoc_compound(t_shell *shell, t_str_builder **sb)
 		creat_heredoc_command(shell, sb);
 	else if (C_PIPE == tmp->type)
 		creat_heredoc_pipe(shell, sb);
+	else if (C_GROUP == shell->cmd->type)
+		creat_heredoc_group(shell, sb);
+	shell->cmd = original_cmd;
+}
+
+void	creat_heredoc_group(t_shell *shell, t_str_builder **sb)
+{
+	t_cmd	*original_cmd;
+
+	original_cmd = shell->cmd;
+	shell->cmd = shell->cmd->u_as.group.cmd;
+	if (C_REDIRECT == shell->cmd->type)
+	{
+		creat_heredoc_command(shell, sb);
+	}
+	else if (C_PIPE == shell->cmd->type)
+	{
+		creat_heredoc_pipe(shell, sb);
+	}
+	else if (C_COMPOUND == shell->cmd->type)
+	{
+		creat_heredoc_compound(shell, sb);
+	}
+	else if (C_GROUP == shell->cmd->type)
+		creat_heredoc_group(shell, sb);
 	shell->cmd = original_cmd;
 }
 
@@ -91,7 +121,13 @@ void	herdocs_delemiters(t_shell *shell)
 	{
 		creat_heredoc_compound(shell, &sb);
 	}
+	else if (C_GROUP == shell->cmd->type)
+	{
+		printf("m here\n");
+		creat_heredoc_group(shell, &sb);
+	}
 
+	shell->cmd = shell->root_to_free;
 	str = sb_build(sb);
 	if (NULL == str)
 	{

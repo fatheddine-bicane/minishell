@@ -43,7 +43,7 @@ void creat_pipex(t_cmd *cmd, t_pipex **pipex)
 {
 	if (C_PIPE == cmd->type)
 		creat_pipex(cmd->u_as.pipe.left, pipex);
-	if (C_EXEC == cmd->type || C_REDIRECT == cmd->type)
+	if (C_EXEC == cmd->type || C_REDIRECT == cmd->type || C_GROUP == cmd->type)
 		append_cmd_(pipex, cmd);
 	if (C_PIPE == cmd->type)
 		append_cmd_(pipex, cmd->u_as.pipe.right);
@@ -113,69 +113,31 @@ void is_pipe(t_shell *shell)
 			if (-1 != prev_pipe[1])
 				close(prev_pipe[1]);
 			if (tmp->next)
-			{
 				close(fd[0]); // Close read end in writing process
-											// DON'T close fd[1] - you're writing to it!
-			}
 			else if (prev_pipe[0] != -1)
-			{
 				close(fd[1]); // Close write end in reading process
-											// DON'T close fd[0] - you're reading from it!
-			}
 
-			// Execute command
-			// t_cmd *parent = shell->cmd;
+			// NOTE: execute command
 			shell->cmd = tmp->cmd;
 			if (C_EXEC == tmp->cmd->type)
 				is_command(shell, false, pid);
 			else if (C_REDIRECT == tmp->cmd->type)
+			{
+				printf("its a redirections\n");
 				is_redirection(shell, false, pid);
-			ft_putstr_fd("ana hnaya ma hrjtch\n", 2);
-			/*close(fd[1]);*/
-			// WARNING: see this case it changes it sends output to pipe maybe
-			/*====> <<s | wc*/
-			/*asdsds*/
-			/*s*/
-			/*ana hnaya ma hrjtch*/
-			/*2       8      41*/
-			/*the exit status : 0*/
-			/*the exit status : 0*/
-			/*====>*/
+			}
+			else if (C_GROUP == tmp->cmd->type)
+				is_group(shell);
 
-			// Child exits after command execution
-			// if (pids)
-			// 	free_pids(&pids);
-			free_my_envp(&shell->my_envp);
+
+
+			// NOTE: childe failed to execute command
+			ft_putstr_fd("ana hnaya ma hrjtch\n", 2);
+			// free_my_envp(&shell->my_envp);
 			free_pipex(&pipex);
 			ast_free(shell->root_to_free);
 			exit(shell->exit_status);
 		}
-		/*t_cmd *parent = shell->cmd;*/
-		/*shell->cmd = tmp->cmd;*/
-		/*if (C_EXEC == tmp->cmd->type)*/
-		/*{*/
-		/*	is_command(shell, false, pid);*/
-		/*	if (0 == pid)*/
-		/*	{*/
-		/*		free_pids(&pids);*/
-		/*		free_pipex(&pipex);*/
-		/*		ast_free(parent);*/
-		/*		exit(shell->exit_status);*/
-		/*	}*/
-		/*	shell->cmd = parent;*/
-		/*}*/
-		/*else if (C_REDIRECT == tmp->cmd->type)*/
-		/*{*/
-		/*	is_redirection(shell, false, pid);*/
-		/*	if (0 == pid)*/
-		/*	{*/
-		/*		free_pids(&pids);*/
-		/*		free_pipex(&pipex);*/
-		/*		ast_free(parent);*/
-		/*		exit(shell->exit_status);*/
-		/*	}*/
-		/*	shell->cmd = parent;*/
-		/*}*/
 		// TODO: execute the command
 
 		else
