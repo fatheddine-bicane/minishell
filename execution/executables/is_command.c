@@ -22,6 +22,7 @@ void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
 	}
 
 
+	expand_params(&shell->cmd->u_as.exec.argv, shell);
 
 
 	if (ft_is_builtin(shell->cmd->u_as.exec.argv[0]))
