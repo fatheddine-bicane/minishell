@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 16:23:13 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/09 18:44:34 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/11 17:35:29 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 	if (!handle_redirections(redirects, shell))
 	{
 		shell->redirections_status = false;
+		ft_free_arr(shell->heredocs_files);
 		sn_strs_free(redirects);
 		if (0 == pid_r && !to_fork)
 		{

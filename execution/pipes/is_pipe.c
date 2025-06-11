@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 15:37:58 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/05 14:49:48 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/11 23:28:32 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,47 @@ void free_pipex(t_pipex **pipex)
 	(*pipex) = NULL;
 }
 
+void	increment_heredoc_pipe(t_shell *shell, t_pipex *tmp)
+{
+	if (C_REDIRECT == tmp->cmd->type)
+	{
+		while (tmp->cmd)
+		{
+			if (C_REDIRECT != tmp->cmd->type)
+				break ;
+			if (T_HEREDOC == tmp->cmd->u_as.redirect.type)
+				shell->herdocs_index++;
+			tmp->cmd = tmp->cmd->u_as.redirect.next;
+		}
+	}
+	else if (C_GROUP == tmp->cmd->type)
+	{
+		tmp->cmd = tmp->cmd->u_as.group.cmd;
+		increment_heredoc_pipe(shell, tmp);
+		/*if (C_PIPE == tmp->cmd->type)*/
+		/*{*/
+		/*	increment_heredoc_pipe(shell, tmp);*/
+		/*}*/
+		/*else if (C_REDIRECT == tmp->cmd->u_as.group.cmd->type)*/
+		/*{*/
+		/*}*/
+	}
+}
+
+/*void	increment_heredoc_pipe(t_shell *shell, t_pipex *tmp)*/
+/*{*/
+/*	if (tmp && tmp->cmd)*/
+/*		increment_heredoc_index(shell, tmp->cmd);*/
+/*}*/
+
+
 void is_pipe(t_shell *shell)
 {
 	t_pipex *pipex = NULL;
-	t_pipex *tmp;
+	t_pipex *tmp_pipex;
 
 	creat_pipex(shell->cmd, &pipex);
-	tmp = pipex;
+	tmp_pipex = pipex;
 
 	pid_t pid;
 	int prev_pipe[2] = {-1, -1}; // INFO: hold pipes fds
@@ -79,17 +113,17 @@ void is_pipe(t_shell *shell)
 
 	shell->is_pipe = true;
 
-	while (tmp)
+	shell->pids = pids;
+	shell->pipex = pipex;
+	while (tmp_pipex)
 	{
 
-		if (tmp->next)
+		if (tmp_pipex->next)
 		{
 			if (-1 == pipe(fd))
 				return; // TODO: error mssg
 		}
 		/*shell->pipe = shell->cmd;*/
-		shell->pids = pids;
-		shell->pipex = pipex;
 		pid = fork();
 		if (0 != pid)
 			add_pid(&pids, pid);
@@ -102,7 +136,7 @@ void is_pipe(t_shell *shell)
 				if (-1 == dup2(prev_pipe[0], STDIN_FILENO))
 					exit(1); // TODO: error mssg
 			}
-			if (tmp->next)
+			if (tmp_pipex->next)
 			{
 				if (-1 == dup2(fd[1], STDOUT_FILENO))
 					exit(1); // TODO: error mssg
@@ -112,27 +146,32 @@ void is_pipe(t_shell *shell)
 				close(prev_pipe[0]);
 			if (-1 != prev_pipe[1])
 				close(prev_pipe[1]);
-			if (tmp->next)
+			if (tmp_pipex->next)
 				close(fd[0]); // Close read end in writing process
 			else if (prev_pipe[0] != -1)
 				close(fd[1]); // Close write end in reading process
 
 			// NOTE: execute command
-			shell->cmd = tmp->cmd;
-			if (C_EXEC == tmp->cmd->type)
+			shell->cmd = tmp_pipex->cmd;
+			if (C_EXEC == tmp_pipex->cmd->type)
 				is_command(shell, false, pid);
-			else if (C_REDIRECT == tmp->cmd->type)
+			else if (C_REDIRECT == tmp_pipex->cmd->type)
 			{
-				printf("its a redirections\n");
+				// WARNING: if the command contain a heredoc the herdoc index get
+				// incremented in the child process not the main so the next child
+				// will use the heredocindex and it will still be 0
 				is_redirection(shell, false, pid);
 			}
-			else if (C_GROUP == tmp->cmd->type)
+			else if (C_GROUP == tmp_pipex->cmd->type)
+			{
 				is_group(shell);
+				/*ft_putstr_fd(RED"group failed\n"RESET, 2);*/
+			}
 
 
 
 			// NOTE: childe failed to execute command
-			ft_putstr_fd("ana hnaya ma hrjtch\n", 2);
+			/*ft_putstr_fd("ana hnaya ma hrjtch\n", 2);*/
 			// free_my_envp(&shell->my_envp);
 			free_pipex(&pipex);
 			ast_free(shell->root_to_free);
@@ -147,15 +186,19 @@ void is_pipe(t_shell *shell)
 			if (-1 != prev_pipe[1])
 				close(prev_pipe[1]);
 
-			if (tmp->next)
+			if (tmp_pipex->next)
 			{
 				prev_pipe[0] = fd[0];
 				prev_pipe[1] = fd[1];
 			}
+			/*increment_heredoc_index(shell, tmp->cmd);*/
+			increment_heredoc_pipe(shell, tmp_pipex);
+			/*printf("heredoc_index %d\n", shell->herdocs_index);*/
+			/*increment_heredoc_pipe(shell, tmp);*/
 		}
-		tmp = tmp->next;
+		tmp_pipex = tmp_pipex->next;
 	}
 
-	wait_pids(&pids, shell); // TODO: check if it waits for pids
+	wait_pids(&pids, shell); 
 	free_pipex(&pipex);
 }

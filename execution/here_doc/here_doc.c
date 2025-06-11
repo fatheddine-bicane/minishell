@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 17:22:24 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/09 18:39:42 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/11 14:21:02 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,9 @@ char	*creat_here_doc(char *delimiter, t_shell *shell)
 		ft_putstr_fd(input, inf);
 		free(input);
 		close(inf);
+		sb_free(shell->sb_to_free);
+		ft_free_arr(shell->heredocs_files);
+		ft_free_arr(shell->heredocs_delemiters);
 		free_my_envp(&shell->my_envp);
 		ast_free(shell->root_to_free);
 		free(file_name);

@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:21:00 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/10 13:49:08 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/11 23:27:48 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ int main(int argc, char **argv, char **envp)
 			shell.root_to_free = shell.cmd;
 			
 			ast_output(shell.cmd, true);
+			write(1, "\n", 1);
 
 			herdocs_delemiters(&shell);
 			handle_herdocs(&shell);
@@ -142,6 +143,7 @@ int main(int argc, char **argv, char **envp)
 			else
 				printf("not a command\n");
 			unlink_files(&shell);
+			ft_free_arr(shell.heredocs_files);
 			ast_free(shell.root_to_free);
 			write(STDOUT_FILENO, "\n", 1);
 		}

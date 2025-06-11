@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 12:19:34 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/10 13:47:51 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/11 22:12:30 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,10 @@ void	creat_heredoc_group(t_shell *shell, t_str_builder **sb)
 	shell->cmd = original_cmd;
 }
 
+// INFO: extract the heredocs delimiters
 void	herdocs_delemiters(t_shell *shell)
 {
-	char **str;
+	char **heredoc_delemiters;
 	t_str_builder	*sb;
 
 	sb = sb_create(10);
@@ -123,24 +124,25 @@ void	herdocs_delemiters(t_shell *shell)
 	}
 	else if (C_GROUP == shell->cmd->type)
 	{
-		printf("m here\n");
 		creat_heredoc_group(shell, &sb);
 	}
 
 	shell->cmd = shell->root_to_free;
-	str = sb_build(sb);
-	if (NULL == str)
+	heredoc_delemiters = sb_build(sb);
+	if (NULL == heredoc_delemiters)
 	{
 		shell->cmd = shell->root_to_free;
 		shell->heredocs_delemiters = NULL; // Add this line
-		return (ft_putstr_fd("no heredocs\n", 2));
+		return;
+		/*return (ft_putstr_fd("no heredocs\n", 2));*/
 	}
-	shell->heredocs_delemiters = str;
+	shell->heredocs_delemiters = heredoc_delemiters;
 }
 
 void	handle_herdocs(t_shell *shell)
 {
 	int	i;
+	char	*file_name;
 	t_str_builder	*sb;
 
 	if (!shell->heredocs_delemiters)
@@ -150,14 +152,17 @@ void	handle_herdocs(t_shell *shell)
 	if (sb == NULL)
 		return ;
 
+	shell->sb_to_free = sb;
 	i = 0;
 	while (shell->heredocs_delemiters[i])
 	{
-		sb_append_str(sb, creat_here_doc(shell->heredocs_delemiters[i], shell), 0);
+		file_name = creat_here_doc(shell->heredocs_delemiters[i], shell);
+		sb_append_str(sb, file_name, 0);
+		free (file_name);
 		i++;
 	}
 	ft_free_arr(shell->heredocs_delemiters);
 	shell->heredocs_files = sb_build(sb);
-	for (int i = 0; shell->heredocs_files[i]; i++)
-		printf("%s\n", shell->heredocs_files[i]);
+	/*for (int i = 0; shell->heredocs_files[i]; i++)*/
+	/*	printf("%s\n", shell->heredocs_files[i]);*/
 }

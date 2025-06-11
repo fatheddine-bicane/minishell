@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/10 13:48:49 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/11 23:27:11 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,10 @@ typedef struct s_shell
 	t_cmd	*cmd;
 	t_cmd	*root_to_free;
 
-	/*t_cmd	*c_exec;*/
-	/*t_cmd	*c_redirect;*/
-	/*t_cmd	*c_pipe;*/
-	/*t_cmd	*c_group;*/
-	/*t_cmd	*c_compound;*/
 	char	**heredocs_files;
 	char	**heredocs_delemiters;
 	int		herdocs_index;
+	t_str_builder	*sb_to_free;
 
 	t_list	*my_envp;
 
@@ -202,11 +198,12 @@ char *creat_here_doc(char *delimiter, t_shell *shell);
 bool	here_doc(t_shell *shell);
 /*bool	here_doc(char **redirections, t_shell *shell, int i);*/
 
-/*bool	here_doc(char *delemiter, t_shell *shell);*/
+/*bool	here_doc(char *delemiter, t_shell);*/
 void	handle_herdocs(t_shell *shell);
 
 void	ft_here_doc(char *delimiter); //INFO: creat here_doc input
 void	herdocs_delemiters(t_shell *shell);
+void	increment_heredoc_index(t_shell *shell, t_cmd *cmd);
 
 
 
