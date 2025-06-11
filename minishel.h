@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/09 16:30:08 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/10 13:48:49 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@
 #define BLUE  "\001\033[34m\002"
 #define GREEN "\001\033[32m\002"
 #define RED   "\001\033[31m\002"
+#define YELLOW "\001\033[0;33m\002"
 #define RESET "\001\033[0m\002"
 
 
@@ -65,6 +66,9 @@ typedef struct s_shell
 	/*t_cmd	*c_pipe;*/
 	/*t_cmd	*c_group;*/
 	/*t_cmd	*c_compound;*/
+	char	**heredocs_files;
+	char	**heredocs_delemiters;
+	int		herdocs_index;
 
 	t_list	*my_envp;
 
@@ -186,17 +190,39 @@ void	add_pid(t_wait_pids **pids, pid_t pid);
 void	free_pids(t_wait_pids **pids);
 void	wait_pids(t_wait_pids **pids, t_shell *shell);
 void	free_pipex(t_pipex **pipex);
+void	creat_pipex(t_cmd *cmd, t_pipex **pipex);
 
 
 
+// INFO: herdocs
 void	ft_here_doc(char *rl);
-bool	here_doc(char **redirections, t_shell *shell, int i);
+/*void	here_doc(char *delimiter, t_shell *shell);*/
+char *creat_here_doc(char *delimiter, t_shell *shell);
+
+bool	here_doc(t_shell *shell);
+/*bool	here_doc(char **redirections, t_shell *shell, int i);*/
+
+/*bool	here_doc(char *delemiter, t_shell *shell);*/
+void	handle_herdocs(t_shell *shell);
+
+void	ft_here_doc(char *delimiter); //INFO: creat here_doc input
+void	herdocs_delemiters(t_shell *shell);
+
+
+
+
+
+
+
+
+
 
 void	run_bultins(t_shell *shell);
 
 
 // INFO: group
 void	is_group(t_shell *shell);
+void	creat_heredoc_group(t_shell *shell, t_str_builder **sb);
 
 // INFO: compound
 void	is_compound(t_shell *shell);
@@ -208,7 +234,6 @@ void	ft_pipex(char **commands, t_list **my_envp, int *exit_stat); //INFO: handle
 bool	ft_is_builtin(char *command);
 void	ft_exec_builtins(char **command_arg, t_list **my_envp, int *exit_stat);
 
-void	ft_here_doc(char *delimiter); //INFO: creat here_doc input
 
 
 char	*get_ifs_var(t_list *envp);

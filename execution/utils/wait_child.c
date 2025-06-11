@@ -37,9 +37,7 @@ void	wait_child(pid_t pid, t_shell *shell)
 		{
 			shell->exit_status = 131;
 			g_signal_flag = 0;
-			printf("Quit: 3\n");
+			write(STDOUT_FILENO, "Quit: 3\n", 9);
 		}
 	}
-
-	printf("the exit status : %d\n", shell->exit_status);
 }

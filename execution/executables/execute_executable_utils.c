@@ -183,7 +183,7 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 			free_my_envp(&shell->my_envp);
 			exit(127);
 		}
-		free_my_envp(&shell->my_envp);
+		// free_my_envp(&shell->my_envp);
 		shell->exit_status = 127;
 		return;
 	}
