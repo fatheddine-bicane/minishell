@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 12:02:30 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/05 13:47:41 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/11 22:32:56 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 					ft_free_arr(exec.paths);
 					free_my_envp(&shell->my_envp);
 					ast_free(shell->root_to_free);
+					ft_free_arr(shell->heredocs_files);
 					exit(127);
 					return;
 				}
@@ -154,6 +155,7 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 					ft_free_arr(prep_envp);
 					ft_free_arr(exec.paths);
 					free_my_envp(&shell->my_envp);
+					ft_free_arr(shell->heredocs_files);
 					shell->exit_status = 127;
 					return;
 				}
@@ -175,14 +177,23 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 		free(exec.path);
 	}
 	ft_free_arr(exec.paths);
+	// NOTE: here is where i clean mmry if exec fails no command found
 	if (0 == pid)
 	{
 		if (to_wait)
 		{
 			ast_free(shell->root_to_free);
 			free_my_envp(&shell->my_envp);
+			ft_free_arr(shell->heredocs_files);
+			if (true == shell->is_pipe) // NOTE: in runed a group inside pipes
+			{
+				free_pipex(&shell->pipex);
+				/*ft_putstr_fd(RED"pipe mode on child\n"RESET, 2);*/
+			}
 			exit(127);
 		}
+		ft_free_arr(shell->heredocs_files);
+		/*free_pipex(&shell->pipex);*/
 		// free_my_envp(&shell->my_envp);
 		shell->exit_status = 127;
 		return;
@@ -192,10 +203,15 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 		if (to_wait)
 		{
 			shell->exit_status = 127;
+		/*ft_free_arr(shell->heredocs_files);*/
 			ft_putstr_fd(shell->cmd->u_as.exec.argv[0], 2);
 			ft_putstr_fd(":  No such file or director\n", 2);
+			if (true == shell->is_pipe) // WARNING: maybe not valid free
+				free_pipex(&shell->pipex);
 			return;
 		}
+		ft_free_arr(shell->heredocs_files);
+		/*free_pipex(&shell->pipex);*/
 		shell->exit_status = 127;
 		ft_putstr_fd(shell->cmd->u_as.exec.argv[0], 2);
 		ft_putstr_fd(":  No such file or director\n", 2);

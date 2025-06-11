@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 12:43:32 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/05 13:18:16 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/11 22:35:30 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,25 @@ void	is_group(t_shell *shell)
 			shell->cmd = shell->cmd->u_as.group.cmd;
 			is_compound(shell);
 		}
+		/*ft_putstr_fd(RED"failed to execute\n"RESET, 2);*/
+		if (true == shell->is_pipe)
+		{
+			free_pipex(&shell->pipex);
+		}
 		free_my_envp(&shell->my_envp);
+		ft_free_arr(shell->heredocs_files);
 		ast_free(shell->root_to_free);
 		exit(shell->exit_status);
 	}
 	else if (0 != pid)
 	{
 		wait_child(pid, shell);
+		if (true == shell->is_pipe)
+		{
+			/*ft_putstr_fd(RED"freeing pipex struct\n"RESET, 2);*/
+			free_my_envp(&shell->my_envp);
+			ft_free_arr(shell->heredocs_files);
+			/*free_pipex(&shell->pipex);*/
+		}
 	}
 }
