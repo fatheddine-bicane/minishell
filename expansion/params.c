@@ -145,13 +145,13 @@ bool	expand_params(char ***argvp, t_shell *shell)
 		free(src);
 		if (argv[i] == NULL)
 			return (clean_args_leftover(argv, ++i), false);
-		if (ifs != NULL)
+		if (ifs != NULL && sn_strncmp(argv[0], "export", 6) != 0)
 		{
 			if (!word_split(ifs, argvp, &i))
 				return (clean_args_leftover(argv, i), false);
-			ifs = NULL;
 			argv = *argvp;
 		}
+		ifs = NULL;
 		i++;
 	}
 	return (true);
