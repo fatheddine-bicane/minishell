@@ -66,7 +66,11 @@ static char	*ft_creat_input(char *limiter)
 char	*random_name(void)
 {
 	char	*file_name;
+	char	*file_name_m;
+	char	*tmp_path;
 	int		random_file;
+	char	path[PATH_MAX];
+	ssize_t	b_read;
 	int		i;
 
 	file_name = malloc(sizeof(char) * 10);
@@ -75,7 +79,7 @@ char	*random_name(void)
 	random_file = open("/dev/urandom", O_RDONLY);
 	if (-1 == random_file)
 		return (perror("read()"), free(file_name), NULL);
-	ssize_t b_read = read(random_file, file_name, 9);
+	b_read = read(random_file, file_name, 9);
 	if (-1 == b_read)
 		return (perror("read()"), free(file_name), NULL);
 	file_name[b_read] = '\0';
@@ -83,7 +87,11 @@ char	*random_name(void)
 	while (file_name[++i])
 		file_name[i] = file_name[i] % 26 + 'a';
 	close(random_file);
-	return (file_name);
+	getcwd(path, sizeof(path));
+	tmp_path = ft_strjoin(path, "/execution/tmp/");
+	file_name_m = file_name;
+	file_name = ft_strjoin(tmp_path, file_name);
+	return (free(tmp_path), free(file_name_m), file_name);
 }
 
 
