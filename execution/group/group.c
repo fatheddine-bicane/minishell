@@ -62,12 +62,18 @@ void	is_group(t_shell *shell)
 	else if (0 != pid)
 	{
 		wait_child(pid, shell);
-		if (true == shell->is_pipe)
-		{
+		/*if (true == shell->is_pipe)*/
+		/*{*/
 			/*ft_putstr_fd(RED"freeing pipex struct\n"RESET, 2);*/
 			/*free_my_envp(&shell->my_envp);*/
-			ft_free_arr(shell->heredocs_files);
+
+			// WARNING:
+			/*ft_free_arr(shell->heredocs_files);*/
+			// cat <<s | wc && (cat <<d)
+			// thiscauses double free u free themmry in subshel parent and try to free it in unlink
+
+			/*shell->heredocs_files = NULL; // Add this line to prevent double free*/
 			/*free_pipex(&shell->pipex);*/
-		}
+		/*}*/
 	}
 }
