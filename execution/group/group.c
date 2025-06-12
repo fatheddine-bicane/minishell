@@ -17,6 +17,8 @@ void	is_group(t_shell *shell)
 	pid_t	pid;
 	/*t_cmd	*tmp;*/
 
+	/*if (true == shell->is_pipe)*/
+	/*	free_pipex(&shell->pipex);*/
 	pid = fork();
 	if (0 == pid)
 	{
@@ -53,7 +55,7 @@ void	is_group(t_shell *shell)
 		/*	free_pipex(&shell->pipex);*/
 		/*}*/
 		free_my_envp(&shell->my_envp);
-		ft_free_arr(shell->heredocs_files);
+		ft_free_arr(shell->heredocs_files); //????? might be invalid u freed it in is command
 		ast_free(shell->root_to_free);
 		exit(shell->exit_status);
 	}
@@ -63,7 +65,7 @@ void	is_group(t_shell *shell)
 		if (true == shell->is_pipe)
 		{
 			/*ft_putstr_fd(RED"freeing pipex struct\n"RESET, 2);*/
-			free_my_envp(&shell->my_envp);
+			/*free_my_envp(&shell->my_envp);*/
 			ft_free_arr(shell->heredocs_files);
 			/*free_pipex(&shell->pipex);*/
 		}

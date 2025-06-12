@@ -185,11 +185,18 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 			ast_free(shell->root_to_free);
 			free_my_envp(&shell->my_envp);
 			ft_free_arr(shell->heredocs_files);
+
+
+			// this need to be outside the to_wait (dakchi li gt l anass)
 			if (true == shell->is_pipe) // NOTE: in runed a group inside pipes
 			{
+				// WARNING: double free pipex here;
 				free_pipex(&shell->pipex);
 				/*ft_putstr_fd(RED"pipe mode on child\n"RESET, 2);*/
 			}
+
+
+
 			exit(127);
 		}
 		ft_free_arr(shell->heredocs_files);

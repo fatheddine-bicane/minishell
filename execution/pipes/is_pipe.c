@@ -51,6 +51,8 @@ void creat_pipex(t_cmd *cmd, t_pipex **pipex)
 
 void free_pipex(t_pipex **pipex)
 {
+	if (!pipex || !*pipex)
+		return;
 	t_pipex *tmp;
 	t_pipex *to_free;
 
@@ -164,6 +166,8 @@ void is_pipe(t_shell *shell)
 			}
 			else if (C_GROUP == tmp_pipex->cmd->type)
 			{
+				if (NULL != pipex)
+					free_pipex(&pipex);
 				is_group(shell);
 				/*ft_putstr_fd(RED"group failed\n"RESET, 2);*/
 			}
@@ -172,7 +176,7 @@ void is_pipe(t_shell *shell)
 
 			// NOTE: childe failed to execute command
 			/*ft_putstr_fd("ana hnaya ma hrjtch\n", 2);*/
-			// free_my_envp(&shell->my_envp);
+			free_my_envp(&shell->my_envp); // WARNING : invalide free if mixed pipes and subshell and one of subshells pipes command is wrong
 			free_pipex(&pipex);
 			ast_free(shell->root_to_free);
 			exit(shell->exit_status);
