@@ -108,6 +108,14 @@ bool	handle_redirections(char **redirections, t_shell *shell)
 		if (!ft_strncmp(">>", redirections[i], 2))
 		{
 			i++;
+			/*redirections[i]*/
+			redirections[i] = expand_single_param(redirections[i], shell);
+			if (!redirections[i] || !redirections[i][0])
+			{
+				ft_printf(RED "ambiguous redirect\n" RESET);
+				shell->exit_status = 1;
+				return (false);
+			}
 			/*ft_appent_output(redirections[i]);*/
 			if (!appent_output(redirections[i]))
 				return (false);
@@ -122,6 +130,13 @@ bool	handle_redirections(char **redirections, t_shell *shell)
 		else if (!ft_strncmp(">", redirections[i], 1))
 		{
 			i++;
+			redirections[i] = expand_single_param(redirections[i], shell);
+			if (!redirections[i] || !redirections[i][0])
+			{
+				ft_printf(RED "ambiguous redirect\n" RESET);
+				shell->exit_status = 1;
+				return (false);
+			}
 			if (!redirect_output(redirections[i]))
 				return (false);
 		}
@@ -129,6 +144,13 @@ bool	handle_redirections(char **redirections, t_shell *shell)
 		{
 			/*std_files(RESTORE_STDIN);*/
 			i++;
+			redirections[i] = expand_single_param(redirections[i], shell);
+			if (!redirections[i] || !redirections[i][0])
+			{
+				ft_printf(RED "ambiguous redirect\n" RESET);
+				shell->exit_status = 1;
+				return (false);
+			}
 			if (!redirect_input(redirections[i]))
 			{
 				shell->exit_status = 1;
