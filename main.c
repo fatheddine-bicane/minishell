@@ -117,7 +117,12 @@ int main(int argc, char **argv, char **envp)
 
 			herdocs_delemiters(&shell);
 			if (false == handle_herdocs(&shell))
+			{
+				unlink_files(&shell);
+				ast_free(shell.root_to_free);
+				ft_free_arr(shell.heredocs_files);
 				continue ;
+			}
 			if (shell.cmd->type == C_EXEC)
 			{
 				/*is_command(cmd, &my_envp, &exit_stat);*/

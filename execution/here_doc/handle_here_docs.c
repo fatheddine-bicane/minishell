@@ -158,7 +158,12 @@ bool	handle_herdocs(t_shell *shell)
 	{
 		file_name = creat_here_doc(shell->heredocs_delemiters[i], shell);
 		if (NULL == file_name) // INFO: if heredoc recieve SIGINT
+		{
+			sb_append_str(sb, file_name, 0);
+			ft_free_arr(shell->heredocs_delemiters);
+			shell->heredocs_files = sb_build(sb);
 			return (false);
+		}
 		sb_append_str(sb, file_name, 0);
 		free (file_name);
 		i++;
