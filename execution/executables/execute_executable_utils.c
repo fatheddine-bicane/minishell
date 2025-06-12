@@ -185,20 +185,20 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 			ast_free(shell->root_to_free);
 			free_my_envp(&shell->my_envp);
 			ft_free_arr(shell->heredocs_files);
-
-
-			// this need to be outside the to_wait (dakchi li gt l anass)
-			if (true == shell->is_pipe) // NOTE: in runed a group inside pipes
-			{
-				// WARNING: double free pipex here;
-				free_pipex(&shell->pipex);
-				/*ft_putstr_fd(RED"pipe mode on child\n"RESET, 2);*/
-			}
-
-
-
 			exit(127);
 		}
+
+
+
+
+
+		// this need to be outside the to_wait (dakchi li gt l anass)
+		/*if (true == shell->is_pipe) // NOTE: in runed a group inside pipes*/
+		/*{*/
+		/*	// WARNING: double free pipex here;*/
+		/*	free_pipex(&shell->pipex);*/
+			/*ft_putstr_fd(RED"pipe mode on child\n"RESET, 2);*/
+		/*}*/
 		ft_free_arr(shell->heredocs_files);
 		/*free_pipex(&shell->pipex);*/
 		// free_my_envp(&shell->my_envp);
@@ -213,8 +213,8 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 		/*ft_free_arr(shell->heredocs_files);*/
 			ft_putstr_fd(shell->cmd->u_as.exec.argv[0], 2);
 			ft_putstr_fd(":  No such file or director\n", 2);
-			if (true == shell->is_pipe) // WARNING: maybe not valid free
-				free_pipex(&shell->pipex);
+			/*if (true == shell->is_pipe) // WARNING: maybe not valid free*/
+			/*	free_pipex(&shell->pipex);*/
 			return;
 		}
 		ft_free_arr(shell->heredocs_files);
