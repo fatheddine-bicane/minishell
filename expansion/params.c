@@ -17,6 +17,7 @@ bool	word_split(char *ifs, char ***args, size_t *i);
 size_t	word_count(char *src, char *sep);
 char	*get_ifs_var(t_list *envp);
 void	clean_args_leftover(char **args, size_t i);
+void	asterisk(void);
 
 bool	extract_quote_param(t_shell *shell, t_str_builder *sb, char *str,
 		size_t len)
