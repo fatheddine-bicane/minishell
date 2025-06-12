@@ -6,15 +6,15 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:34:38 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 00:29:03 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/09 17:34:01 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-static bool	handl_n(char **argv, int *i) // INFO: handle -n flag
+static bool handl_n(char **argv, int *i) // INFO: handle -n flag
 {
-	int	j;
+	int j;
 
 	if (!argv[*i])
 		return (true);
@@ -29,9 +29,9 @@ static bool	handl_n(char **argv, int *i) // INFO: handle -n flag
 	return (false);
 }
 
-void	ft_print_var(int len, char *variable, t_list *my_envp)
+void ft_print_var(int len, char *variable, t_list *my_envp)
 {
-	t_list	*tmp;
+	t_list *tmp;
 
 	tmp = my_envp;
 	while (tmp)
@@ -39,7 +39,7 @@ void	ft_print_var(int len, char *variable, t_list *my_envp)
 		if (!ft_strncmp(variable, (char *)tmp->content, len))
 		{
 			printf("%s", (char *)tmp->content + len + 1);
-			return ;
+			return;
 		}
 		tmp = tmp->next;
 	}
@@ -48,17 +48,17 @@ void	ft_print_var(int len, char *variable, t_list *my_envp)
 }
 
 // INFO: expand the var from envp
-void	ft_expand_var(char *str, int *j, t_shell *shell)
+void ft_expand_var(char *str, int *j, t_shell *shell)
 {
-	t_list	*my_envp;
-	int		i;
+	t_list *my_envp;
+	int i;
 
 	my_envp = shell->my_envp;
 	if (1 == ft_strlen(str))
 	{
 		printf("$");
 		(*j)++;
-		return ;
+		return;
 	}
 	i = 0;
 	while ('=' != str[i] && str[i])
@@ -68,10 +68,10 @@ void	ft_expand_var(char *str, int *j, t_shell *shell)
 	(*j)++;
 }
 
-void	ft_echo(t_shell *shell)
+void ft_echo(t_shell *shell)
 {
-	int		i;
-	bool	new_line;
+	int i;
+	bool new_line;
 
 	i = 1;
 	new_line = handl_n(shell->cmd->u_as.exec.argv, &i);

@@ -45,12 +45,12 @@ void reset_shell(t_shell *shell)
 	shell->herdocs_index = 0;
 }
 
-void	unlink_files(t_shell *shell)
+void unlink_files(t_shell *shell)
 {
-	int	i;
+	int i;
 
 	if (NULL == shell->heredocs_files)
-		return ;
+		return;
 	i = 0;
 	while (shell->heredocs_files[i])
 	{
@@ -111,7 +111,7 @@ int main(int argc, char **argv, char **envp)
 
 			/*shell.cmd = cmd;*/
 			shell.root_to_free = shell.cmd;
-			
+
 			ast_output(shell.cmd, true);
 			write(1, "\n", 1);
 
