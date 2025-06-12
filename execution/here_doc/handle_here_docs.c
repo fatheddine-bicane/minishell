@@ -139,24 +139,26 @@ void	herdocs_delemiters(t_shell *shell)
 	shell->heredocs_delemiters = heredoc_delemiters;
 }
 
-void	handle_herdocs(t_shell *shell)
+bool	handle_herdocs(t_shell *shell)
 {
 	int	i;
 	char	*file_name;
 	t_str_builder	*sb;
 
 	if (!shell->heredocs_delemiters)
-		return ;
+		return (true);
 
 	sb = sb_create(10);
 	if (sb == NULL)
-		return ;
+		return (true);
 
 	shell->sb_to_free = sb;
 	i = 0;
 	while (shell->heredocs_delemiters[i])
 	{
 		file_name = creat_here_doc(shell->heredocs_delemiters[i], shell);
+		if (NULL == file_name) // INFO: if heredoc recieve SIGINT
+			return (false);
 		sb_append_str(sb, file_name, 0);
 		free (file_name);
 		i++;
@@ -165,4 +167,5 @@ void	handle_herdocs(t_shell *shell)
 	shell->heredocs_files = sb_build(sb);
 	/*for (int i = 0; shell->heredocs_files[i]; i++)*/
 	/*	printf("%s\n", shell->heredocs_files[i]);*/
+	return (true);
 }

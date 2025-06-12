@@ -60,10 +60,12 @@ void	ignore_signals_parrent(void)
 	sigaction(SIGQUIT, &signals, NULL);
 }
 
-void	sigint_heredoc_handler(int signal)
+void	sigquit_heredoc_handler(int signal)
 {
 	(void) signal;
 	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_redisplay();
 }
 
 void	setup_signals_heredoc(void)
@@ -74,6 +76,6 @@ void	setup_signals_heredoc(void)
 	signals.sa_flags = SA_RESTART;
 	signals.sa_handler = SIG_DFL;
 	sigaction(SIGINT, &signals, NULL);
-	signals.sa_handler = sigint_heredoc_handler;
+	signals.sa_handler = sigquit_heredoc_handler;
 	sigaction(SIGQUIT, &signals, NULL);
 }

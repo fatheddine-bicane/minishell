@@ -116,7 +116,8 @@ int main(int argc, char **argv, char **envp)
 			write(1, "\n", 1);
 
 			herdocs_delemiters(&shell);
-			handle_herdocs(&shell);
+			if (false == handle_herdocs(&shell))
+				continue ;
 			if (shell.cmd->type == C_EXEC)
 			{
 				/*is_command(cmd, &my_envp, &exit_stat);*/

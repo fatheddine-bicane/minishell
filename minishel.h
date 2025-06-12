@@ -199,7 +199,7 @@ bool	here_doc(t_shell *shell);
 /*bool	here_doc(char **redirections, t_shell *shell, int i);*/
 
 /*bool	here_doc(char *delemiter, t_shell);*/
-void	handle_herdocs(t_shell *shell);
+bool	handle_herdocs(t_shell *shell);
 
 void	ft_here_doc(char *delimiter); //INFO: creat here_doc input
 void	herdocs_delemiters(t_shell *shell);
