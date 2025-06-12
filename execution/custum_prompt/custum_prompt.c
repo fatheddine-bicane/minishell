@@ -33,7 +33,10 @@ char	*custum_prompt(t_shell shell)
 			slash_count--;
 		i++;
 	}
-	prompt = ft_strjoin(BLUE "  ~/", path + i);
+	prompt = ft_strjoin(BLUE " [ ~/", path + i);
+	to_free = prompt;
+	prompt = ft_strjoin(prompt, "]");
+	free(to_free);
 	to_free = prompt;
 	prompt = ft_strjoin(prompt, RESET);
 	free(to_free);

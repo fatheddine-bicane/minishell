@@ -116,7 +116,7 @@ bool	handle_redirections(char **redirections, t_shell *shell)
 		{
 			i++;
 			/*ft_here_doc(redirections[i]);*/
-			if (!here_doc(redirections, shell, i))
+			if (!here_doc(shell))
 				return (false);
 		}
 		else if (!ft_strncmp(">", redirections[i], 1))

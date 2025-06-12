@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 16:23:13 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/05 16:23:33 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/11 17:35:29 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,6 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 	/*t_cmd	*tmp;*/
 	t_str_builder *sb;
 
-
-	/*if (to_fork)*/
-		/*ft_save_std_files(true);*/
-
-
-	/*tmp = shell->cmd;*/
 	sb = sb_create(10);
 	if (sb == NULL)
 		return;
@@ -37,6 +31,7 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 	if (!handle_redirections(redirects, shell))
 	{
 		shell->redirections_status = false;
+		ft_free_arr(shell->heredocs_files);
 		sn_strs_free(redirects);
 		if (0 == pid_r && !to_fork)
 		{
@@ -49,6 +44,13 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 		return ;
 	}
 	sn_strs_free(redirects);
+
+	if (NULL == shell->cmd)
+	{
+		if (to_fork)
+			std_files(RESTORE_BOTH);
+		return ;
+	}
 
 	if (C_EXEC == shell->cmd->type)
 	{
