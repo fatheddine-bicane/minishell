@@ -15,36 +15,8 @@
 bool		expand_var(t_shell *shell, t_str_builder *sb, char *var,
 				size_t len);
 bool		has_quote(char *src);
-
-static bool	extract_quote_param(t_shell *shell, t_str_builder *sb, char *str,
-		size_t len)
-{
-	size_t	i;
-	size_t	offset;
-
-	i = 0;
-	offset = 0;
-	while (str[i] && i < len - 1)
-	{
-		if (str[i] == '$' && (str[i + 1] == '?' || is_name(str, i + 1)))
-		{
-			if (i > offset && !sb_append_str(sb, str + offset, i - offset))
-				return (false);
-			offset = i + 1;
-			i += 2;
-			while (is_name(str, i) && str[offset] != '?')
-				i++;
-			if (!expand_var(shell, sb, str + offset, i - offset))
-				return (false);
-			offset = i;
-			continue ;
-		}
-		i++;
-	}
-	if (i > offset)
-		return (sb_append_str(sb, str + offset, i - offset));
-	return (true);
-}
+bool		extract_quote_param(t_shell *shell, t_str_builder *sb, char *str,
+				size_t len);
 
 static bool	param_extract(t_token *t, t_str_builder *sb, t_shell *shell,
 		t_exp_flags flags)
