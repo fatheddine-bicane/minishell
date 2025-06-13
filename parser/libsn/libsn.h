@@ -78,7 +78,6 @@ int				sn_putnbr(int n, int fd);
 int				sn_putunbr(unsigned int n, int fd);
 int				sn_putnbr_hex(unsigned long num, int uppercase, int fd);
 int				sn_putptr(void *num, int fd);
-ssize_t			set_msg(char **msg, const char *format, ...);
 
 ssize_t			sn_istrchr(const char *s, char c);
 
