@@ -79,6 +79,8 @@ typedef struct s_shell
 	t_cmd	*pipe;	// maybe remove
 	bool	is_pipe;
 
+	bool	is_group;
+
 	int		exit_status;
 	bool	redirections_status;
 }	t_shell;
