@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 17:22:24 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/12 15:26:52 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/13 21:52:32 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static char *ft_creat_input(char *limiter, t_shell *shell)
 		}
 		sb_append_str(sb, str, 0);
 		sb_append_char(sb, '\n');
-		free(str);
+		free(str); // str was appended and never freed
 	}
 	return (free(limiter), sb_build_str(sb));
 }
