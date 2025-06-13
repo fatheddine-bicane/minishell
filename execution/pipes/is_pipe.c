@@ -178,6 +178,7 @@ void is_pipe(t_shell *shell)
 			/*ft_putstr_fd("ana hnaya ma hrjtch\n", 2);*/
 			free_my_envp(&shell->my_envp); // WARNING : invalide free if mixed pipes and subshell and one of subshells pipes command is wrong
 			free_pipex(&pipex);
+			ft_free_arr(shell->heredocs_files);
 			ast_free(shell->root_to_free);
 			exit(shell->exit_status);
 		}
