@@ -85,8 +85,9 @@ static bool	redirect_input(char *file_name)
 	redirect = open(file_name, O_RDONLY);
 	if (-1 == redirect)
 	{
-		ft_putstr_fd("m here =>", 2);
+		ft_printf(RED);
 		perror(file_name);
+		ft_printf(RESET);
 		return (false);
 	}
 	if (-1 == dup2(redirect, STDIN_FILENO))
