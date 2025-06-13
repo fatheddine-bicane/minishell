@@ -12,9 +12,9 @@
 
 #include "../../minishel.h"
 
-static bool handl_n(char **argv, int *i) // INFO: handle -n flag
+static bool	handl_new_line_utils(char **argv, int *i)
 {
-	int j;
+	int	j;
 
 	if (!argv[*i])
 		return (true);
@@ -29,69 +29,39 @@ static bool handl_n(char **argv, int *i) // INFO: handle -n flag
 	return (false);
 }
 
-void ft_print_var(int len, char *variable, t_list *my_envp)
+static bool	handle_new_line(char **argv, int *i)
 {
-	t_list *tmp;
+	bool	print_new_line;
+	int		j;
 
-	tmp = my_envp;
-	while (tmp)
+	print_new_line = handl_new_line_utils(argv, i);
+	if (false == print_new_line)
 	{
-		if (!ft_strncmp(variable, (char *)tmp->content, len))
+		while (argv[*i])
 		{
-			printf("%s", (char *)tmp->content + len + 1);
-			return;
+			j = 0;
+			if ('-' != argv[*i][0])
+				break ;
+			j++;
+			while ('n' == argv[*i][j])
+				j++;
+			if (argv[*i][j])
+				break ;
+			(*i)++;
 		}
-		tmp = tmp->next;
 	}
-	if (1 == ft_strlen(variable))
-		printf("$");
+	return (print_new_line);
 }
 
-// INFO: expand the var from envp
-void ft_expand_var(char *str, int *j, t_shell *shell)
+void	ft_echo(t_shell *shell)
 {
-	t_list *my_envp;
-	int i;
-
-	my_envp = shell->my_envp;
-	if (1 == ft_strlen(str))
-	{
-		printf("$");
-		(*j)++;
-		return;
-	}
-	i = 0;
-	while ('=' != str[i] && str[i])
-		i++;
-	ft_print_var(i - 1, str + 1, my_envp);
-	printf("%s", str + i);
-	(*j)++;
-}
-
-void ft_echo(t_shell *shell)
-{
-	int i;
-	bool new_line;
+	int		i;
+	bool	new_line;
 
 	i = 1;
-	new_line = handl_n(shell->cmd->u_as.exec.argv, &i);
+	new_line = handle_new_line(shell->cmd->u_as.exec.argv, &i);
 	while (shell->cmd->u_as.exec.argv[i])
 	{
-		/*if ('$' == shell->cmd->u_as.exec.argv[i][0] && '?' == shell->cmd->u_as.exec.argv[i][1])*/
-		/*{*/
-		/*	printf("%d", shell->exit_status);*/
-		/*	if (shell->cmd->u_as.exec.argv[i + 1])*/
-		/*		printf(" ");*/
-		/*	i++;*/
-		/*	continue ;*/
-		/*}*/
-		/*else if ('$' == shell->cmd->u_as.exec.argv[i][0])*/
-		/*{*/
-		/*	ft_expand_var(shell->cmd->u_as.exec.argv[i], &i, shell);*/
-		/*	if (shell->cmd->u_as.exec.argv[i + 1])*/
-		/*		printf(" ");*/
-		/*	continue ;*/
-		/*}*/
 		printf("%s", shell->cmd->u_as.exec.argv[i]);
 		if (shell->cmd->u_as.exec.argv[i + 1])
 			printf(" ");
