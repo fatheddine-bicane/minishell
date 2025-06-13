@@ -33,12 +33,15 @@ void	is_redirection(t_shell *shell, bool to_fork, pid_t pid_r)
 		shell->redirections_status = false;
 		ft_free_arr(shell->heredocs_files);
 		sn_strs_free(redirects);
-		if (0 == pid_r && !to_fork)
-		{
-			free_my_envp(&shell->my_envp);
+
+		// WARNING: my_envp get freed in the pipe protection
+		/*if (0 == pid_r && !to_fork)*/
+		/*{*/
+		/*	free_my_envp(&shell->my_envp);*/
 			/*exit(shell->exit_status);*/
-		}
+		/*}*/
 		/*if (to_fork)*/
+
 		std_files(RESTORE_BOTH);
 			/*ft_save_std_files(false);*/
 		return ;

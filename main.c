@@ -30,6 +30,7 @@ void set_shell(t_shell *shell, int argc, char **argv, char **envp)
 	shell->heredocs_delemiters = NULL;
 	shell->heredocs_files = NULL;
 	shell->herdocs_index = 0;
+	shell->is_group = false;
 }
 
 void reset_shell(t_shell *shell)
@@ -43,6 +44,7 @@ void reset_shell(t_shell *shell)
 	shell->heredocs_delemiters = NULL;
 	shell->heredocs_files = NULL;
 	shell->herdocs_index = 0;
+	shell->is_group = false;
 }
 
 void unlink_files(t_shell *shell)

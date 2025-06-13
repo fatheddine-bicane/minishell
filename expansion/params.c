@@ -12,23 +12,22 @@
 
 #include "../minishel.h"
 
-bool		expand_var(t_shell *shell, t_str_builder *sb, char *var,
-				size_t len);
-bool		word_split(char *ifs, char ***args, size_t *i);
-size_t		word_count(char *src, char *sep);
-char		*get_ifs_var(t_list *envp);
-void		clean_args_leftover(char **args, size_t i);
-void		asterisk(void);
+bool	expand_var(t_shell *shell, t_str_builder *sb, char *var, size_t len);
+bool	word_split(char *ifs, char ***args, size_t *i);
+size_t	word_count(char *src, char *sep);
+char	*get_ifs_var(t_list *envp);
+void	clean_args_leftover(char **args, size_t i);
+void	asterisk(void);
 
-static bool	extract_quote_param(t_shell *shell, t_str_builder *sb, char *str,
+bool	extract_quote_param(t_shell *shell, t_str_builder *sb, char *str,
 		size_t len)
 {
 	size_t	i;
 	size_t	offset;
 
-	i = 1;
-	offset = 1;
-	while (str[i] && i < len - 1)
+	i = 0;
+	offset = 0;
+	while (str[i] && i < len)
 	{
 		if (str[i] == '$' && (str[i + 1] == '?' || is_name(str, i + 1)))
 		{
@@ -74,7 +73,7 @@ bool	param_extract(t_token *t, t_str_builder *sb, t_shell *shell, char **ifs)
 	{
 		if (len == 2)
 			return (sb_append_char(sb, '\0'));
-		return (extract_quote_param(shell, sb, t->lexeme, len));
+		return (extract_quote_param(shell, sb, t->lexeme + 1, len - 2));
 	}
 	return (sb_append_str(sb, t->lexeme, len));
 }
@@ -84,11 +83,15 @@ char	*param_scan(char *src, t_shell *shell, char **ifs)
 	t_str_builder	*sb;
 	t_token			*token;
 	t_token			*head;
+	char			*scan_err;
 
-	token = tokens_scan(src);
-	if (token == NULL)
-		return (NULL);
+	scan_err = NULL;
+	token = tokens_scan(src, &scan_err);
+	if (token == NULL || scan_err != NULL)
+		return (sn_eprintf(scan_err), free(scan_err), tokens_free(token), NULL);
 	head = token;
+	if (is_end(head))
+		return (tokens_free(head), sn_strdup(src));
 	sb = sb_create(10);
 	if (sb == NULL)
 		return (tokens_free(head), NULL);

@@ -19,6 +19,7 @@ void	is_group(t_shell *shell)
 
 	/*if (true == shell->is_pipe)*/
 	/*	free_pipex(&shell->pipex);*/
+	shell->is_group = true;
 	pid = fork();
 	if (0 == pid)
 	{
@@ -36,6 +37,11 @@ void	is_group(t_shell *shell)
 		{
 			shell->cmd = shell->cmd->u_as.group.cmd;
 			is_pipe(shell);
+			if (shell->heredocs_files)
+			{
+				ft_printf(RED"free herdocs" RESET);
+				ft_free_arr(shell->heredocs_files);
+			}
 		}
 		else if (C_GROUP == shell->cmd->u_as.group.cmd->type)
 		{
@@ -55,7 +61,7 @@ void	is_group(t_shell *shell)
 		/*	free_pipex(&shell->pipex);*/
 		/*}*/
 		free_my_envp(&shell->my_envp);
-		ft_free_arr(shell->heredocs_files); //????? might be invalid u freed it in is command
+		/*ft_free_arr(shell->heredocs_files); //????? might be invalid u freed it in is command*/
 		ast_free(shell->root_to_free);
 		exit(shell->exit_status);
 	}

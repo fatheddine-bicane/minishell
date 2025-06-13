@@ -19,9 +19,17 @@ char	*custum_prompt(t_shell shell)
 	char	*prompt;
 	char	*to_free;
 	char	*exit_stat;
+	char	*cwd;
 	int		slash_count;
 	int		i;
 
+	cwd = getcwd(NULL, 0);
+	if (!cwd && errno == ENOENT)
+	{
+		chdir("/");
+		ft_printf(RED"cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory\n"RESET);
+	}
+	free(cwd);
 	getcwd(path, sizeof(path));
 	i = 0;
 	slash_count = 3;
