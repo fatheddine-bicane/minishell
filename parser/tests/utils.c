@@ -22,7 +22,7 @@ char	*ast_gen(char *src)
 	char	*got;
 	int		status;
 
-	tokens = tokens_scan(src);
+	tokens = tokens_scan(src, NULL);
 	head = tokens;
 	status = 0;
 	ast = parse_program(&tokens, &status);

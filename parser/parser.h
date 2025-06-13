@@ -125,7 +125,7 @@ void					token_free(t_token *token);
 void					tokens_free(t_token *token);
 void					token_str(t_token *t, bool nl, bool all);
 const char				*token_type_str(t_token_type type);
-t_token					*tokens_scan(char *src);
+t_token					*tokens_scan(char *src, char **err_msg);
 
 bool					is_metachar(char *src, size_t current, bool is_quoted);
 bool					is_name(char *src, size_t current);
@@ -139,8 +139,10 @@ bool					match_var(char *src, size_t *current);
 bool					match_token(t_token **head, size_t count, ...);
 bool					match_tokens(t_token **head, size_t count, ...);
 char					*extract_word(char *src, size_t *current);
-t_token					*token_identify(char *src, size_t *current);
-t_token					*extract_str(char *src, size_t *current, bool single);
+t_token					*token_identify(char *src, size_t *current,
+							char **err_msg);
+t_token					*extract_str(char *src, size_t *current, bool single,
+							char **err_msg);
 t_token					*extract_identifier(char *src, size_t *current);
 t_token					*extract_var(char *src, size_t *current);
 t_token					*extract_blank(char *src, size_t *current);
