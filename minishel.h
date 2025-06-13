@@ -36,6 +36,12 @@
 # define RESTORE_STDIN 3
 # define RESTORE_STDOUT 4
 
+typedef enum e_exp_flags
+{
+	EXP_IS_DLIMITER = 1 << 0,
+	EXP_IS_BODY = 1 << 1,
+	EXP_IS_QUOTED = 1 << 2,
+}			t_exp_flags;
 
 #define BLUE  "\001\033[34m\002"
 #define GREEN "\001\033[32m\002"
@@ -197,6 +203,10 @@ char *creat_here_doc(char *delimiter, t_shell *shell);
 
 bool	here_doc(t_shell *shell);
 /*bool	here_doc(char **redirections, t_shell *shell, int i);*/
+
+char	*expand_heredoc_delimiter(char *src, t_shell *shell);
+bool	has_quote(char *src);
+char	*expand_heredoc_body(char *src, t_shell *shell, bool is_quoted);
 
 /*bool	here_doc(char *delemiter, t_shell);*/
 bool	handle_herdocs(t_shell *shell);

@@ -12,6 +12,20 @@
 
 #include "../minishel.h"
 
+bool	has_quote(char *src)
+{
+	size_t	i;
+
+	i = 0;
+	while (src[i])
+	{
+		if (is_quote(src, i))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
 void	clean_args_leftover(char **args, size_t i)
 {
 	while (args[i] != NULL)

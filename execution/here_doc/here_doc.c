@@ -12,66 +12,71 @@
 
 #include "../../minishel.h"
 
-static char	*ft_apend_new_line(char *str)
-{
-	int		i;
-	char	*str2;
+// static char	*ft_apend_new_line(char *str)
+// {
+// 	int		i;
+// 	char	*str2;
+//
+// 	i = 0;
+// 	str2 = malloc(sizeof(char) * (ft_strlen(str) + 2));
+// 	while (str[i])
+// 	{
+// 		str2[i] = str[i];
+// 		i++;
+// 	}
+// 	str2[i] = '\n';
+// 	i++;
+// 	str2[i] = '\0';
+// 	return (str2);
+// }
 
-	i = 0;
-	str2 = malloc(sizeof(char) * (ft_strlen(str) + 2));
-	while (str[i])
-	{
-		str2[i] = str[i];
-		i++;
-	}
-	str2[i] = '\n';
-	i++;
-	str2[i] = '\0';
-	return (str2);
+bool is_heredoc_delimiter(char *limiter, char *src)
+{
+	if (limiter[0] == '\0')
+		return (src[0] == '\0');
+	return (ft_strncmp(src, limiter, ft_strlen(limiter)) == 0);
 }
 
-static char	*ft_creat_input(char *limiter)
+static char *ft_creat_input(char *limiter, t_shell *shell)
 {
-	char	*str;
-	char	*join;
-	char	*join_m;
-	char	*limiter_n;
+	char *str;
+	t_str_builder *sb;
+	bool is_quoted;
 
-	join = ft_strdup("");
-	limiter_n = ft_apend_new_line(limiter);
-	str = readline(YELLOW "[heredoc]>> " RESET);
-	join_m = str;
-	str = ft_strjoin(str, "\n");
-	while (str && ft_strncmp(str, limiter_n, ft_strlen(limiter_n)))
+	sb = sb_create(10);
+	if (sb == NULL)
+		return (NULL);
+	is_quoted = has_quote(limiter);
+	limiter = expand_heredoc_delimiter(limiter, shell);
+	while (1)
 	{
-		join_m = join;
-		join = ft_strjoin(join, str);
-		free(join_m);
-		free(str);
 		str = readline(YELLOW "[heredoc]>> " RESET);
-		join_m = str;
-		str = ft_strjoin(str, "\n");
+		if (str == NULL || is_heredoc_delimiter(limiter, str))
+		{
+			free(str);
+			break;
+		}
+		str = expand_heredoc_body(str, shell, is_quoted);
 		if (NULL == str)
 		{
 			ft_putstr_fd("warning: heredoc delimited by end-of-file", 2);
-			free(limiter_n);
-			return (join);
+			return (free(limiter), sb_build_str(sb));
 		}
+		sb_append_str(sb, str, 0);
+		sb_append_char(sb, '\n');
 	}
-	free(str);
-	free(limiter_n);
-	return (join);
+	return (free(limiter), sb_build_str(sb));
 }
 
-char	*random_name(void)
+char *random_name(void)
 {
-	char	*file_name;
-	char	*file_name_m;
-	char	*tmp_path;
-	int		random_file;
-	char	path[PATH_MAX];
-	ssize_t	b_read;
-	int		i;
+	char *file_name;
+	char *file_name_m;
+	char *tmp_path;
+	int random_file;
+	char path[PATH_MAX];
+	ssize_t b_read;
+	int i;
 
 	file_name = malloc(sizeof(char) * 10);
 	if (!file_name)
@@ -94,15 +99,12 @@ char	*random_name(void)
 	return (free(tmp_path), free(file_name_m), file_name);
 }
 
-
-
-
-char	*creat_here_doc(char *delimiter, t_shell *shell)
+char *creat_here_doc(char *delimiter, t_shell *shell)
 {
-	char	*input;
-	char	*file_name;
-	int		inf;
-	pid_t	pid;
+	char *input;
+	char *file_name;
+	int inf;
+	pid_t pid;
 
 	ignore_signals_parrent();
 	file_name = random_name();
@@ -116,11 +118,11 @@ char	*creat_here_doc(char *delimiter, t_shell *shell)
 	if (0 == pid)
 	{
 		setup_signals_heredoc();
-		input = ft_creat_input(delimiter);
+		input = ft_creat_input(delimiter, shell);
 		// printf("file name: %s\n", file_name);
 		inf = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (-1 == inf)
-			return(perror("open()"), NULL);
+			return (perror("open()"), NULL);
 		ft_putstr_fd(input, inf);
 		free(input);
 		close(inf);
@@ -143,9 +145,9 @@ char	*creat_here_doc(char *delimiter, t_shell *shell)
 }
 
 // INFO: used in red_out_inf.c
-bool	here_doc(t_shell *shell)
+bool here_doc(t_shell *shell)
 {
-	int	inf;
+	int inf;
 
 	if (!shell->heredocs_files || !shell->heredocs_files[shell->herdocs_index])
 		return (false);

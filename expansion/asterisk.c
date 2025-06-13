@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asterisk.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   by: klaayoun <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/25 22:18:11 by klaayoun          #+#    #+#             */
-/*   Updated: 2024/10/25 22:21:05 by klaayoun         ###   ########.fr       */
+/*   created: 2024/10/25 22:18:11 by klaayoun          #+#    #+#             */
+/*   updated: 2024/10/25 22:21:05 by klaayoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,21 @@ void	asterisk(void)
 {
 	DIR				*dir;
 	struct dirent	*ent;
-	t_str_builder *sb;
+	t_str_builder	*sb;
+	char			*str;
 
 	dir = opendir(".");
 	if (dir == NULL)
 	{
-		sn_eprintf("ERORR: could not open directory %c: %s\n", '.', strerror(errno));
+		sn_eprintf("ERORR: could not open directory %c: %s\n", '.',
+			strerror(errno));
 		return ;
 	}
 	sb = sb_create(10);
 	if (sb == NULL)
 	{
 		closedir(dir);
-		return;
+		return ;
 	}
 	ent = readdir(dir);
 	while (ent != NULL)
@@ -38,13 +40,13 @@ void	asterisk(void)
 		{
 			sb_free(sb);
 			closedir(dir);
-			return;
+			return ;
 		}
 		sb_append_char(sb, ' ');
 		ent = readdir(dir);
 	}
 	closedir(dir);
-	char *str = sb_build_str(sb);
+	str = sb_build_str(sb);
 	sn_printf("%s \n", str);
 	free(str);
 }

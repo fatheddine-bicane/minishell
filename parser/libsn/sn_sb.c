@@ -33,10 +33,17 @@ t_str_builder	*sb_create(size_t cap)
 
 void	sb_free(t_str_builder *sb)
 {
+	size_t	i;
+
 	if (sb == NULL)
 		return ;
 	if (sb->buff)
-		sn_strs_free(sb->buff);
+	{
+		i = 0;
+		while (i < sb->len)
+			free(sb->buff[i++]);
+		free(sb->buff);
+	}
 	sb->buff = NULL;
 	sb->cap = 0;
 	sb->len = 0;
