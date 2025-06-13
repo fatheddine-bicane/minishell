@@ -37,13 +37,7 @@ static t_token	*token_identify_multi(char *src, size_t *current, char c)
 	return (token_new(T_WORD, extract_word(src, current)));
 }
 
-// if (c == '*')
-// 	return (token_new(T_WILDCARD, "*"));
-// if (c == '\'' || c == '"')
-// 	return (extract_str(src, current, c == '\''));
-// if (c == '$' && match_var(src, current))
-// 	return (extract_var(src, current));
-t_token	*token_identify(char *src, size_t *current)
+t_token	*token_identify(char *src, size_t *current, char **err_msg)
 {
 	char	c;
 
@@ -53,7 +47,7 @@ t_token	*token_identify(char *src, size_t *current)
 	if (c == ' ' || c == '\t')
 		return (extract_blank(src, current));
 	if (c == '\'' || c == '"')
-		return (extract_str(src, current, c == '\''));
+		return (extract_str(src, current, c == '\'', err_msg));
 	if (c == '(')
 		return (token_new(T_LEFT_PAREN, "("));
 	if (c == ')')
