@@ -83,11 +83,15 @@ char	*param_scan(char *src, t_shell *shell, char **ifs)
 	t_str_builder	*sb;
 	t_token			*token;
 	t_token			*head;
+	char			*scan_err;
 
-	token = tokens_scan(src);
-	if (token == NULL)
-		return (NULL);
+	scan_err = NULL;
+	token = tokens_scan(src, &scan_err);
+	if (token == NULL || scan_err != NULL)
+		return (sn_eprintf(scan_err), free(scan_err), tokens_free(token), NULL);
 	head = token;
+	if (is_end(head))
+		return (tokens_free(head), sn_strdup(src));
 	sb = sb_create(10);
 	if (sb == NULL)
 		return (tokens_free(head), NULL);

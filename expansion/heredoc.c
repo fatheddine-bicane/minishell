@@ -53,7 +53,7 @@ char	*heredoc_scan(char *src, t_shell *shell, t_exp_flags flags)
 	t_token			*token;
 	t_token			*head;
 
-	token = tokens_scan(src);
+	token = tokens_scan(src, NULL);
 	if (token == NULL)
 		return (NULL);
 	head = token;

@@ -18,21 +18,23 @@ int	create_ast(char *src, t_cmd **ast)
 {
 	t_token	*tokens;
 	t_token	*head;
-	char	*lexeme;
 	int		status;
+	char	*scan_err;
 
 	status = 0;
-	tokens = tokens_scan(src);
-	if (tokens == NULL)
-		return (EXIT_SYNTAX_ERROR);
+	scan_err = NULL;
+	tokens = tokens_scan(src, &scan_err);
+	if (tokens == NULL || scan_err != NULL)
+		return (sn_eprintf(scan_err), free(scan_err), tokens_free(tokens),
+			EXIT_SYNTAX_ERROR);
 	if (is_end(tokens))
 		return (tokens_free(tokens), EXIT_EMPTY_AST);
 	head = tokens;
 	*ast = parse_program(&tokens, &status);
 	if (*ast == NULL || !is_end(tokens))
 	{
-		lexeme = extract_lexeme_err(tokens);
-		sn_eprintf("syntax error near unexpected token `%s`\n", lexeme);
+		sn_eprintf("syntax error near unexpected token `%s`\n",
+			extract_lexeme_err(tokens));
 		ast_free(*ast);
 		*ast = NULL;
 		return (tokens_free(head), EXIT_SYNTAX_ERROR);
