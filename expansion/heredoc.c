@@ -83,6 +83,8 @@ char	*expand_heredoc_body(char *src, t_shell *shell, bool is_quoted)
 
 	if (src == NULL)
 		return (NULL);
+	if (src[0] == '\0')
+		return (src);
 	if (is_quoted)
 		result = heredoc_scan(src, shell, EXP_IS_BODY | EXP_IS_QUOTED);
 	else
