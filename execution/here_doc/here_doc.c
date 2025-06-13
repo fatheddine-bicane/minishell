@@ -64,6 +64,7 @@ static char *ft_creat_input(char *limiter, t_shell *shell)
 		}
 		sb_append_str(sb, str, 0);
 		sb_append_char(sb, '\n');
+		free(str);
 	}
 	return (free(limiter), sb_build_str(sb));
 }
