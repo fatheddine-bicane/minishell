@@ -32,6 +32,12 @@ void	is_group(t_shell *shell)
 		{
 			shell->cmd = shell->cmd->u_as.group.cmd;
 			is_redirection(shell, true, -1);
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files); // (cat <<s), cmd | (cat <<s)
+				shell->heredocs_files = NULL;
+			}
+			// double free: (cat <<s >file) && ls | wc | cat >>file && (echo >>file) && ls
 		}
 		else if (C_PIPE == shell->cmd->u_as.group.cmd->type)
 		{

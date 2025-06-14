@@ -40,32 +40,56 @@ void	run_bultins(t_shell *shell)
 
 	if (!ft_strncmp("unset", shell->cmd->u_as.exec.argv[0], 5))
 	{
-		ft_unset(shell);
 		if (shell->is_pipe || shell->is_group)
-			ft_free_arr(shell->heredocs_files);
+		{
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
+			/*exit(shell->exit_status);*/
+		}
 		/*	free_my_envp(&shell->my_envp);*/
 	}
 	else if (!ft_strncmp("cd", shell->cmd->u_as.exec.argv[0], 2))
 	{
-		ft_cd(shell);
 		if (shell->is_pipe || shell->is_group)
-			ft_free_arr(shell->heredocs_files);
+		{
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
+			/*exit(shell->exit_status);*/
+		}
 		/*if (shell->is_pipe)*/
 		/*	free_my_envp(&shell->my_envp);*/
 	}
 	else if (!ft_strncmp("pwd", shell->cmd->u_as.exec.argv[0], 3))
 	{
-		ft_pwd(shell);
 		if (shell->is_pipe || shell->is_group)
-			ft_free_arr(shell->heredocs_files);
+		{
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
+			/*exit(shell->exit_status);*/
+		}
 		/*if (shell->is_pipe)*/
 		/*	free_my_envp(&shell->my_envp);*/
 	}
 	else if (!ft_strncmp("env", shell->cmd->u_as.exec.argv[0], 3))
 	{
-		ft_env(shell);
 		if (shell->is_pipe || shell->is_group)
-			ft_free_arr(shell->heredocs_files);
+		{
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
+			/*exit(shell->exit_status);*/
+		}
 		/*if (shell->is_pipe)*/
 		/*	free_my_envp(&shell->my_envp);*/
 	}
@@ -74,7 +98,11 @@ void	run_bultins(t_shell *shell)
 		ft_echo(shell);
 		if (shell->is_pipe || shell->is_group)
 		{
-			ft_free_arr(shell->heredocs_files);
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
 			/*exit(shell->exit_status);*/
 		}
 		/*if (shell->is_pipe)*/
@@ -82,17 +110,29 @@ void	run_bultins(t_shell *shell)
 	}
 	else if (!ft_strncmp("exit", shell->cmd->u_as.exec.argv[0], 4))
 	{
-		ft_exit(shell);
 		if (shell->is_pipe || shell->is_group)
-			ft_free_arr(shell->heredocs_files);
+		{
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
+			/*exit(shell->exit_status);*/
+		}
 		/*if (shell->is_pipe)*/
 		/*	free_my_envp(&shell->my_envp);*/
 	}
 	else if (!ft_strncmp("export", shell->cmd->u_as.exec.argv[0], 6))
 	{
-		ft_export(shell);
 		if (shell->is_pipe || shell->is_group)
-			ft_free_arr(shell->heredocs_files);
+		{
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
+			/*exit(shell->exit_status);*/
+		}
 		/*if (shell->is_pipe)*/
 		/*	free_my_envp(&shell->my_envp);*/
 	}
