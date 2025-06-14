@@ -20,8 +20,9 @@
 # include <stdbool.h>
 # include <unistd.h>
 # include <fcntl.h>
-#include <sys/wait.h>
+# include <sys/wait.h>
 # include <signal.h>
+# include <dirent.h>
 
 #include <stdio.h>
 #include <readline/readline.h>
@@ -209,6 +210,7 @@ bool	here_doc(t_shell *shell);
 char	*expand_heredoc_delimiter(char *src, t_shell *shell);
 bool	has_quote(char *src);
 char	*expand_heredoc_body(char *src, t_shell *shell, bool is_quoted);
+void	asterisk(void);
 
 /*bool	here_doc(char *delemiter, t_shell);*/
 bool	handle_herdocs(t_shell *shell);
