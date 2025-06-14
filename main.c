@@ -115,9 +115,6 @@ int main(int argc, char **argv, char **envp)
 			/*shell.cmd = cmd;*/
 			shell.root_to_free = shell.cmd;
 
-			ast_output(shell.cmd, true);
-			write(1, "\n", 1);
-
 			herdocs_delemiters(&shell);
 			if (false == handle_herdocs(&shell))
 			{
