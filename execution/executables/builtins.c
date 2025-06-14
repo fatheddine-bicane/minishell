@@ -42,14 +42,28 @@ void	run_bultins(t_shell *shell)
 	{
 		ft_unset(shell);
 		if (shell->is_pipe || shell->is_group)
-			ft_free_arr(shell->heredocs_files);
+		{
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
+			/*exit(shell->exit_status);*/
+		}
 		/*	free_my_envp(&shell->my_envp);*/
 	}
 	else if (!ft_strncmp("cd", shell->cmd->u_as.exec.argv[0], 2))
 	{
 		ft_cd(shell);
 		if (shell->is_pipe || shell->is_group)
-			ft_free_arr(shell->heredocs_files);
+		{
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
+			/*exit(shell->exit_status);*/
+		}
 		/*if (shell->is_pipe)*/
 		/*	free_my_envp(&shell->my_envp);*/
 	}
@@ -57,7 +71,14 @@ void	run_bultins(t_shell *shell)
 	{
 		ft_pwd(shell);
 		if (shell->is_pipe || shell->is_group)
-			ft_free_arr(shell->heredocs_files);
+		{
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
+			/*exit(shell->exit_status);*/
+		}
 		/*if (shell->is_pipe)*/
 		/*	free_my_envp(&shell->my_envp);*/
 	}
@@ -65,7 +86,14 @@ void	run_bultins(t_shell *shell)
 	{
 		ft_env(shell);
 		if (shell->is_pipe || shell->is_group)
-			ft_free_arr(shell->heredocs_files);
+		{
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
+			/*exit(shell->exit_status);*/
+		}
 		/*if (shell->is_pipe)*/
 		/*	free_my_envp(&shell->my_envp);*/
 	}
@@ -74,7 +102,11 @@ void	run_bultins(t_shell *shell)
 		ft_echo(shell);
 		if (shell->is_pipe || shell->is_group)
 		{
-			ft_free_arr(shell->heredocs_files);
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
 			/*exit(shell->exit_status);*/
 		}
 		/*if (shell->is_pipe)*/
@@ -84,7 +116,14 @@ void	run_bultins(t_shell *shell)
 	{
 		ft_exit(shell);
 		if (shell->is_pipe || shell->is_group)
-			ft_free_arr(shell->heredocs_files);
+		{
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
+			/*exit(shell->exit_status);*/
+		}
 		/*if (shell->is_pipe)*/
 		/*	free_my_envp(&shell->my_envp);*/
 	}
@@ -92,7 +131,14 @@ void	run_bultins(t_shell *shell)
 	{
 		ft_export(shell);
 		if (shell->is_pipe || shell->is_group)
-			ft_free_arr(shell->heredocs_files);
+		{
+			if (NULL != shell->heredocs_files)
+			{
+				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
+			}
+			/*exit(shell->exit_status);*/
+		}
 		/*if (shell->is_pipe)*/
 		/*	free_my_envp(&shell->my_envp);*/
 	}

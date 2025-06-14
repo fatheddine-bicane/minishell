@@ -95,7 +95,8 @@ int main(int argc, char **argv, char **envp)
 		free(prompt);
 		if (!rl)
 		{
-			write(STDOUT_FILENO, "exit\n", 5);
+			// write(STDOUT_FILENO, "exit\n", 5);
+			ft_printf("exit\n");
 			free_my_envp(&shell.my_envp);
 			exit(shell.exit_status); // INFO: bash exits with the last exit status
 		}

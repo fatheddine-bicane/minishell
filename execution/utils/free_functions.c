@@ -25,6 +25,7 @@ void	ft_free_arr(char **arr_s)
 		i++;
 	}
 	free (arr_s);
+	arr_s = NULL;
 }
 
 void	free_my_envp(t_list **my_envp)

@@ -51,20 +51,20 @@ static char *ft_creat_input(char *limiter, t_shell *shell)
 	while (1)
 	{
 		str = readline(YELLOW "[heredoc]>> " RESET);
-		if (str == NULL || is_heredoc_delimiter(limiter, str))
+		if (str == NULL)
+		{
+			ft_printf(YELLOW"warning: heredoc delimited by end-of-file\n"RESET);
+			break;
+		}
+		if (is_heredoc_delimiter(limiter, str))
 		{
 			free(str);
 			break;
 		}
 		str = expand_heredoc_body(str, shell, is_quoted);
-		if (NULL == str)
-		{
-			ft_putstr_fd("warning: heredoc delimited by end-of-file", 2);
-			return (free(limiter), sb_build_str(sb));
-		}
 		sb_append_str(sb, str, 0);
 		sb_append_char(sb, '\n');
-		free(str); // str was appended and never freed
+		free(str);
 	}
 	return (free(limiter), sb_build_str(sb));
 }
@@ -139,7 +139,10 @@ char *creat_here_doc(char *delimiter, t_shell *shell)
 	{
 		wait_child(pid, shell);
 		if (130 == shell->exit_status)
+		{
+			free(file_name);
 			return (NULL);
+		}
 		setup_signals();
 	}
 	return (file_name);

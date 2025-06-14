@@ -14,19 +14,19 @@
 
 bool	ft_is_builtin(char *command)
 {
-	if (0 == ft_strncmp(command, "echo", 4))
+	if (0 == ft_strncmp(command, "echo", ft_strlen(command)))
 		return (true);
-	else if (0 == ft_strncmp(command, "cd", 2))
+	else if (0 == ft_strncmp(command, "cd", ft_strlen(command)))
 		return (true);
-	else if (0 == ft_strncmp(command, "pwd", 3))
+	else if (0 == ft_strncmp(command, "pwd", ft_strlen(command)))
 		return (true);
-	else if (0 == ft_strncmp(command, "export", 6))
+	else if (0 == ft_strncmp(command, "export", ft_strlen(command)))
 		return (true);
-	else if (0 == ft_strncmp(command, "unset", 5))
+	else if (0 == ft_strncmp(command, "unset", ft_strlen(command)))
 		return (true);
-	else if (0 == ft_strncmp(command, "env", 3))
+	else if (0 == ft_strncmp(command, "env", ft_strlen(command)))
 		return (true);
-	else if (0 == ft_strncmp(command, "exit", 4))
+	else if (0 == ft_strncmp(command, "exit", ft_strlen(command)))
 		return (true);
 	else
 		return (false);
