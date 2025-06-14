@@ -45,8 +45,9 @@ void	is_group(t_shell *shell)
 			is_pipe(shell);
 			if (shell->heredocs_files)
 			{
-				ft_printf(RED"free herdocs" RESET);
+				/*ft_printf(RED"free herdocs" RESET);*/
 				ft_free_arr(shell->heredocs_files);
+				shell->heredocs_files = NULL;
 			}
 		}
 		else if (C_GROUP == shell->cmd->u_as.group.cmd->type)
