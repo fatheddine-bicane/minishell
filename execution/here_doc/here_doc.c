@@ -139,7 +139,10 @@ char *creat_here_doc(char *delimiter, t_shell *shell)
 	{
 		wait_child(pid, shell);
 		if (130 == shell->exit_status)
+		{
+			free(file_name);
 			return (NULL);
+		}
 		setup_signals();
 	}
 	return (file_name);
