@@ -85,6 +85,17 @@ typedef struct s_shell
 	bool	redirections_status;
 }	t_shell;
 
+typedef struct s_prompt
+{
+	char	path[PATH_MAX];
+	char	*prompt;
+	char	*to_free;
+	char	*exit_stat;
+	char	*cwd;
+	int		slash_count;
+	int		i;
+}	t_prompt;
+
 // NOTE: unset builtin
 /*-----------------------------------------------*/
 typedef struct s_unset

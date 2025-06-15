@@ -12,63 +12,70 @@
 
 #include "../../minishel.h"
 
+static void	protect_cwd(t_prompt *prompt)
+{
+	prompt->cwd = getcwd(NULL, 0);
+	if (!prompt->cwd && errno == ENOENT)
+	{
+		chdir("/");
+		ft_printf(RED"cd: error retrieving current directory: \n");
+		ft_printf("getcwd: cannot access parent directories: ");
+		ft_printf("No such file or directory\n"RESET);
+	}
+	free(prompt->cwd);
+}
+
+void	non_0_exit_status(t_prompt *prompt, t_shell shell)
+{
+	prompt->to_free = prompt->prompt;
+	prompt->prompt = ft_strjoin(prompt->prompt, RED " [");
+	free(prompt->to_free);
+	prompt->exit_stat = ft_itoa(shell.exit_status);
+	prompt->to_free = prompt->prompt;
+	prompt->prompt = ft_strjoin(prompt->prompt, prompt->exit_stat);
+	free(prompt->to_free);
+	free(prompt->exit_stat);
+	prompt->to_free = prompt->prompt;
+	prompt->prompt = ft_strjoin(prompt->prompt, "✘]>> " RESET);
+	free(prompt->to_free);
+}
+
+void	set_folder_path(t_prompt *prompt)
+{
+	prompt->prompt = ft_strjoin(BLUE " [ ~/", prompt->path + prompt->i);
+	prompt->to_free = prompt->prompt;
+	prompt->prompt = ft_strjoin(prompt->prompt, "]");
+	free(prompt->to_free);
+	prompt->to_free = prompt->prompt;
+	prompt->prompt = ft_strjoin(prompt->prompt, RESET);
+	free(prompt->to_free);
+	prompt->to_free = prompt->prompt;
+}
 
 char	*custum_prompt(t_shell shell)
 {
-	char	path[PATH_MAX];
-	char	*prompt;
-	char	*to_free;
-	char	*exit_stat;
-	char	*cwd;
-	int		slash_count;
-	int		i;
+	t_prompt	prompt;
 
-	cwd = getcwd(NULL, 0);
-	if (!cwd && errno == ENOENT)
+	protect_cwd(&prompt);
+	getcwd(prompt.path, sizeof(prompt.path));
+	prompt.i = 0;
+	prompt.slash_count = 3;
+	while (prompt.path[prompt.i])
 	{
-		chdir("/");
-		ft_printf(RED"cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory\n"RESET);
-	}
-	free(cwd);
-	getcwd(path, sizeof(path));
-	i = 0;
-	slash_count = 3;
-	while (path[i])
-	{
-		if (0 == slash_count)
+		if (0 == prompt.slash_count)
 			break ;
-		if (path[i] && '/' == path[i])
-			slash_count--;
-		i++;
+		if (prompt.path[prompt.i] && '/' == prompt.path[prompt.i])
+			prompt.slash_count--;
+		prompt.i++;
 	}
-	prompt = ft_strjoin(BLUE " [ ~/", path + i);
-	to_free = prompt;
-	prompt = ft_strjoin(prompt, "]");
-	free(to_free);
-	to_free = prompt;
-	prompt = ft_strjoin(prompt, RESET);
-	free(to_free);
-	to_free = prompt;
+	set_folder_path(&prompt);
 	if (shell.exit_status == 0)
 	{
-		to_free = prompt;
-		prompt = ft_strjoin(prompt, GREEN " [✔]>> " RESET);
-		free(to_free);
+		prompt.to_free = prompt.prompt;
+		prompt.prompt = ft_strjoin(prompt.prompt, GREEN " [✔]>> " RESET);
+		free(prompt.to_free);
 	}
 	else
-	{
-		to_free = prompt;
-		prompt = ft_strjoin(prompt, RED " [");
-		free(to_free);
-		exit_stat = ft_itoa(shell.exit_status);
-		to_free = prompt;
-		prompt = ft_strjoin(prompt, exit_stat);
-		free(to_free);
-		free(exit_stat);
-		to_free = prompt;
-		prompt = ft_strjoin(prompt, "✘]>> " RESET);
-		free(to_free);
-	}
-	return (prompt);
+		non_0_exit_status(&prompt, shell);
+	return (prompt.prompt);
 }
-
