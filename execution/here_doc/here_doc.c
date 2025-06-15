@@ -76,7 +76,7 @@ char *random_name(void)
 		file_name[i] = file_name[i] % 26 + 'a';
 	close(random_file);
 	getcwd(path, sizeof(path));
-	tmp_path = ft_strjoin(path, "/execution/tmp/");
+	tmp_path = ft_strjoin(path, "/execution/here_doc/");
 	file_name_m = file_name;
 	file_name = ft_strjoin(tmp_path, file_name);
 	return (free(tmp_path), free(file_name_m), file_name);
