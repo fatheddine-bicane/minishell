@@ -210,7 +210,7 @@ bool	here_doc(t_shell *shell);
 char	*expand_heredoc_delimiter(char *src, t_shell *shell);
 bool	has_quote(char *src);
 char	*expand_heredoc_body(char *src, t_shell *shell, bool is_quoted);
-char	**asterisk(char *pattern);
+char	**asterisk(char **argv, size_t *i);
 
 /*bool	here_doc(char *delemiter, t_shell);*/
 bool	handle_herdocs(t_shell *shell);

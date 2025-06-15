@@ -146,7 +146,6 @@ bool	expand_params(char ***argvp, t_shell *shell)
 	char	*ifs;
 	char	**argv;
 	bool	is_asterisk;
-	size_t	j;
 	char	**matches;
 
 	ifs = NULL;
@@ -168,16 +167,12 @@ bool	expand_params(char ***argvp, t_shell *shell)
 		}
 		if (is_asterisk && sn_strncmp(argv[0], "export", 6) != 0)
 		{
-			matches = asterisk(argv[i]);
+			matches = asterisk(argv, &i);
 			if (matches)
 			{
-				j = 0;
-				while (matches[j])
-				{
-					sn_printf("[%d]\t%s\n", j, matches[j]);
-					j++;
-				}
-				sn_strs_free(matches);
+				sn_strs_free(*argvp);
+				*argvp = matches;
+				argv = *argvp;
 			}
 		}
 		ifs = NULL;

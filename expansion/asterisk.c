@@ -58,15 +58,39 @@ char	**collect_files(char *pathname)
 	return (closedir(dir), sb_build(sb));
 }
 
-char	**asterisk(char *pattern)
+char	**asterisk(char **argv, size_t *i)
 {
-	char	**files;
+	char			**files;
+	char			*pattern;
+	size_t			j;
+	t_str_builder	*sb;
 
+	pattern = argv[*i];
 	sn_printf("pattern = `%s`\n", pattern);
 	files = collect_files(".");
 	if (files == NULL)
 		return (NULL);
+	sb = sb_create(10);
+	if (sb == NULL)
+		return (sn_strs_free(files), NULL);
 	if (sn_strncmp(pattern, "*", sn_strlen(pattern)) == 0)
-		return (files);
-	return (files);
+	{
+		j = 0;
+		while (j < *i)
+			if (!sb_append_str(sb, argv[j++], 0))
+				return (sb_free(sb), sn_strs_free(files), NULL);
+		j = 0;
+		while (files[j])
+			if (!sb_append_str(sb, files[j++], 0))
+				return (sb_free(sb), sn_strs_free(files), NULL);
+		j = j + *i;
+		while (argv[++(*i)])
+		{
+			if (!sb_append_str(sb, argv[*i], 0))
+				return (sb_free(sb), sn_strs_free(files), NULL);
+		}
+		*i = j - 1;
+		return (sn_strs_free(files), sb_build(sb));
+	}
+	return (sn_strs_free(files), NULL);
 }
