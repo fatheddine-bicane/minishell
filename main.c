@@ -12,14 +12,6 @@
 
 #include "minishel.h"
 
-/*t_data create_data()*/
-/*{*/
-/*	static t_data data;*/
-/**/
-/*	data.dsdsa = 232;*/
-/*	return data;*/
-/*}*/
-
 void set_shell(t_shell *shell, int argc, char **argv, char **envp)
 {
 	(void)argc;
@@ -67,19 +59,6 @@ int main(int argc, char **argv, char **envp)
 {
 	t_shell shell;
 	char *rl;
-	/*t_list *my_envp;*/
-	/*t_cmd	*cmd;*/
-	/*int		exit_stat = 0;*/
-
-	/*shell.exit_status = 0;*/
-	/*shell.my_envp = ft_set_env(envp);*/
-	/**/
-	/*(void)argc;*/
-	/*(void)argv;*/
-
-	/*my_envp = ft_set_env(envp);*/
-	/*cmd = NULL;*/
-	/*shell.cmd = NULL;*/
 
 	set_shell(&shell, argc, argv, envp);
 	std_files(SAVE);
@@ -95,7 +74,6 @@ int main(int argc, char **argv, char **envp)
 		free(prompt);
 		if (!rl)
 		{
-			// write(STDOUT_FILENO, "exit\n", 5);
 			ft_printf("exit\n");
 			free_my_envp(&shell.my_envp);
 			exit(shell.exit_status); // INFO: bash exits with the last exit status
@@ -112,7 +90,6 @@ int main(int argc, char **argv, char **envp)
 			if (shell.cmd == NULL)
 				continue; // INFO: syntax error
 
-			/*shell.cmd = cmd;*/
 			shell.root_to_free = shell.cmd;
 
 			ast_output(shell.cmd, true);
@@ -128,14 +105,11 @@ int main(int argc, char **argv, char **envp)
 			}
 			if (shell.cmd->type == C_EXEC)
 			{
-				/*is_command(cmd, &my_envp, &exit_stat);*/
 				is_command(&shell, true, -3);
 			}
 			else if (shell.cmd->type == C_REDIRECT)
 			{
 				is_redirection(&shell, true, -3);
-				// if (!shell.redirections_status)
-				// 	shell.redirections_status = true;
 			}
 			else if (shell.cmd->type == C_PIPE)
 			{
@@ -149,8 +123,6 @@ int main(int argc, char **argv, char **envp)
 			{
 				is_compound(&shell);
 			}
-			else
-				printf("not a command\n");
 			unlink_files(&shell);
 			ft_free_arr(shell.heredocs_files);
 			ast_free(shell.root_to_free);

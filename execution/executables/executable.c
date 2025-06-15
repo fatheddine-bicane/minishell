@@ -16,10 +16,8 @@ void	ft_apply_comm(t_shell *shell, bool to_fork, pid_t pid_r)
 {
 	pid_t	pid;
 
-	ignore_signals_parrent();// INFO: ignore the signals in the parrent so the ctrl c wont quit the shell
-
-
-
+	// INFO: ignore the signals in the parrent so the ctrl c wont quit the shell
+	ignore_signals_parrent();
 	// NOTE: if we executin a C_EXEC (we r not in pipe)
 	if (to_fork)
 	{
@@ -32,11 +30,6 @@ void	ft_apply_comm(t_shell *shell, bool to_fork, pid_t pid_r)
 	}
 	else
 	{
-		/*pid = pid_r*/
-		/*if (-1 == pid)*/
-		/*{*/
-		/*	// TODO: error mssg*/
-		/*}*/
 		ft_executable(shell, pid_r, false);
 	}
 	setup_signals();

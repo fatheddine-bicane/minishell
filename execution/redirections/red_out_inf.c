@@ -39,7 +39,6 @@ void	std_files(int what_to_do)
 	{
 		dup2(std_out_save, STDOUT_FILENO);
 	}
-	// WARNING: dont close saves files
 }
 
 static bool	redirect_output(char *file_name)
@@ -109,7 +108,6 @@ bool	handle_redirections(char **redirections, t_shell *shell)
 		if (!ft_strncmp(">>", redirections[i], 2))
 		{
 			i++;
-			/*redirections[i]*/
 			redirections[i] = expand_single_param(redirections[i], shell);
 			if (!redirections[i] || !redirections[i][0])
 			{
@@ -117,14 +115,12 @@ bool	handle_redirections(char **redirections, t_shell *shell)
 				shell->exit_status = 1;
 				return (false);
 			}
-			/*ft_appent_output(redirections[i]);*/
 			if (!appent_output(redirections[i]))
 				return (false);
 		}
 		else if (!ft_strncmp("<<", redirections[i], 2))
 		{
 			i++;
-			/*ft_here_doc(redirections[i]);*/
 			if (!here_doc(shell))
 				return (false);
 		}
@@ -143,7 +139,6 @@ bool	handle_redirections(char **redirections, t_shell *shell)
 		}
 		else if (!ft_strncmp("<", redirections[i], 1))
 		{
-			/*std_files(RESTORE_STDIN);*/
 			i++;
 			redirections[i] = expand_single_param(redirections[i], shell);
 			if (!redirections[i] || !redirections[i][0])

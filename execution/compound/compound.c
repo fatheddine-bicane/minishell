@@ -45,7 +45,6 @@ void	is_compound(t_shell *shell)
 	{
 		shell->cmd = tmp->u_as.compound.left;
 		run_compound_side(shell);
-		/*printf("coumpound condition%s\n", ft_itoa(shell->exit_status));*/
 		if (0 == shell->exit_status)
 		{
 			shell->cmd = tmp->u_as.compound.right;

@@ -20,11 +20,7 @@ void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
 		shell->exit_status = 1;
 		return ;
 	}
-
-
 	expand_params(&shell->cmd->u_as.exec.argv, shell);
-
-
 	if (ft_is_builtin(shell->cmd->u_as.exec.argv[0]))
 	{
 		run_bultins(shell);

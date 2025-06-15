@@ -12,24 +12,6 @@
 
 #include "../../minishel.h"
 
-// static char	*ft_apend_new_line(char *str)
-// {
-// 	int		i;
-// 	char	*str2;
-//
-// 	i = 0;
-// 	str2 = malloc(sizeof(char) * (ft_strlen(str) + 2));
-// 	while (str[i])
-// 	{
-// 		str2[i] = str[i];
-// 		i++;
-// 	}
-// 	str2[i] = '\n';
-// 	i++;
-// 	str2[i] = '\0';
-// 	return (str2);
-// }
-
 bool is_heredoc_delimiter(char *limiter, char *src)
 {
 	if (limiter[0] == '\0')
@@ -120,7 +102,6 @@ char *creat_here_doc(char *delimiter, t_shell *shell)
 	{
 		setup_signals_heredoc();
 		input = ft_creat_input(delimiter, shell);
-		// printf("file name: %s\n", file_name);
 		inf = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (-1 == inf)
 			return (perror("open()"), NULL);

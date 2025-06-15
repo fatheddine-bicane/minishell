@@ -65,7 +65,6 @@ void	creat_heredoc_compound(t_shell *shell, t_str_builder **sb)
 		creat_heredoc_compound(shell, sb);
 	else if (C_GROUP == shell->cmd->type)
 		creat_heredoc_group(shell, sb);
-
 	shell->cmd = original_cmd;
 	tmp = shell->cmd->u_as.compound.right;
 	shell->cmd = tmp;
@@ -126,15 +125,13 @@ void	herdocs_delemiters(t_shell *shell)
 	{
 		creat_heredoc_group(shell, &sb);
 	}
-
 	shell->cmd = shell->root_to_free;
 	heredoc_delemiters = sb_build(sb);
 	if (NULL == heredoc_delemiters)
 	{
 		shell->cmd = shell->root_to_free;
-		shell->heredocs_delemiters = NULL; // Add this line
+		shell->heredocs_delemiters = NULL;
 		return;
-		/*return (ft_putstr_fd("no heredocs\n", 2));*/
 	}
 	shell->heredocs_delemiters = heredoc_delemiters;
 }
@@ -147,11 +144,9 @@ bool	handle_herdocs(t_shell *shell)
 
 	if (!shell->heredocs_delemiters)
 		return (true);
-
 	sb = sb_create(10);
 	if (sb == NULL)
 		return (true);
-
 	shell->sb_to_free = sb;
 	i = 0;
 	while (shell->heredocs_delemiters[i])
@@ -170,7 +165,5 @@ bool	handle_herdocs(t_shell *shell)
 	}
 	ft_free_arr(shell->heredocs_delemiters);
 	shell->heredocs_files = sb_build(sb);
-	/*for (int i = 0; shell->heredocs_files[i]; i++)*/
-	/*	printf("%s\n", shell->heredocs_files[i]);*/
 	return (true);
 }

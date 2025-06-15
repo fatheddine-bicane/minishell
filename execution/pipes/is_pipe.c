@@ -83,21 +83,8 @@ void	increment_heredoc_pipe(t_shell *shell, t_pipex *tmp)
 	{
 		tmp->cmd = tmp->cmd->u_as.group.cmd;
 		increment_heredoc_pipe(shell, tmp);
-		/*if (C_PIPE == tmp->cmd->type)*/
-		/*{*/
-		/*	increment_heredoc_pipe(shell, tmp);*/
-		/*}*/
-		/*else if (C_REDIRECT == tmp->cmd->u_as.group.cmd->type)*/
-		/*{*/
-		/*}*/
 	}
 }
-
-/*void	increment_heredoc_pipe(t_shell *shell, t_pipex *tmp)*/
-/*{*/
-/*	if (tmp && tmp->cmd)*/
-/*		increment_heredoc_index(shell, tmp->cmd);*/
-/*}*/
 
 
 void is_pipe(t_shell *shell)
@@ -125,46 +112,39 @@ void is_pipe(t_shell *shell)
 			if (-1 == pipe(fd))
 				return; // TODO: error mssg
 		}
-		/*shell->pipe = shell->cmd;*/
 		pid = fork();
 		if (0 != pid)
 			add_pid(&pids, pid);
 		if (0 == pid)
 		{
-			// WARNING: might be invalid free
 			free_pids(&pids);
 			if (-1 != prev_pipe[0]) // INFO: read from pipe if not first command
 			{
 				if (-1 == dup2(prev_pipe[0], STDIN_FILENO))
-					exit(1); // TODO: error mssg
+					exit(1);
 			}
 			if (tmp_pipex->next)
 			{
 				if (-1 == dup2(fd[1], STDOUT_FILENO))
 					exit(1); // TODO: error mssg
 			}
-			// Child process - only close the unused pipe end
 			if (-1 != prev_pipe[0])
 				close(prev_pipe[0]);
 			if (-1 != prev_pipe[1])
 				close(prev_pipe[1]);
 			if (tmp_pipex->next)
-				close(fd[0]); // Close read end in writing process
+				close(fd[0]); // NOTE: close read end in writing process
 			else if (prev_pipe[0] != -1)
-				close(fd[1]); // Close write end in reading process
+				close(fd[1]); // NOTE: close write end in reading process
 
 			// NOTE: execute command
 			shell->cmd = tmp_pipex->cmd;
 			if (C_EXEC == tmp_pipex->cmd->type)
 			{
-				/*ft_printf(RED"command\n"RESET);*/
 				is_command(shell, false, pid);
 			}
 			else if (C_REDIRECT == tmp_pipex->cmd->type)
 			{
-				// WARNING: if the command contain a heredoc the herdoc index get
-				// incremented in the child process not the main so the next child
-				// will use the heredocindex and it will still be 0
 				is_redirection(shell, false, pid);
 			}
 			else if (C_GROUP == tmp_pipex->cmd->type)
@@ -172,43 +152,30 @@ void is_pipe(t_shell *shell)
 				if (NULL != pipex)
 					free_pipex(&pipex);
 				is_group(shell);
-				/*ft_printf(RED"went here\n"RESET);*/
 				ft_free_arr(shell->heredocs_files);
-				/*ft_putstr_fd(RED"group failed\n"RESET, 2);*/
 			}
-
-
-
 			// NOTE: childe failed to execute command
-			/*ft_putstr_fd("ana hnaya ma hrjtch\n", 2);*/
-			free_my_envp(&shell->my_envp); // WARNING : invalide free if mixed pipes and subshell and one of subshells pipes command is wrong
+			free_my_envp(&shell->my_envp);
 			free_pipex(&pipex);
-			/*ft_free_arr(shell->heredocs_files);*/
 			ast_free(shell->root_to_free);
 			exit(shell->exit_status);
 		}
 		// TODO: execute the command
-
 		else
 		{
 			if (-1 != prev_pipe[0])
 				close(prev_pipe[0]);
 			if (-1 != prev_pipe[1])
 				close(prev_pipe[1]);
-
 			if (tmp_pipex->next)
 			{
 				prev_pipe[0] = fd[0];
 				prev_pipe[1] = fd[1];
 			}
-			/*increment_heredoc_index(shell, tmp->cmd);*/
 			increment_heredoc_pipe(shell, tmp_pipex);
-			/*printf("heredoc_index %d\n", shell->herdocs_index);*/
-			/*increment_heredoc_pipe(shell, tmp);*/
 		}
 		tmp_pipex = tmp_pipex->next;
 	}
-
 	wait_pids(&pids, shell); 
 	free_pipex(&pipex);
 }
