@@ -20,7 +20,6 @@ static bool	ft_variable_exist(t_shell *shell, char *varaible)
 	i = 0;
 	while (varaible[i] && '=' != varaible[i])
 		i++;
-
 	if ('+' == varaible[i - 1])
 		i--;
 	tmp = shell->my_envp;
@@ -61,18 +60,18 @@ static void	ft_sort_myenvp(t_shell *shell)
 
 	envp_sort = ft_prep_envp(shell);
 	i = -1;
-	while(envp_sort[++i])
+	while (envp_sort[++i])
 	{
-		j = i + 1;
-		while (envp_sort[j])
+		j = i;
+		while (envp_sort[++j])
 		{
-			if (0 < ft_strncmp(envp_sort[i], envp_sort[j], ft_strlen(envp_sort[i])))
+			if (0 < ft_strncmp(envp_sort[i],
+					envp_sort[j], ft_strlen(envp_sort[i])))
 			{
 				tmp = envp_sort[i];
 				envp_sort[i] = envp_sort[j];
 				envp_sort[j] = tmp;
 			}
-			j++;
 		}
 	}
 	i = -1;
@@ -85,19 +84,22 @@ void	ft_export(t_shell *shell)
 {
 	int	vars_i;
 
-	if (!shell->cmd->u_as.exec.argv[1]) // INFO: export with no argumets
+	// INFO: export with no argumets
+	if (!shell->cmd->u_as.exec.argv[1])
 		ft_sort_myenvp(shell);
 	else
 	{
 		vars_i = 1;
 		while (shell->cmd->u_as.exec.argv[vars_i])
 		{
-			if (!ft_valid_argument(shell->cmd->u_as.exec.argv[vars_i])) // INFO: checking if var name is valid syntax
+			// INFO: checking if var name is valid syntax
+			if (!ft_valid_argument(shell->cmd->u_as.exec.argv[vars_i]))
 			{
 				export_error(shell, &vars_i);
-				continue;
+				continue ;
 			}
-			if (ft_variable_exist(shell, shell->cmd->u_as.exec.argv[vars_i])) // INFO: checking if var name exist in my_envp
+			// INFO: checking if var name exist in my_envp
+			if (ft_variable_exist(shell, shell->cmd->u_as.exec.argv[vars_i]))
 				ft_export_utils_1(shell, shell->cmd->u_as.exec.argv[vars_i]);
 			else
 				ft_lstadd_back(&shell->my_envp,

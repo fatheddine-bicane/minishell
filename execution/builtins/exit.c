@@ -55,14 +55,14 @@ void	ft_exit_one_arguemt(t_shell *shell)
 		// INFO: the argument is negative
 	else if (argument_is_negative(shell->cmd->u_as.exec.argv[1]))
 	{
-	exit_negative = ft_atoi(shell->cmd->u_as.exec.argv[1]) % 256;
-	ast_free(shell->root_to_free);
-	free_my_envp(&shell->my_envp);
-	exit(exit_negative);
-}
+		exit_negative = ft_atoi(shell->cmd->u_as.exec.argv[1]) % 256;
+		ast_free(shell->root_to_free);
+		free_my_envp(&shell->my_envp);
+		exit(exit_negative);
+	}
 	// INFO: the argument is not numerical
 	else
-	exit_error(shell, 3);
+		exit_error(shell, 3);
 }
 
 void	ft_exit(t_shell *shell)

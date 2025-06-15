@@ -14,7 +14,7 @@
 
 char	*ft_home_path(t_list *my_envp)
 {
-	t_list *tmp;
+	t_list	*tmp;
 
 	tmp = my_envp;
 	while (tmp)
@@ -38,7 +38,7 @@ void	ft_change_oldpwd(t_shell *shell, char *oldpwd)
 		{
 			free(tmp->content);
 			tmp->content = oldpwd;
-			return;
+			return ;
 		}
 		tmp = tmp->next;
 	}

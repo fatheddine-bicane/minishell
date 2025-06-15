@@ -12,9 +12,9 @@
 
 #include "../../minishel.h"
 
- void	ft_env(t_shell *shell)
+void	ft_env(t_shell *shell)
 {
-	t_list *my_envp;
+	t_list	*my_envp;
 
 	my_envp = shell->my_envp;
 	while (my_envp)
