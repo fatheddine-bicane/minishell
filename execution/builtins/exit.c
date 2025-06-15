@@ -18,6 +18,8 @@ static bool	argument_is_numeric(char *argument)
 	int	i;
 
 	i = 0;
+	if ('+' == argument[i])
+		i++;
 	while (argument[i])
 	{
 		if (0 == ft_isdigit(argument[i]))
@@ -43,39 +45,48 @@ static bool	argument_is_negative(char *argument)
 	return (true);
 }
 
-void	ft_exit(t_shell *shell)
+void	ft_exit_one_arguemt(t_shell *shell)
 {
 	int	exit_negative;
 
-	if (!shell->cmd->u_as.exec.argv[1]) // INFO: exit with no arguments
+	// INFO: if the argument is numerical
+	if (argument_is_numeric(shell->cmd->u_as.exec.argv[1]))
+		exit_error(shell, 2);
+		// INFO: the argument is negative
+	else if (argument_is_negative(shell->cmd->u_as.exec.argv[1]))
+	{
+	exit_negative = ft_atoi(shell->cmd->u_as.exec.argv[1]) % 256;
+	ast_free(shell->root_to_free);
+	free_my_envp(&shell->my_envp);
+	exit(exit_negative);
+}
+	// INFO: the argument is not numerical
+	else
+	exit_error(shell, 3);
+}
+
+void	ft_exit(t_shell *shell)
+{
+	// INFO: exit with no arguments
+	if (!shell->cmd->u_as.exec.argv[1])
 		exit_error(shell, 1);
-	else if (shell->cmd->u_as.exec.argv[1] && !shell->cmd->u_as.exec.argv[2]) // INFO: exit and one argument 
+	// INFO: exit and one argument
+	else if (shell->cmd->u_as.exec.argv[1] && !shell->cmd->u_as.exec.argv[2])
+		ft_exit_one_arguemt(shell);
+	// INFO: exit with n arguments
+	else
 	{
-		if (argument_is_numeric(shell->cmd->u_as.exec.argv[1])) // INFO: if the argument is numerical
-			exit_error(shell, 2);
-		else if (argument_is_negative(shell->cmd->u_as.exec.argv[1])) // INFO: the argument is negative
+		// INFO: if the first agument is negative
+		if (true == argument_is_negative(shell->cmd->u_as.exec.argv[1]))
 		{
-			exit_negative = ft_atoi(shell->cmd->u_as.exec.argv[1]) % 256;
-			ast_free(shell->root_to_free);
-			free_my_envp(&shell->my_envp);
-			exit(exit_negative);
-		}
-		else // INFO: the argument is not numerical
-			exit_error(shell, 3);
-	}
-	else // INFO: exit with n arguments
-	{
-		if (true == argument_is_negative(shell->cmd->u_as.exec.argv[1])) // INFO: if the first agument is negative
-		{
-			ft_putstr_fd("exit\n", 2);
-			ft_putstr_fd("exit: too many arguments\n", 2);
+			ft_printf(RED"exit\nexit: too many arguments\n"RESET);
 			shell->exit_status = 1;
+			return ;
 		}
-		if (false == argument_is_numeric(shell->cmd->u_as.exec.argv[1])) // INFO: if the first agument is not numerical
+		// INFO: if the first agument is not numerical
+		if (false == argument_is_numeric(shell->cmd->u_as.exec.argv[1]))
 			exit_error(shell, 4);
-		ft_putstr_fd("exit\n", 2);
-		ft_putstr_fd("exit: too many arguments\n", 2);
+		ft_printf(RED"exit\nexit: too many arguments\n"RESET);
 		shell->exit_status = 1;
 	}
-
 }
