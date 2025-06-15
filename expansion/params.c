@@ -17,7 +17,6 @@ bool	word_split(char *ifs, char ***args, size_t *i);
 size_t	word_count(char *src, char *sep);
 char	*get_ifs_var(t_list *envp);
 void	clean_args_leftover(char **args, size_t i);
-void	asterisk(void);
 
 bool	extract_quote_param(t_shell *shell, t_str_builder *sb, char *str,
 		size_t len)
@@ -49,7 +48,8 @@ bool	extract_quote_param(t_shell *shell, t_str_builder *sb, char *str,
 	return (true);
 }
 
-bool	param_extract(t_token *t, t_str_builder *sb, t_shell *shell, char **ifs)
+bool	param_extract(t_token *t, t_str_builder *sb, t_shell *shell, char **ifs,
+		bool *is_asterisk)
 {
 	size_t	len;
 
@@ -60,25 +60,30 @@ bool	param_extract(t_token *t, t_str_builder *sb, t_shell *shell, char **ifs)
 			return (sb_append_char(sb, '\0'));
 		return (sb_append_str(sb, t->lexeme + 1, len - 2));
 	}
-	if (t->type == T_VAR)
-	{
-		if (!expand_var(shell, sb, t->lexeme + 1, len - 1))
-			return (false);
-		if (*sb_str_at(sb, sb_len(sb) - 1) == '\0')
-			return (true);
-		*ifs = get_ifs_var(shell->my_envp);
-		return (true);
-	}
 	if (t->type == T_STR_DOUBLE)
 	{
 		if (len == 2)
 			return (sb_append_char(sb, '\0'));
 		return (extract_quote_param(shell, sb, t->lexeme + 1, len - 2));
 	}
+	if (is_asterisk != NULL && sn_strchr(t->lexeme, '*') != NULL)
+		*is_asterisk = true;
+	if (t->type == T_VAR)
+	{
+		if (!expand_var(shell, sb, t->lexeme + 1, len - 1))
+			return (false);
+		if (*sb_str_at(sb, sb_len(sb) - 1) == '\0')
+			return (true);
+		if (is_asterisk != NULL && sn_strchr(sb_str_at(sb, sb_len(sb) - 1),
+				'*') != NULL)
+			*is_asterisk = true;
+		*ifs = get_ifs_var(shell->my_envp);
+		return (true);
+	}
 	return (sb_append_str(sb, t->lexeme, len));
 }
 
-char	*param_scan(char *src, t_shell *shell, char **ifs)
+char	*param_scan(char *src, t_shell *shell, char **ifs, bool *is_asterisk)
 {
 	t_str_builder	*sb;
 	t_token			*token;
@@ -97,7 +102,8 @@ char	*param_scan(char *src, t_shell *shell, char **ifs)
 		return (tokens_free(head), NULL);
 	while (token && token->type != T_EOF)
 	{
-		if (!param_extract(token, sb, shell, ifs))
+		// NOTE: fails to detect *pattern"*"
+		if (!param_extract(token, sb, shell, ifs, is_asterisk))
 			return (tokens_free(head), sb_free(sb), NULL);
 		token = token->next;
 	}
@@ -112,7 +118,7 @@ char	*expand_single_param(char *src, t_shell *shell)
 	char	**args;
 
 	ifs = NULL;
-	result = param_scan(src, shell, &ifs);
+	result = param_scan(src, shell, &ifs, NULL);
 	if (result == NULL)
 		return (free(src), NULL);
 	if (ifs == NULL)
@@ -139,14 +145,18 @@ bool	expand_params(char ***argvp, t_shell *shell)
 	char	*src;
 	char	*ifs;
 	char	**argv;
+	bool	is_asterisk;
+	size_t	j;
+	char	**matches;
 
 	ifs = NULL;
 	i = 0;
+	is_asterisk = false;
 	argv = *argvp;
 	while (argv[i] != NULL)
 	{
 		src = argv[i];
-		argv[i] = param_scan(src, shell, &ifs);
+		argv[i] = param_scan(src, shell, &ifs, &is_asterisk);
 		free(src);
 		if (argv[i] == NULL)
 			return (clean_args_leftover(argv, ++i), false);
@@ -156,7 +166,22 @@ bool	expand_params(char ***argvp, t_shell *shell)
 				return (clean_args_leftover(argv, i), false);
 			argv = *argvp;
 		}
+		if (is_asterisk && sn_strncmp(argv[0], "export", 6) != 0)
+		{
+			matches = asterisk(argv[i]);
+			if (matches)
+			{
+				j = 0;
+				while (matches[j])
+				{
+					sn_printf("[%d]\t%s\n", j, matches[j]);
+					j++;
+				}
+				sn_strs_free(matches);
+			}
+		}
 		ifs = NULL;
+		is_asterisk = false;
 		i++;
 	}
 	return (true);

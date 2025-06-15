@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../minishel.h"
-#include <dirent.h>
 
 bool	is_skippable(char *d_name)
 {
@@ -59,19 +58,15 @@ char	**collect_files(char *pathname)
 	return (closedir(dir), sb_build(sb));
 }
 
-void	asterisk(void)
+char	**asterisk(char *pattern)
 {
 	char	**files;
-	size_t	i;
 
+	sn_printf("pattern = `%s`\n", pattern);
 	files = collect_files(".");
 	if (files == NULL)
-		return ;
-	i = 0;
-	while (files[i])
-	{
-		sn_printf("[%d] %s\n", i, files[i]);
-		i++;
-	}
-	sn_strs_free(files);
+		return (NULL);
+	if (sn_strncmp(pattern, "*", sn_strlen(pattern)) == 0)
+		return (files);
+	return (files);
 }
