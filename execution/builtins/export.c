@@ -95,7 +95,9 @@ void	ft_export(t_shell *shell)
 			// INFO: checking if var name is valid syntax
 			if (!ft_valid_argument(shell->cmd->u_as.exec.argv[vars_i]))
 			{
-				export_error(shell, &vars_i);
+				ft_printf(RED"%s: not a valid identifier\n"RESET,
+					shell->cmd->u_as.exec.argv[vars_i]);
+				vars_i++;
 				continue ;
 			}
 			// INFO: checking if var name exist in my_envp
