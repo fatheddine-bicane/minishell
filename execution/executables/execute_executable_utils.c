@@ -14,17 +14,17 @@
 
 static char	**ft_find_path(t_shell *shell)
 {
-	char	*path_var = NULL;
-	t_list *my_envp;
+	char	*path_var;
+	t_list	*my_envp;
 
 	my_envp = shell->my_envp;
-
+	path_var = NULL;
 	while (my_envp)
 	{
 		if (!ft_strncmp((char *)my_envp->content, "PATH=", 5))
 		{
 			path_var = (char *)my_envp->content;
-			break;
+			break ;
 		}
 		my_envp = my_envp->next;
 	}
@@ -53,76 +53,71 @@ static char	*ft_concat_path(char *arr2, char *command)
 	return (str);
 }
 
+static void	command_is_path_utils(t_shell *shell, pid_t pid, bool to_wait, char **prep_envp)
+{
+	char	**com;
+
+	com = shell->cmd->u_as.exec.argv;
+	if (0 == pid)
+	{
+		prep_envp = ft_prep_envp(shell);
+		execve(com[0], com, prep_envp);
+		if (to_wait)
+			executable_error(shell, 1, prep_envp);
+		// INFO: pipe
+		return (executable_error(shell, 2, prep_envp));
+	}
+	else if ((0 != pid) && to_wait)
+		wait_child(pid, shell);
+}
+
 void	command_is_path(pid_t pid, t_shell *shell, bool to_wait)
 {
 	char	**com;
 	char	**prep_envp;
 
 	com = shell->cmd->u_as.exec.argv;
+	prep_envp = NULL;
 	if (!access(com[0], F_OK | X_OK)) // INFO: checks if the path is valid
-	{
-		if (0 == pid)
-		{
-			prep_envp = ft_prep_envp(shell);
-			execve(com[0], com, prep_envp);
-			if (to_wait)
-			{
-				ft_printf(RED"failed to execute command\n"RESET);
-				ft_free_arr(prep_envp);
-				free_my_envp(&shell->my_envp);
-				ast_free(shell->root_to_free);
-				ft_free_arr(shell->heredocs_files);
-				exit(127);
-			}
-			// INFO: pipe
-			else
-			{
-				ft_free_arr(prep_envp);
-				free_my_envp(&shell->my_envp);
-				ft_free_arr(shell->heredocs_files);
-				shell->exit_status = 127;
-				return;
-			}
-		}
-		else if ((0 != pid) && to_wait)
-			wait_child(pid, shell);
-	}
+		command_is_path_utils(shell, pid, to_wait, prep_envp);
 	else // INFO: path is not valid
 	{
 		if (0 == pid)
 		{
 			if (to_wait)
-			{
-				ast_free(shell->root_to_free);
-				free_my_envp(&shell->my_envp);
-				ft_free_arr(shell->heredocs_files);
-				exit(127);
-			}
-			else
-			{
-				ft_free_arr(shell->heredocs_files);
-				shell->exit_status = 127;
-				return;
-			}
+				executable_error(shell, 3, prep_envp);
+			return (executable_error_2(shell, 4));
 		}
 		else
 		{
 			if (to_wait)
-			{
-				shell->exit_status = 127;
-				ft_printf(RED"%s:  No such file or director\n"RESET, shell->cmd->u_as.exec.argv[0]);
-				return;
-			}
-			else
-			{
-				ft_free_arr(shell->heredocs_files);
-				shell->exit_status = 127;
-				ft_printf(RED"%s:  No such file or director\n"RESET, shell->cmd->u_as.exec.argv[0]);
-				return;
-			}
+				return (executable_error_2(shell, 5));
+			return (executable_error_2(shell, 6));
 		}
 	}
 }
+
+// static void	command_is_not_path_utils(pid_t pid, t_shell *shell, bool to_wait, t_executable *exec)
+// {
+// 	exec->path = ft_concat_path(exec->paths[exec->i], exec->com[0]);
+// 	if (!access(exec->path, F_OK | X_OK))
+// 	{
+// 		free(exec->com[0]);
+// 		exec->com[0] = exec->path;
+// 		char **(prep_envp) = ft_prep_envp(shell);
+// 		if (0 == pid)
+// 		{
+// 			execve(exec->com[0], exec->com, prep_envp);
+// 			if (to_wait)
+// 				executable_error_3(shell, exec, 7, pid, prep_envp);
+// 			return (executable_error_3(shell, exec, 8, pid, prep_envp));
+// 		}
+// 		else if ((0 != pid) && to_wait)
+// 			return (executable_error_4(shell, exec, 10, pid, prep_envp));
+// 		else if (0 != pid && !to_wait)
+// 			return (executable_error_4(shell, exec, 11, pid, prep_envp));
+// 	}
+// }
 
 void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 {
@@ -133,49 +128,27 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 	exec.i = 0;
 	if (NULL == exec.paths) // INFO: protection if path is unseted
 		exec.paths = ft_split("/nothing", ':');
+	// command_is_not_path_utils(pid, shell, to_wait, &exec);
 	while (exec.paths[exec.i]) // INFO: checks if th command is a path
 	{
+		// command_is_not_path_utils(pid, shell, to_wait, &exec);
 		exec.path = ft_concat_path(exec.paths[exec.i], exec.com[0]);
 		if (!access(exec.path, F_OK | X_OK))
 		{
 			free(exec.com[0]);
 			exec.com[0] = exec.path;
-			char **prep_envp = ft_prep_envp(shell);
+			char **(prep_envp) = ft_prep_envp(shell);
 			if (0 == pid)
 			{
 				execve(exec.com[0], exec.com, prep_envp);
 				if (to_wait)
-				{
-					ft_printf(RED"failed to execute command\n"RESET);
-					ft_free_arr(prep_envp);
-					ft_free_arr(exec.paths);
-					free_my_envp(&shell->my_envp);
-					ast_free(shell->root_to_free);
-					ft_free_arr(shell->heredocs_files);
-					exit(127);
-				}
-				else
-				{
-					ft_free_arr(prep_envp);
-					ft_free_arr(exec.paths);
-					free_my_envp(&shell->my_envp);
-					ft_free_arr(shell->heredocs_files);
-					shell->exit_status = 127;
-					return;
-				}
+					executable_error_3(shell, &exec, 7, pid, prep_envp);
+				return (executable_error_3(shell, &exec, 8, pid, prep_envp));
 			}
 			else if ((0 != pid) && to_wait)
-			{
-				ft_free_arr(prep_envp);
-				wait_child(pid, shell);
-				ft_free_arr(exec.paths);
-				return;
-			}
+				return (executable_error_4(shell, &exec, 10, pid, prep_envp));
 			else if (0 != pid && !to_wait)
-			{
-				ft_free_arr(prep_envp);
-				return (ft_free_arr(exec.paths));
-			}
+				return (executable_error_4(shell, &exec, 11, pid, prep_envp));
 		}
 		exec.i++;
 		free(exec.path);
@@ -185,30 +158,13 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 	if (0 == pid)
 	{
 		if (to_wait)
-		{
-			ast_free(shell->root_to_free);
-			free_my_envp(&shell->my_envp);
-			ft_free_arr(shell->heredocs_files);
-			exit(127);
-		}
-		ft_free_arr(shell->heredocs_files);
-		shell->exit_status = 127;
-		return;
+			executable_error_4(shell, &exec, 12, pid, NULL);
+		return (executable_error_4(shell, &exec, 13, pid, NULL));
 	}
 	else
 	{
 		if (to_wait)
-		{
-			shell->exit_status = 127;
-			ft_printf(RED"%s: failed to execute command\n"RESET, shell->cmd->u_as.exec.argv[0]);
-			return;
-		}
-		else
-		{
-			ft_free_arr(shell->heredocs_files);
-			shell->exit_status = 127;
-			ft_printf(RED"%s: failed to execute command\n"RESET, shell->cmd->u_as.exec.argv[0]);
-			return;
-		}
+			return (executable_error_5(shell, 14));
+		return (executable_error_5(shell, 15));
 	}
 }

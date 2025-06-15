@@ -169,8 +169,11 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait);
 t_list *ft_set_env(char **envp); //INFO: creat custum envp
 
 void	executable_error(t_shell *shell, int error_mssg, char **prep_envp);
-void	executable_error_2(t_shell *shell, t_executable *executable, int error_mssg);
-void	executable_error_3(t_shell *shell, t_executable *executable, int error_mssg, pid_t pid);
+void	executable_error_2(t_shell *shell, int error_mssg);
+void	executable_error_3(t_shell *shell, t_executable *exec, int error_mssg, pid_t pid, char **prep_envp);
+void	executable_error_4(t_shell *shell, t_executable *exec,
+		int error_mssg, pid_t pid, char **prep_envp);
+void	executable_error_5(t_shell *shell, int error_mssg);
 /*---------------------------------------------------------------*/
 
 
