@@ -59,6 +59,7 @@ int main(int argc, char **argv, char **envp)
 {
 	t_shell shell;
 	char *rl;
+	int	ast_status;
 
 	set_shell(&shell, argc, argv, envp);
 	std_files(SAVE);
@@ -84,9 +85,15 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 
-		if (create_ast(rl, &shell.cmd) != EXIT_EMPTY_AST) // INFO: return status
+		ast_status = create_ast(rl, &shell.cmd);
+		if (ast_status != EXIT_EMPTY_AST)
 		{
 			add_history(rl);
+			if (EXIT_SYNTAX_ERROR == ast_status)
+			{
+				shell.exit_status = 2;
+				continue ;
+			}
 			if (shell.cmd == NULL)
 				continue; // INFO: syntax error
 
