@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 21:28:26 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 21:44:48 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/16 14:37:42 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_wait_pids	*new_pid(pid_t pid)
 {
-	t_wait_pids *res;
+	t_wait_pids	*res;
 
 	res = malloc(sizeof(t_wait_pids));
 	if (!res)

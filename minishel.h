@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/16 12:58:12 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/16 14:22:08 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,16 @@ typedef struct s_pipex
 	struct s_pipex	*next;
 }	t_pipex;
 
+typedef struct s_pipes
+{
+	t_pipex *pipex_to_free;
+	t_pipex *pipex;
+	pid_t pid;
+	int prev_pipe[2];
+	int fd[2];
+	t_wait_pids *pids;
+}	t_pipes;
+
 void	pipe_error(t_shell *shell, int error_mssg, char **prep_envp);
 void	pipe_error_2(t_shell *shell, int error_mssg, t_executable *executable_error);
 void	pipe_error_3(t_shell *shell, t_executable *executable, int error_mssg, pid_t pid);
@@ -210,6 +220,8 @@ void	free_pids(t_wait_pids **pids);
 void	wait_pids(t_wait_pids **pids, t_shell *shell);
 void	free_pipex(t_pipex **pipex);
 void	creat_pipex(t_cmd *cmd, t_pipex **pipex);
+void	increment_heredoc_pipe(t_shell *shell, t_pipex *tmp);
+void	pipes_child_utils(t_pipes *pipes, t_shell *shell);
 
 
 
