@@ -21,7 +21,9 @@ bool	is_metachar_bonus(char *src, size_t current, bool is_quoted)
 	if (!is_quoted && (src[current] == ' ' || src[current] == '\t'
 			|| src[current] == '\n'))
 		return (true);
-	if (!is_quoted && src[current] == '|')
+	if (!is_quoted && (src[current] == '|' || src[current] == '&'))
+		return (true);
+	if (!is_quoted && (src[current] == '(' || src[current] == ')'))
 		return (true);
 	if (!is_quoted && (src[current] == '<' || src[current] == '>'))
 		return (true);
