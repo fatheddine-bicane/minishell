@@ -12,6 +12,19 @@
 
 #include "../parser.h"
 
+char	*extract_word_bonus(char *src, size_t *current)
+{
+	size_t	start;
+
+	start = *current - 1;
+	if (match_word_bonus(src, current, false))
+	{
+		while (match_word_bonus(src, current, false))
+			continue ;
+	}
+	return (sn_substr(src, start, *current - start));
+}
+
 static t_token	*token_identify_multi(char *src, size_t *current, char c)
 {
 	if (c == '|')
@@ -34,7 +47,7 @@ static t_token	*token_identify_multi(char *src, size_t *current, char c)
 	}
 	if (c == '$' && match_var(src, current))
 		return (extract_var(src, current));
-	return (token_new(T_WORD, extract_word(src, current)));
+	return (token_new(T_WORD, extract_word_bonus(src, current)));
 }
 
 t_token	*token_identify_bonus(char *src, size_t *current, char **err_msg)
