@@ -119,6 +119,8 @@ void	executable_error_4(t_shell *shell, t_executable *exec,
 	else if (13 == error_mssg)
 	{
 		shell->exit_status = 127;
+		ft_printf(RED"%s: failed to execute command\n"RESET,
+			shell->cmd->u_as.exec.argv[0]);
 		return (ft_free_arr(shell->heredocs_files));
 	}
 }
