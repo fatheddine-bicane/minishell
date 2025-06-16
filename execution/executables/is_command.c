@@ -14,7 +14,7 @@
 
 void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
 {
-	// INFO: in case the redirection fails since i call is_command() in is_redirections()
+	// INFO: redirection fails
 	if (false == shell->redirections_status)
 	{
 		shell->exit_status = 1;

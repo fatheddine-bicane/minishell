@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/11 23:27:11 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/16 11:13:37 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,7 @@ typedef struct s_executable
 {
 	char	**paths;
 	char	**com;
+	char	**penvp;
 	char	*path;
 	int		i;
 }	t_executable;
