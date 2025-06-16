@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/16 19:39:47 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/16 22:01:30 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ typedef enum e_exp_flags
 typedef struct s_wait_pids		t_wait_pids;
 typedef struct s_pipex			t_pipex;
 
-// INFO: shell main struct
+// INFO: shell main
 /*-----------------------------------------------*/
 typedef struct s_shell
 {
@@ -92,7 +92,14 @@ typedef struct s_shell
 	bool			is_pipe;
 	bool			is_group;
 	t_str_builder	*sb_to_free;
+	char			*rl;
+	char			*prompt;
+	int				ast_status;
 }	t_shell;
+
+void	run_ast(t_shell *shell);
+int		clean_shell(t_shell *shell);
+bool	rl_faild(t_shell *shell);
 /*-----------------------------------------------*/
 
 // INFO: costume prompt

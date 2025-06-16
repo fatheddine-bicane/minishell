@@ -33,6 +33,7 @@ SRCS = 	$(shell ls ./my_library/libft/*.c) \
 		$(shell ls ./execution/custum_prompt/*.c) \
 		$(shell ls ./execution/here_doc/*.c) \
 		./main.c \
+		./main_utils.c \
 
 
 
