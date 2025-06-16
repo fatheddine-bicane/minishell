@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/16 14:22:08 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/16 14:56:44 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,7 +265,10 @@ void	increment_heredoc_index(t_shell *shell, t_cmd *cmd);
 
 
 
-
+// INFO: redirections
+bool	redirect_input(char *file_name);
+bool	redirect_output(char *file_name);
+bool	appent_output(char *file_name);
 
 
 
