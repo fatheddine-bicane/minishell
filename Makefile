@@ -55,6 +55,9 @@ $(BNAME): $(BOFILES)
 	@$(CC) $(FLAGS) $(BOFILES) $(MLX_FLAGS) -o $(BNAME)
 	@echo "$(GREEN)So_long bonus compiled successfully!$(RESET)"
 
+$(LIBSN_NAME):
+	@$(MAKE) -C ./parser/libsn all
+
 clean:
 	@rm -f $(OFILES) $(BOFILES)
 	@echo "$(YELLOW)Cleaning object files$(RESET)"
