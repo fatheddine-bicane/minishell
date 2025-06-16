@@ -21,7 +21,7 @@ void	exit_error(t_shell *shell, int error_mssg)
 	else if (2 == error_mssg)
 	{
 		ft_printf("exit\n");
-		exit_status = ft_atoi(shell->cmd->u_as.exec.argv[1]);
+		exit_status = ft_atoi(shell->cmd->u_as.exec.argv[1]) % 256;
 		return (ast_free(shell->root_to_free),
 			free_my_envp(&shell->my_envp), exit(exit_status));
 	}
