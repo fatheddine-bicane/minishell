@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 10:18:48 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/09 18:40:25 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/16 19:07:00 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@ void	sigint_handler(int signal)
 	(void) signal;
 	g_signal_flag = SIGINT;
 	write(STDOUT_FILENO, "\n", 1);
-	/*rl_replace_line("", 0);*/
-	/*write(STDOUT_FILENO, "====> ", 6); // PERF: rl_replace_line() not available on mac*/
+	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
 }
@@ -33,7 +32,6 @@ void	setup_signals(void)
 	sigaction(SIGINT, &signals, NULL);
 	signals.sa_handler = SIG_IGN;
 	sigaction(SIGQUIT, &signals, NULL);
-	/*signal(SIGINT, sigint_handler);*/
 }
 
 void	setup_signals_child(void)
@@ -57,25 +55,5 @@ void	ignore_signals_parrent(void)
 	signals.sa_handler = SIG_IGN;
 	sigaction(SIGINT, &signals, NULL);
 	signals.sa_handler = SIG_IGN;
-	sigaction(SIGQUIT, &signals, NULL);
-}
-
-void	sigquit_heredoc_handler(int signal)
-{
-	(void) signal;
-	write(STDOUT_FILENO, "\n", 1);
-	rl_on_new_line();
-	rl_redisplay();
-}
-
-void	setup_signals_heredoc(void)
-{
-	struct sigaction	signals;
-
-	sigemptyset(&signals.sa_mask);
-	signals.sa_flags = SA_RESTART;
-	signals.sa_handler = SIG_DFL;
-	sigaction(SIGINT, &signals, NULL);
-	signals.sa_handler = sigquit_heredoc_handler;
 	sigaction(SIGQUIT, &signals, NULL);
 }

@@ -33,7 +33,7 @@ int	create_ast(char *src, t_cmd **ast)
 	*ast = parse_program(&tokens, &status);
 	if (*ast == NULL || !is_end(tokens))
 	{
-		sn_eprintf("syntax error near unexpected token `%s`\n",
+		sn_eprintf(RED"syntax error near unexpected token `%s`\n"RESET,
 			extract_lexeme_err(tokens));
 		ast_free(*ast);
 		*ast = NULL;

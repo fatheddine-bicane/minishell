@@ -31,6 +31,14 @@
 #  define EXIT_SYNTAX_ERROR 2
 # endif //  EXIT_SYNTAX_ERROR
 
+# ifndef RED
+#  define RED   "\001\033[31m\002"
+# endif
+
+# ifndef RESET
+#  define RESET "\001\033[0m\002"
+# endif
+
 # ifndef EXIT_EMPTY_AST
 #  define EXIT_EMPTY_AST 3
 # endif //  EXIT_EMPTY_AST

@@ -30,9 +30,10 @@ void	ft_free_arr(char **arr_s)
 
 void	free_my_envp(t_list **my_envp)
 {
-	t_list *head = *my_envp;
+	t_list	*head;
 	t_list	*to_free;
 
+	head = (*my_envp);
 	while (head)
 	{
 		to_free = head;
@@ -41,4 +42,3 @@ void	free_my_envp(t_list **my_envp)
 		free(to_free);
 	}
 }
-

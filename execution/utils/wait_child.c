@@ -21,9 +21,7 @@ void	wait_child(pid_t pid, t_shell *shell)
 	status = 0;
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
-	{
 		shell->exit_status = WEXITSTATUS(status);
-	}
 	if (WIFSIGNALED(status))
 	{
 		tmp = WTERMSIG(status);

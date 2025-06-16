@@ -20,7 +20,6 @@ void	ft_update_var(t_list **my_envp, char *variable)
 	i = 0;
 	while (variable[i] && '=' != variable[i])
 		i++;
-
 	tmp_ptr = *my_envp;
 	while (tmp_ptr)
 	{

@@ -12,8 +12,8 @@
 
 #include "../../minishel.h"
 
-//INFO: this function will transform the envp from a linked list to a cahr ** for the execve()
-char **ft_prep_envp(t_shell *shell)
+//INFO: transform my_envp from list to char**
+char	**ft_prep_envp(t_shell *shell)
 {
 	int		i;
 	char	**arr_envp;

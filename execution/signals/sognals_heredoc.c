@@ -1,20 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export_error.c                                     :+:      :+:    :+:   */
+/*   sognals_heredoc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/31 18:43:12 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/31 18:49:33 by fbicane          ###   ########.fr       */
+/*   Created: 2025/06/16 19:06:45 by fbicane           #+#    #+#             */
+/*   Updated: 2025/06/16 19:06:56 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-void	export_error(t_shell *shell, int *vars_i)
+void	sigquit_heredoc_handler(int signal)
 {
-		ft_putstr_fd(shell->cmd->u_as.exec.argv[*vars_i], 2);
-		ft_putstr_fd(": not a valid identifier\n", 2);
-		(*vars_i)++;
+	(void) signal;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_redisplay();
+}
+
+void	setup_signals_heredoc(void)
+{
+	struct sigaction	signals;
+
+	sigemptyset(&signals.sa_mask);
+	signals.sa_flags = SA_RESTART;
+	signals.sa_handler = SIG_DFL;
+	sigaction(SIGINT, &signals, NULL);
+	signals.sa_handler = sigquit_heredoc_handler;
+	sigaction(SIGQUIT, &signals, NULL);
 }

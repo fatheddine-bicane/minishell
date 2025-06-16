@@ -15,6 +15,7 @@
 void	ft_pwd(t_shell *shell)
 {
 	char	path[PATH_MAX];
+
 	if (getcwd(path, sizeof(path)))
 	{
 		printf("%s\n", path);
