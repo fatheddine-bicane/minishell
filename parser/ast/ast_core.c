@@ -13,6 +13,7 @@
 #include "../parser.h"
 
 t_cmd	*parse_program(t_token **token, int *status);
+t_cmd	*parse_program_bonus(t_token **token, int *status);
 
 int	create_ast(char *src, t_cmd **ast)
 {
@@ -33,7 +34,35 @@ int	create_ast(char *src, t_cmd **ast)
 	*ast = parse_program(&tokens, &status);
 	if (*ast == NULL || !is_end(tokens))
 	{
-		sn_eprintf(RED"syntax error near unexpected token `%s`\n"RESET,
+		sn_eprintf(RED "syntax error near unexpected token `%s`\n" RESET,
+			extract_lexeme_err(tokens));
+		ast_free(*ast);
+		*ast = NULL;
+		return (tokens_free(head), EXIT_SYNTAX_ERROR);
+	}
+	return (tokens_free(head), EXIT_SUCCESS);
+}
+
+int	create_ast_bonus(char *src, t_cmd **ast)
+{
+	t_token	*tokens;
+	t_token	*head;
+	int		status;
+	char	*scan_err;
+
+	status = 0;
+	scan_err = NULL;
+	tokens = tokens_scan_bonus(src, &scan_err);
+	if (tokens == NULL || scan_err != NULL)
+		return (sn_eprintf(scan_err), free(scan_err), tokens_free(tokens),
+			EXIT_SYNTAX_ERROR);
+	if (is_end(tokens))
+		return (tokens_free(tokens), EXIT_EMPTY_AST);
+	head = tokens;
+	*ast = parse_program_bonus(&tokens, &status);
+	if (*ast == NULL || !is_end(tokens))
+	{
+		sn_eprintf(RED "syntax error near unexpected token `%s`\n" RESET,
 			extract_lexeme_err(tokens));
 		ast_free(*ast);
 		*ast = NULL;
