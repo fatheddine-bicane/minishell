@@ -12,19 +12,7 @@
 
 #include "../parser.h"
 
-bool	is_name(char *src, size_t current)
-{
-	return (sn_isalpha(src[current]) || src[current] == '_');
-}
-
-bool	is_quote(char *src, size_t current)
-{
-	if (!src[current])
-		return (false);
-	return (src[current] == '\'' || src[current] == '"');
-}
-
-bool	is_metachar(char *src, size_t current, bool is_quoted)
+bool	is_metachar_bonus(char *src, size_t current, bool is_quoted)
 {
 	if (src[current] == '\'' || src[current] == '"')
 		return (true);
@@ -33,22 +21,11 @@ bool	is_metachar(char *src, size_t current, bool is_quoted)
 	if (!is_quoted && (src[current] == ' ' || src[current] == '\t'
 			|| src[current] == '\n'))
 		return (true);
-	if (!is_quoted && src[current] == '|')
+	if (!is_quoted && (src[current] == '|' || src[current] == '&'))
+		return (true);
+	if (!is_quoted && (src[current] == '(' || src[current] == ')'))
 		return (true);
 	if (!is_quoted && (src[current] == '<' || src[current] == '>'))
 		return (true);
 	return (false);
-}
-
-bool	is_end(t_token *token)
-{
-	if (token->type == T_EOF)
-		return (true);
-	return (token->type == T_BLANK && token->next->type == T_EOF);
-}
-
-bool	is_redirect(t_token *token)
-{
-	return (token->type == T_REDIR_IN || token->type == T_REDIR_OUT
-		|| token->type == T_REDIR_OUT_APPEND || token->type == T_HEREDOC);
 }

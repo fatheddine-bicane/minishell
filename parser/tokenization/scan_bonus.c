@@ -31,7 +31,7 @@ static bool	token_head(t_token **phead, char *src, size_t *current,
 {
 	t_token	*head;
 
-	head = token_identify(src, current, err_msg);
+	head = token_identify_bonus(src, current, err_msg);
 	if (head == NULL)
 		return (false);
 	if (head->type == T_SKIPPABLE)
@@ -44,8 +44,7 @@ static bool	token_head(t_token **phead, char *src, size_t *current,
 	return (true);
 }
 
-static bool	token_tail(t_token **ptail, char *src, size_t *current,
-		char **err_msg)
+bool	token_tail(t_token **ptail, char *src, size_t *current, char **err_msg)
 {
 	t_token	*tail;
 	t_token	*tmp;
@@ -53,7 +52,7 @@ static bool	token_tail(t_token **ptail, char *src, size_t *current,
 	if (ptail == NULL || *ptail == NULL)
 		return (false);
 	tail = *ptail;
-	tail->next = token_identify(src, current, err_msg);
+	tail->next = token_identify_bonus(src, current, err_msg);
 	if (tail->next == NULL)
 		return (false);
 	if (tail->next->type == T_SKIPPABLE)
@@ -68,7 +67,7 @@ static bool	token_tail(t_token **ptail, char *src, size_t *current,
 	return (true);
 }
 
-t_token	*tokens_scan(char *src, char **err_msg)
+t_token	*tokens_scan_bonus(char *src, char **err_msg)
 {
 	size_t	current;
 	t_token	*head;
