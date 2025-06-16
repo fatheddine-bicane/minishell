@@ -29,7 +29,6 @@ void reset_shell(t_shell *shell)
 {
 	shell->is_pipe = false;
 	shell->pids = NULL;
-	shell->pipe = NULL; // TODO: eleminate
 	shell->redirections_status = true;
 	shell->pipex = NULL;
 	shell->cmd = NULL;
