@@ -32,7 +32,7 @@
 # endif //  EXIT_SYNTAX_ERROR
 
 # ifndef RED
-#  define RED   "\001\033[31m\002"
+#  define RED "\001\033[31m\002"
 # endif
 
 # ifndef RESET
@@ -134,20 +134,27 @@ void					tokens_free(t_token *token);
 void					token_str(t_token *t, bool nl, bool all);
 const char				*token_type_str(t_token_type type);
 t_token					*tokens_scan(char *src, char **err_msg);
+t_token					*tokens_scan_bonus(char *src, char **err_msg);
 
 bool					is_metachar(char *src, size_t current, bool is_quoted);
+bool					is_metachar_bonus(char *src, size_t current,
+							bool is_quoted);
 bool					is_name(char *src, size_t current);
 bool					is_end(t_token *token);
 bool					is_quote(char *src, size_t current);
 bool					is_redirect(t_token *token);
 bool					match_char(char *src, size_t *current, char expected);
 bool					match_word(char *src, size_t *current, bool is_quoted);
+bool					match_word_bonus(char *src, size_t *current,
+							bool is_quoted);
 bool					match_identifier(char *src, size_t *current);
 bool					match_var(char *src, size_t *current);
 bool					match_token(t_token **head, size_t count, ...);
 bool					match_tokens(t_token **head, size_t count, ...);
 char					*extract_word(char *src, size_t *current);
 t_token					*token_identify(char *src, size_t *current,
+							char **err_msg);
+t_token					*token_identify_bonus(char *src, size_t *current,
 							char **err_msg);
 t_token					*extract_str(char *src, size_t *current, bool single,
 							char **err_msg);

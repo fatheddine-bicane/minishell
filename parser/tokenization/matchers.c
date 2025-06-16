@@ -34,6 +34,16 @@ bool	match_word(char *src, size_t *current, bool is_quoted)
 	return (true);
 }
 
+bool	match_word_bonus(char *src, size_t *current, bool is_quoted)
+{
+	if (!src[*current])
+		return (false);
+	if (is_metachar_bonus(src, *current, is_quoted))
+		return (false);
+	*current += 1;
+	return (true);
+}
+
 bool	match_var(char *src, size_t *current)
 {
 	bool	found;
@@ -72,33 +82,4 @@ bool	match_token(t_token **head, size_t count, ...)
 		}
 	}
 	return (va_end(args), false);
-}
-
-bool	match_tokens(t_token **head, size_t count, ...)
-{
-	t_token			*current;
-	va_list			args;
-	t_token_type	type;
-	bool			matches;
-	size_t			i;
-
-	if (head == NULL || *head == NULL || (*head)->type == T_EOF)
-		return (false);
-	current = *head;
-	matches = true;
-	i = 0;
-	va_start(args, count);
-	while (i++ < count)
-	{
-		type = va_arg(args, int);
-		if (current->type != type)
-		{
-			matches = false;
-			break ;
-		}
-		current = current->next;
-	}
-	if (matches)
-		*head = current;
-	return (va_end(args), matches);
 }
