@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 12:19:34 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/11 22:12:30 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/16 11:52:44 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	creat_heredoc_command(t_shell *shell, t_str_builder **sb)
 	while (tmp_cmd)
 	{
 		if (C_REDIRECT != tmp_cmd->type)
-			break;
+			break ;
 		if (T_HEREDOC == tmp_cmd->u_as.redirect.type)
 		{
 			sb_append_str((*sb), tmp_cmd->u_as.redirect.file, 0);
@@ -31,8 +31,8 @@ void	creat_heredoc_command(t_shell *shell, t_str_builder **sb)
 
 void	creat_heredoc_pipe(t_shell *shell, t_str_builder **sb)
 {
-	t_pipex *pipex;
-	t_pipex *pipex_to_free;
+	t_pipex	*pipex;
+	t_pipex	*pipex_to_free;
 
 	pipex = NULL;
 	creat_pipex(shell->cmd, &pipex);
@@ -103,67 +103,27 @@ void	creat_heredoc_group(t_shell *shell, t_str_builder **sb)
 // INFO: extract the heredocs delimiters
 void	herdocs_delemiters(t_shell *shell)
 {
-	char **heredoc_delemiters;
 	t_str_builder	*sb;
+	char			**heredoc_delemiters;
 
 	sb = sb_create(10);
 	if (sb == NULL)
 		return ;
 	if (C_REDIRECT == shell->cmd->type)
-	{
 		creat_heredoc_command(shell, &sb);
-	}
 	else if (C_PIPE == shell->cmd->type)
-	{
 		creat_heredoc_pipe(shell, &sb);
-	}
 	else if (C_COMPOUND == shell->cmd->type)
-	{
 		creat_heredoc_compound(shell, &sb);
-	}
 	else if (C_GROUP == shell->cmd->type)
-	{
 		creat_heredoc_group(shell, &sb);
-	}
 	shell->cmd = shell->root_to_free;
 	heredoc_delemiters = sb_build(sb);
 	if (NULL == heredoc_delemiters)
 	{
 		shell->cmd = shell->root_to_free;
 		shell->heredocs_delemiters = NULL;
-		return;
+		return ;
 	}
 	shell->heredocs_delemiters = heredoc_delemiters;
-}
-
-bool	handle_herdocs(t_shell *shell)
-{
-	int	i;
-	char	*file_name;
-	t_str_builder	*sb;
-
-	if (!shell->heredocs_delemiters)
-		return (true);
-	sb = sb_create(10);
-	if (sb == NULL)
-		return (true);
-	shell->sb_to_free = sb;
-	i = 0;
-	while (shell->heredocs_delemiters[i])
-	{
-		file_name = creat_here_doc(shell->heredocs_delemiters[i], shell);
-		if (NULL == file_name) // INFO: if heredoc recieve SIGINT
-		{
-			sb_append_str(sb, file_name, 0);
-			ft_free_arr(shell->heredocs_delemiters);
-			shell->heredocs_files = sb_build(sb);
-			return (false);
-		}
-		sb_append_str(sb, file_name, 0);
-		free (file_name);
-		i++;
-	}
-	ft_free_arr(shell->heredocs_delemiters);
-	shell->heredocs_files = sb_build(sb);
-	return (true);
 }

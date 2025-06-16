@@ -6,24 +6,39 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 17:22:24 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/13 21:52:32 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/16 13:00:52 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-bool is_heredoc_delimiter(char *limiter, char *src)
+bool	is_heredoc_delimiter(char *limiter, char *src)
 {
 	if (limiter[0] == '\0')
 		return (src[0] == '\0');
-	return (ft_strncmp(src, limiter, ft_strlen(limiter)) == 0);
+	return (ft_strncmp(src, limiter, ft_strlen(src)) == 0);
 }
 
-static char *ft_creat_input(char *limiter, t_shell *shell)
+static bool	break_of_loop(char *limiter, char **str)
 {
-	char *str;
-	t_str_builder *sb;
-	bool is_quoted;
+	if (str == NULL)
+	{
+		ft_printf(YELLOW"warning: heredoc delimited by end-of-file\n"RESET);
+		return (true);
+	}
+	if (is_heredoc_delimiter(limiter, (*str)))
+	{
+		free((*str));
+		return (true);
+	}
+	return (false);
+}
+
+char	*ft_creat_input(char *limiter, t_shell *shell)
+{
+	t_str_builder	*sb;
+	char			*str;
+	bool			is_quoted;
 
 	sb = sb_create(10);
 	if (sb == NULL)
@@ -33,16 +48,8 @@ static char *ft_creat_input(char *limiter, t_shell *shell)
 	while (1)
 	{
 		str = readline(YELLOW "[heredoc]>> " RESET);
-		if (str == NULL)
-		{
-			ft_printf(YELLOW"warning: heredoc delimited by end-of-file\n"RESET);
-			break;
-		}
-		if (is_heredoc_delimiter(limiter, str))
-		{
-			free(str);
-			break;
-		}
+		if (break_of_loop(limiter, &str))
+			break ;
 		str = expand_heredoc_body(str, shell, is_quoted);
 		sb_append_str(sb, str, 0);
 		sb_append_char(sb, '\n');
@@ -51,96 +58,35 @@ static char *ft_creat_input(char *limiter, t_shell *shell)
 	return (free(limiter), sb_build_str(sb));
 }
 
-char *random_name(void)
+static void	compress_file_name(char **file_name)
 {
-	char *file_name;
-	char *file_name_m;
-	char *tmp_path;
-	int random_file;
-	char path[PATH_MAX];
-	ssize_t b_read;
-	int i;
+	int	i;
 
-	file_name = malloc(sizeof(char) * 10);
-	if (!file_name)
-		return (NULL);
-	random_file = open("/dev/urandom", O_RDONLY);
-	if (-1 == random_file)
-		return (perror("read()"), free(file_name), NULL);
-	b_read = read(random_file, file_name, 9);
-	if (-1 == b_read)
-		return (perror("read()"), free(file_name), NULL);
-	file_name[b_read] = '\0';
 	i = -1;
-	while (file_name[++i])
-		file_name[i] = file_name[i] % 26 + 'a';
-	close(random_file);
-	getcwd(path, sizeof(path));
-	tmp_path = ft_strjoin(path, "/execution/here_doc/");
-	file_name_m = file_name;
-	file_name = ft_strjoin(tmp_path, file_name);
-	return (free(tmp_path), free(file_name_m), file_name);
+	while ((*file_name)[++i])
+		(*file_name)[i] = (*file_name)[i] % 26 + 'a';
 }
 
-char *creat_here_doc(char *delimiter, t_shell *shell)
+char	*random_name(void)
 {
-	char *input;
-	char *file_name;
-	int inf;
-	pid_t pid;
+	t_randome_name	r_name;
+	ssize_t			b_read;
 
-	ignore_signals_parrent();
-	file_name = random_name();
-	pid = fork();
-	if (-1 == pid)
-	{
-		perror("fork()");
-		setup_signals();
+	r_name.file_name = malloc(sizeof(char) * 10);
+	if (!r_name.file_name)
 		return (NULL);
-	}
-	if (0 == pid)
-	{
-		setup_signals_heredoc();
-		input = ft_creat_input(delimiter, shell);
-		inf = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (-1 == inf)
-			return (perror("open()"), NULL);
-		ft_putstr_fd(input, inf);
-		free(input);
-		close(inf);
-		sb_free(shell->sb_to_free);
-		ft_free_arr(shell->heredocs_files);
-		ft_free_arr(shell->heredocs_delemiters);
-		free_my_envp(&shell->my_envp);
-		ast_free(shell->root_to_free);
-		free(file_name);
-		exit(0);
-	}
-	else if (0 != pid)
-	{
-		wait_child(pid, shell);
-		if (130 == shell->exit_status)
-		{
-			free(file_name);
-			return (NULL);
-		}
-		setup_signals();
-	}
-	return (file_name);
-}
-
-// INFO: used in red_out_inf.c
-bool here_doc(t_shell *shell)
-{
-	int inf;
-
-	if (!shell->heredocs_files || !shell->heredocs_files[shell->herdocs_index])
-		return (false);
-	inf = open(shell->heredocs_files[shell->herdocs_index], O_RDONLY);
-	if (-1 == inf)
-		perror("open()");
-	dup2(inf, STDIN_FILENO);
-	close(inf);
-	shell->herdocs_index++;
-	return (true);
+	r_name.random_file = open("/dev/urandom", O_RDONLY);
+	if (-1 == r_name.random_file)
+		return (perror("read()"), free(r_name.file_name), NULL);
+	b_read = read(r_name.random_file, r_name.file_name, 9);
+	if (-1 == b_read)
+		return (perror("read()"), free(r_name.file_name), NULL);
+	r_name.file_name[b_read] = '\0';
+	compress_file_name(&r_name.file_name);
+	close(r_name.random_file);
+	getcwd(r_name.path, sizeof(r_name.path));
+	r_name.tmp_path = ft_strjoin(r_name.path, "/execution/here_doc/");
+	r_name.file_name_m = r_name.file_name;
+	r_name.file_name = ft_strjoin(r_name.tmp_path, r_name.file_name);
+	return (free(r_name.tmp_path), free(r_name.file_name_m), r_name.file_name);
 }

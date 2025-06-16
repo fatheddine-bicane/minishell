@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 15:36:43 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/16 11:13:37 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/16 12:58:12 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,9 +214,27 @@ void	creat_pipex(t_cmd *cmd, t_pipex **pipex);
 
 
 // INFO: herdocs
+typedef struct	s_create_heredoc
+{
+	char	*input;
+	char	*file_name;
+	int		inf;
+}	t_create_heredoc;
+
+typedef struct s_randome_name
+{
+	char	*file_name;
+	char	*file_name_m;
+	char	*tmp_path;
+	int		random_file;
+	char	path[PATH_MAX];
+}	t_randome_name;
+
 void	ft_here_doc(char *rl);
 /*void	here_doc(char *delimiter, t_shell *shell);*/
 char *creat_here_doc(char *delimiter, t_shell *shell);
+char *ft_creat_input(char *limiter, t_shell *shell);
+char *random_name(void);
 
 bool	here_doc(t_shell *shell);
 /*bool	here_doc(char **redirections, t_shell *shell, int i);*/
