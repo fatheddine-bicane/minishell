@@ -12,6 +12,35 @@
 
 #include "../../minishel.h"
 
+static void	is_group_utils(t_shell *shell)
+{
+	if (NULL != shell->heredocs_files)
+	{
+		ft_free_arr(shell->heredocs_files);
+		shell->heredocs_files = NULL;
+	}
+}
+
+static void	is_group_utils2(t_shell *shell)
+{
+	if (C_PIPE == shell->cmd->u_as.group.cmd->type)
+	{
+		shell->cmd = shell->cmd->u_as.group.cmd;
+		is_pipe(shell);
+		is_group_utils(shell);
+	}
+	else if (C_GROUP == shell->cmd->u_as.group.cmd->type)
+	{
+		shell->cmd = shell->cmd->u_as.group.cmd;
+		is_group(shell);
+	}
+	else if (C_COMPOUND == shell->cmd->u_as.group.cmd->type)
+	{
+		shell->cmd = shell->cmd->u_as.group.cmd;
+		is_compound(shell);
+	}
+}
+
 void	is_group(t_shell *shell)
 {
 	pid_t	pid;
@@ -29,38 +58,14 @@ void	is_group(t_shell *shell)
 		{
 			shell->cmd = shell->cmd->u_as.group.cmd;
 			is_redirection(shell, true, -1);
-			if (NULL != shell->heredocs_files)
-			{
-				ft_free_arr(shell->heredocs_files);
-				shell->heredocs_files = NULL;
-			}
+			is_group_utils(shell);
 		}
-		else if (C_PIPE == shell->cmd->u_as.group.cmd->type)
-		{
-			shell->cmd = shell->cmd->u_as.group.cmd;
-			is_pipe(shell);
-			if (shell->heredocs_files)
-			{
-				ft_free_arr(shell->heredocs_files);
-				shell->heredocs_files = NULL;
-			}
-		}
-		else if (C_GROUP == shell->cmd->u_as.group.cmd->type)
-		{
-			shell->cmd = shell->cmd->u_as.group.cmd;
-			is_group(shell);
-		}
-		else if (C_COMPOUND == shell->cmd->u_as.group.cmd->type)
-		{
-			shell->cmd = shell->cmd->u_as.group.cmd;
-			is_compound(shell);
-		}
+		else
+			is_group_utils2(shell);
 		free_my_envp(&shell->my_envp);
 		ast_free(shell->root_to_free);
 		exit(shell->exit_status);
 	}
 	else if (0 != pid)
-	{
 		wait_child(pid, shell);
-	}
 }
