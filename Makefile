@@ -60,10 +60,12 @@ $(LIBSN_NAME):
 
 clean:
 	@rm -f $(OFILES) $(BOFILES)
+	@$(MAKE) -C ./parser clean
 	@echo "$(YELLOW)Cleaning object files$(RESET)"
 
 fclean: clean
 	@rm -f $(NAME) $(BNAME)
+	@$(MAKE) -C ./parser fclean
 	@echo "$(YELLOW)Cleaning executables$(RESET)"
 
 leaks:
