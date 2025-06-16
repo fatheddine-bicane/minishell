@@ -36,6 +36,28 @@ SRCS = 	$(shell ls ./my_library/libft/*.c) \
 		./main_utils.c \
 
 
+BONUS= 	$(shell ls ./my_library/libft/*.c) \
+		$(shell ls ./my_library/ft_printf/*.c) \
+		$(shell ls ./my_library/get_next_line/*.c) \
+		$(shell ls ./execution/builtins/*c) \
+		$(shell ls ./execution/utils/*c) \
+		$(shell ls ./execution/executables/*c) \
+		$(shell ls ./execution/redirections/*c) \
+		$(shell ls ./execution/signals/*c) \
+		$(shell ls ./parser/libsn/*.c) \
+		$(shell ls ./parser/tokenization/*.c) \
+		$(shell ls ./parser/ast/*.c) \
+		$(shell ls ./expansion/*.c) \
+		$(shell ls ./execution/throw_error/*.c) \
+		$(shell ls ./execution/compound/*.c) \
+		$(shell ls ./execution/group/*.c) \
+		$(shell ls ./execution/pipes/*.c) \
+		$(shell ls ./execution/custum_prompt/*.c) \
+		$(shell ls ./execution/here_doc/*.c) \
+		./main_bonus.c \
+		./main_utils.c \
+
+
 
 OFILES = $(SRCS:.c=.o)
 BOFILES = $(BONUS:.c=.o)
@@ -45,15 +67,14 @@ all: $(NAME)
 %.o: %.c
 	@$(CC) $(FLAGS) -c $< -o $@
 
-$(NAME): $(LIBSN_NAME) $(LIBSN_NAME) $(OFILES)
+$(NAME): $(LIBSN_NAME) $(OFILES)
 	@$(CC) $(FLAGS) $(OFILES) $(LIBSN_NAME) $(EXTRA_FLAGS) -o $(NAME)
 	@echo "$(GREEN)Minishel compiled successfully!$(RESET)"
 
-
 bonus: $(BNAME)
 
-$(BNAME): $(BOFILES)
-	@$(CC) $(FLAGS) $(BOFILES) $(MLX_FLAGS) -o $(BNAME)
+$(BNAME): $(LIBSN_NAME) $(BOFILES)
+	@$(CC) $(FLAGS) $(BOFILES) $(LIBSN_NAME) $(EXTRA_FLAGS) -o $(BNAME)
 	@echo "$(GREEN)So_long bonus compiled successfully!$(RESET)"
 
 clean:

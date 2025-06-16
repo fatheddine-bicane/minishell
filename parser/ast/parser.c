@@ -12,7 +12,7 @@
 
 #include "../parser.h"
 
-t_cmd	*parse_cmd(t_token **token, int *status);
+t_cmd			*parse_cmd(t_token **token, int *status);
 
 static t_cmd	*parse_pipe(t_token **token, int *status)
 {

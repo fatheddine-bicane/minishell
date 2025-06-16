@@ -175,6 +175,7 @@ int						extract_cmp_op(t_token *token);
 char					*extract_lexeme_err(t_token *token);
 
 int						create_ast(char *src, t_cmd **ast);
+int						create_ast_bonus(char *src, t_cmd **ast);
 void					ast_free(t_cmd *root);
 char					*ast_output(t_cmd *cmd, bool print);
 
