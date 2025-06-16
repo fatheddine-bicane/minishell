@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 12:43:32 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/11 23:28:49 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/16 14:34:02 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,13 @@ static void	is_group_utils2(t_shell *shell)
 	{
 		shell->cmd = shell->cmd->u_as.group.cmd;
 		is_group(shell);
+		is_group_utils(shell);
 	}
 	else if (C_COMPOUND == shell->cmd->u_as.group.cmd->type)
 	{
 		shell->cmd = shell->cmd->u_as.group.cmd;
 		is_compound(shell);
+		is_group_utils(shell);
 	}
 }
 
@@ -53,6 +55,7 @@ void	is_group(t_shell *shell)
 		{
 			shell->cmd = shell->cmd->u_as.group.cmd;
 			is_command(shell, true, -1);
+			is_group_utils(shell);
 		}
 		else if (C_REDIRECT == shell->cmd->u_as.group.cmd->type)
 		{
