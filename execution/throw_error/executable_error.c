@@ -47,14 +47,14 @@ void	executable_error_2(t_shell *shell, int error_mssg)
 	{
 		ft_free_arr(shell->heredocs_files);
 		shell->exit_status = 127;
-		return;
+		return ;
 	}
 	else if (5 == error_mssg)
 	{
 		shell->exit_status = 127;
 		ft_printf(RED"%s:  No such file or director\n"RESET,
 			shell->cmd->u_as.exec.argv[0]);
-		return;
+		return ;
 	}
 	else if (6 == error_mssg)
 	{
@@ -62,17 +62,17 @@ void	executable_error_2(t_shell *shell, int error_mssg)
 		shell->exit_status = 127;
 		ft_printf(RED"%s:  No such file or director\n"RESET,
 			shell->cmd->u_as.exec.argv[0]);
-		return;
+		return ;
 	}
 }
 
 void	executable_error_3(t_shell *shell, t_executable *exec,
-		int error_mssg, pid_t pid, char **prep_envp)
+		int error_mssg, pid_t pid)
 {
 	if (7 == error_mssg)
 	{
 		ft_printf(RED"failed to execute command\n"RESET);
-		ft_free_arr(prep_envp);
+		ft_free_arr(exec->penvp);
 		ft_free_arr(exec->paths);
 		free_my_envp(&shell->my_envp);
 		ast_free(shell->root_to_free);
@@ -81,7 +81,7 @@ void	executable_error_3(t_shell *shell, t_executable *exec,
 	}
 	else if (8 == error_mssg)
 	{
-		ft_free_arr(prep_envp);
+		ft_free_arr(exec->penvp);
 		ft_free_arr(exec->paths);
 		free_my_envp(&shell->my_envp);
 		shell->exit_status = 127;
@@ -89,25 +89,25 @@ void	executable_error_3(t_shell *shell, t_executable *exec,
 	}
 	else if (9 == error_mssg)
 	{
-		ft_free_arr(prep_envp);
+		ft_free_arr(exec->penvp);
 		wait_child(pid, shell);
 		return (ft_free_arr(exec->paths));
 	}
 }
 
 void	executable_error_4(t_shell *shell, t_executable *exec,
-		int error_mssg, pid_t pid, char **prep_envp)
+		int error_mssg, pid_t pid)
 {
 	if (10 == error_mssg)
 	{
-		ft_free_arr(prep_envp);
+		ft_free_arr(exec->penvp);
 		wait_child(pid, shell);
 		ft_free_arr(exec->paths);
-		return;
+		return ;
 	}
 	else if (11 == error_mssg)
 	{
-		ft_free_arr(prep_envp);
+		ft_free_arr(exec->penvp);
 		return (ft_free_arr(exec->paths));
 	}
 	else if (12 == error_mssg)
@@ -129,8 +129,8 @@ void	executable_error_5(t_shell *shell, int error_mssg)
 	{
 		shell->exit_status = 127;
 		ft_printf(RED"%s: failed to execute command\n"RESET,
-				shell->cmd->u_as.exec.argv[0]);
-		return;
+			shell->cmd->u_as.exec.argv[0]);
+		return ;
 	}
 	else if (15 == error_mssg)
 	{
@@ -138,6 +138,6 @@ void	executable_error_5(t_shell *shell, int error_mssg)
 		shell->exit_status = 127;
 		ft_printf(RED"%s: failed to execute command\n"RESET,
 			shell->cmd->u_as.exec.argv[0]);
-		return;
+		return ;
 	}
 }

@@ -61,8 +61,8 @@ static void	command_is_not_path_utils(pid_t pid, t_shell *shell,
 	if (0 == pid)
 	{
 		if (to_wait)
-			executable_error_4(shell, exec, 12, pid, NULL);
-		return (executable_error_4(shell, exec, 13, pid, NULL));
+			executable_error_4(shell, exec, 12, pid);
+		return (executable_error_4(shell, exec, 13, pid));
 	}
 	else
 	{
@@ -111,13 +111,13 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 			{
 				execve(exec.com[0], exec.com, exec.penvp);
 				if (to_wait)
-					executable_error_3(shell, &exec, 7, pid, exec.penvp);
-				return (executable_error_3(shell, &exec, 8, pid, exec.penvp));
+					executable_error_3(shell, &exec, 7, pid);
+				return (executable_error_3(shell, &exec, 8, pid));
 			}
 			else if ((0 != pid) && to_wait)
-				return (executable_error_4(shell, &exec, 10, pid, exec.penvp));
+				return (executable_error_4(shell, &exec, 10, pid));
 			else if (0 != pid && !to_wait)
-				return (executable_error_4(shell, &exec, 11, pid, exec.penvp));
+				return (executable_error_4(shell, &exec, 11, pid));
 		}
 		exec.i++;
 		free(exec.path);

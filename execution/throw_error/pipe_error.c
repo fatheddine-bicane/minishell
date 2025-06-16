@@ -54,7 +54,8 @@ void	pipe_error_2(t_shell *shell, int error_mssg, t_executable *executable)
 	}
 }
 
-void	pipe_error_3(t_shell *shell, t_executable *executable, int error_mssg, pid_t pid)
+void	pipe_error_3(t_shell *shell, t_executable *executable,
+		int error_mssg, pid_t pid)
 {
 	(void)executable;
 	(void)pid;
