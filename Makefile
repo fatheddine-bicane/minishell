@@ -68,14 +68,20 @@ all: $(NAME)
 	@$(CC) $(FLAGS) -c $< -o $@
 
 $(NAME): $(LIBSN_NAME) $(OFILES)
+	@rm -f $(BNAME)
 	@$(CC) $(FLAGS) $(OFILES) $(LIBSN_NAME) $(EXTRA_FLAGS) -o $(NAME)
 	@echo "$(GREEN)Minishel compiled successfully!$(RESET)"
 
 bonus: $(BNAME)
 
 $(BNAME): $(LIBSN_NAME) $(BOFILES)
+	@rm -f $(NAME)
 	@$(CC) $(FLAGS) $(BOFILES) $(LIBSN_NAME) $(EXTRA_FLAGS) -o $(BNAME)
-	@echo "$(GREEN)So_long bonus compiled successfully!$(RESET)"
+	@echo "$(GREEN)Minishell bonus compiled successfully!$(RESET)"
+
+
+$(LIBSN_NAME):
+	$(MAKE) -C ./parser/libsn all
 
 clean:
 	@rm -f $(OFILES) $(BOFILES)
