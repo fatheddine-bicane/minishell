@@ -286,6 +286,14 @@ void	is_compound(t_shell *shell);
 
 
 
+typedef struct s_set_envp
+{
+	t_list	*my_envp;
+	int		i;
+	char	*shlvl_var;
+	int		lvl;
+}	t_set_envp;
+
 char **ft_prep_envp(t_shell *shell); //INFO: transform the envp to char **
 void	ft_pipex(char **commands, t_list **my_envp, int *exit_stat); //INFO: handle pipes
 bool	ft_is_builtin(char *command);
