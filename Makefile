@@ -79,16 +79,17 @@ $(BNAME): $(LIBSN_NAME) $(BOFILES)
 	@$(CC) $(FLAGS) $(BOFILES) $(LIBSN_NAME) $(EXTRA_FLAGS) -o $(BNAME)
 	@echo "$(GREEN)Minishell bonus compiled successfully!$(RESET)"
 
-
 $(LIBSN_NAME):
-	$(MAKE) -C ./parser/libsn all
+	@$(MAKE) -C ./parser/libsn all
 
 clean:
 	@rm -f $(OFILES) $(BOFILES)
+	@$(MAKE) -C ./parser clean
 	@echo "$(YELLOW)Cleaning object files$(RESET)"
 
 fclean: clean
 	@rm -f $(NAME) $(BNAME)
+	@$(MAKE) -C ./parser fclean
 	@echo "$(YELLOW)Cleaning executables$(RESET)"
 
 leaks:
