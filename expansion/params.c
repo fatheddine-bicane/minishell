@@ -132,7 +132,6 @@ char	*expand_single_param(char *src, t_shell *shell)
 	return (free(src), free(args), result);
 }
 
-// NOTE(karim): // maybe reuse src if expansion fails
 bool	expand_params(char ***argvp, t_shell *shell)
 {
 	size_t	i;

@@ -84,7 +84,6 @@ void	ft_export(t_shell *shell)
 {
 	int	vars_i;
 
-	// INFO: export with no argumets
 	if (!shell->cmd->u_as.exec.argv[1])
 		ft_sort_myenvp(shell);
 	else
@@ -92,7 +91,6 @@ void	ft_export(t_shell *shell)
 		vars_i = 1;
 		while (shell->cmd->u_as.exec.argv[vars_i])
 		{
-			// INFO: checking if var name is valid syntax
 			if (!ft_valid_argument(shell->cmd->u_as.exec.argv[vars_i]))
 			{
 				ft_printf(RED"%s: not a valid identifier\n"RESET,
@@ -100,7 +98,6 @@ void	ft_export(t_shell *shell)
 				vars_i++;
 				continue ;
 			}
-			// INFO: checking if var name exist in my_envp
 			if (ft_variable_exist(shell, shell->cmd->u_as.exec.argv[vars_i]))
 				ft_export_utils_1(shell, shell->cmd->u_as.exec.argv[vars_i]);
 			else

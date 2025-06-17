@@ -15,7 +15,7 @@
 static void	utils_1(t_pipes *pipes)
 {
 	free_pids(&pipes->pids);
-	if (-1 != pipes->prev_pipe[0]) // INFO: read from pipe if not first command
+	if (-1 != pipes->prev_pipe[0])
 	{
 		if (-1 == dup2(pipes->prev_pipe[0], STDIN_FILENO))
 			return (perror("dup2()"), exit(1));
@@ -29,10 +29,8 @@ static void	utils_1(t_pipes *pipes)
 		close(pipes->prev_pipe[0]);
 	if (-1 != pipes->prev_pipe[1])
 		close(pipes->prev_pipe[1]);
-	// NOTE: close read end in writing process
 	if (pipes->pipex->next)
 		close(pipes->fd[0]);
-	// NOTE: close write end in reading process
 	else if (pipes->prev_pipe[0] != -1)
 		close(pipes->fd[1]);
 }
@@ -40,7 +38,6 @@ static void	utils_1(t_pipes *pipes)
 void	pipes_child_utils(t_pipes *pipes, t_shell *shell)
 {
 	utils_1(pipes);
-	// NOTE: execute command
 	shell->cmd = pipes->pipex->cmd;
 	if (C_EXEC == pipes->pipex->cmd->type)
 	{
@@ -57,7 +54,6 @@ void	pipes_child_utils(t_pipes *pipes, t_shell *shell)
 		is_group(shell);
 		ft_free_arr(shell->heredocs_files);
 	}
-	// NOTE: childe failed to execute command
 	free_my_envp(&shell->my_envp);
 	free_pipex(&pipes->pipex_to_free);
 	ast_free(shell->root_to_free);

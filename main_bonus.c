@@ -12,7 +12,9 @@
 
 #include "minishel.h"
 
-void set_shell(t_shell *shell, int argc, char **argv, char **envp)
+volatile sig_atomic_t	g_signal_flag = 0;
+
+void	set_shell(t_shell *shell, int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
@@ -23,10 +25,15 @@ void set_shell(t_shell *shell, int argc, char **argv, char **envp)
 	shell->heredocs_files = NULL;
 	shell->herdocs_index = 0;
 	shell->is_group = false;
+	std_files(SAVE);
+	setup_signals();
 }
 
-void reset_shell(t_shell *shell)
+bool	reset_shell(t_shell *shell)
 {
+	t_shell	shell_tmp;
+
+	shell_tmp = (*shell);
 	shell->is_pipe = false;
 	shell->pids = NULL;
 	shell->redirections_status = true;
@@ -36,35 +43,45 @@ void reset_shell(t_shell *shell)
 	shell->heredocs_files = NULL;
 	shell->herdocs_index = 0;
 	shell->is_group = false;
+	g_signal_flag = 0;
+	shell->prompt = custum_prompt(shell_tmp);
+	shell->rl = readline(shell->prompt);
+	free(shell->prompt);
+	if (g_signal_flag == 9999)
+		shell->exit_status = 130;
+	if (rl_faild(shell))
+		return (false);
+	return (true);
 }
 
-int main(int argc, char **argv, char **envp)
+bool	syntax_error(t_shell *shell)
 {
-	t_shell shell;
+	if (EXIT_SYNTAX_ERROR == shell->ast_status)
+	{
+		shell->exit_status = 2;
+		free(shell->rl);
+		return (true);
+	}
+	return (false);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_shell	shell;
 
 	set_shell(&shell, argc, argv, envp);
-	std_files(SAVE);
-	setup_signals();
 	while (true)
 	{
-		reset_shell(&shell);
-		g_signal_flag = 0;
-		shell.prompt = custum_prompt(shell);
-		shell.rl = readline(shell.prompt);
-		free(shell.prompt);
-		if (rl_faild(&shell))
+		if (false == reset_shell(&shell))
 			continue ;
 		shell.ast_status = create_ast_bonus(shell.rl, &shell.cmd);
-		if (shell.ast_status != EXIT_EMPTY_AST)
+		if (EXIT_EMPTY_AST != shell.ast_status)
 		{
 			add_history(shell.rl);
-			if (EXIT_SYNTAX_ERROR == shell.ast_status)
-			{
-				shell.exit_status = 2;
+			if (syntax_error(&shell))
 				continue ;
-			}
-			if (shell.cmd == NULL)
-				continue;
+			if (NULL == shell.cmd)
+				continue ;
 			shell.root_to_free = shell.cmd;
 			herdocs_delemiters(&shell);
 			if (false == handle_herdocs(&shell) && clean_shell(&shell))
@@ -76,4 +93,3 @@ int main(int argc, char **argv, char **envp)
 	}
 	return (0);
 }
-

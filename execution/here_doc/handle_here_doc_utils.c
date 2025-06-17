@@ -28,7 +28,7 @@ bool	handle_herdocs(t_shell *shell)
 	while (shell->heredocs_delemiters[++i])
 	{
 		file_name = creat_here_doc(shell->heredocs_delemiters[i], shell);
-		if (NULL == file_name) // INFO: if heredoc recieve SIGINT
+		if (NULL == file_name)
 		{
 			sb_append_str(sb, file_name, 0);
 			shell->heredocs_files = sb_build(sb);

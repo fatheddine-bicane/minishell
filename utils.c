@@ -12,12 +12,12 @@
 
 #include "minishel.h"
 
-static void unlink_files(t_shell *shell)
+static void	unlink_files(t_shell *shell)
 {
-	int i;
+	int	i;
 
 	if (NULL == shell->heredocs_files)
-		return;
+		return ;
 	i = 0;
 	while (shell->heredocs_files[i])
 	{

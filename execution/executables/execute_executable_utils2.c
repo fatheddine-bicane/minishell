@@ -57,7 +57,6 @@ static void	command_is_not_path_utils(pid_t pid, t_shell *shell,
 	bool to_wait, t_executable *exec)
 {
 	ft_free_arr(exec->paths);
-	// NOTE: here is where i clean mmry if exec fails no command found
 	if (0 == pid)
 	{
 		if (to_wait)
@@ -82,7 +81,7 @@ static char	**command_is_not_path_utils2(t_shell *shell,
 		exec->com = shell->cmd->u_as.exec.argv;
 		exec->paths = ft_find_path(shell);
 		exec->i = 0;
-		if (NULL == exec->paths) // INFO: protection if path is unseted
+		if (NULL == exec->paths)
 			exec->paths = ft_split("/nothing", ':');
 		return (NULL);
 	}
@@ -101,7 +100,7 @@ void	command_is_not_path(pid_t pid, t_shell *shell, bool to_wait)
 	t_executable	exec;
 
 	command_is_not_path_utils2(shell, &exec, 1);
-	while (exec.paths[exec.i]) // INFO: checks if th command is a path
+	while (exec.paths[exec.i])
 	{
 		exec.path = ft_concat_path(exec.paths[exec.i], exec.com[0]);
 		if (!access(exec.path, F_OK | X_OK))

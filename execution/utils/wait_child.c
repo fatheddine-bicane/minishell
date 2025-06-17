@@ -28,13 +28,11 @@ void	wait_child(pid_t pid, t_shell *shell)
 		if (2 == tmp)
 		{
 			shell->exit_status = 130;
-			/*g_signal_flag = 0;*/
 			printf("\n");
 		}
 		if (3 == tmp)
 		{
 			shell->exit_status = 131;
-			/*g_signal_flag = 0;*/
 			write(STDOUT_FILENO, "Quit: 3\n", 9);
 		}
 	}

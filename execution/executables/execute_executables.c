@@ -16,13 +16,12 @@ void	ft_executable(t_shell *shell, pid_t pid, bool to_wait)
 {
 	char	**com;
 
-	com = shell->cmd->u_as.exec.argv; // TODO: change to shell->c_exec
+	com = shell->cmd->u_as.exec.argv;
 	if (0 == pid)
 		setup_signals_child();
-	// INFO: checks if the command is a path
 	if (('.' == com[0][0] && '/' == com[0][1])
 		|| (ft_strchr(com[0], '/')) || ('/' == com[0][0]))
 		command_is_path(pid, shell, to_wait);
-	else // INFO: need to look for command
+	else
 		command_is_not_path(pid, shell, to_wait);
 }

@@ -24,7 +24,6 @@ static void	command_is_path_utils(t_shell *shell, pid_t pid,
 		execve(com[0], com, prep_envp);
 		if (to_wait)
 			executable_error(shell, 1, prep_envp);
-		// INFO: pipe
 		return (executable_error(shell, 2, prep_envp));
 	}
 	else if ((0 != pid) && to_wait)
@@ -38,9 +37,9 @@ void	command_is_path(pid_t pid, t_shell *shell, bool to_wait)
 
 	com = shell->cmd->u_as.exec.argv;
 	prep_envp = NULL;
-	if (!access(com[0], F_OK | X_OK)) // INFO: checks if the path is valid
+	if (!access(com[0], F_OK | X_OK))
 		command_is_path_utils(shell, pid, to_wait, prep_envp);
-	else // INFO: path is not valid
+	else
 	{
 		if (0 == pid)
 		{

@@ -49,10 +49,8 @@ void	ft_exit_one_arguemt(t_shell *shell)
 {
 	int	exit_negative;
 
-	// INFO: if the argument is numerical
 	if (argument_is_numeric(shell->cmd->u_as.exec.argv[1]))
 		exit_error(shell, 2);
-		// INFO: the argument is negative
 	else if (argument_is_negative(shell->cmd->u_as.exec.argv[1]))
 	{
 		exit_negative = ft_atoi(shell->cmd->u_as.exec.argv[1]) % 256;
@@ -60,30 +58,24 @@ void	ft_exit_one_arguemt(t_shell *shell)
 		free_my_envp(&shell->my_envp);
 		exit(exit_negative);
 	}
-	// INFO: the argument is not numerical
 	else
 		exit_error(shell, 3);
 }
 
 void	ft_exit(t_shell *shell)
 {
-	// INFO: exit with no arguments
 	if (!shell->cmd->u_as.exec.argv[1])
 		exit_error(shell, 1);
-	// INFO: exit and one argument
 	else if (shell->cmd->u_as.exec.argv[1] && !shell->cmd->u_as.exec.argv[2])
 		ft_exit_one_arguemt(shell);
-	// INFO: exit with n arguments
 	else
 	{
-		// INFO: if the first agument is negative
 		if (true == argument_is_negative(shell->cmd->u_as.exec.argv[1]))
 		{
 			ft_printf(RED"exit\nexit: too many arguments\n"RESET);
 			shell->exit_status = 1;
 			return ;
 		}
-		// INFO: if the first agument is not numerical
 		if (false == argument_is_numeric(shell->cmd->u_as.exec.argv[1]))
 			exit_error(shell, 4);
 		ft_printf(RED"exit\nexit: too many arguments\n"RESET);

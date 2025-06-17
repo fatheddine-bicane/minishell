@@ -56,7 +56,6 @@ void	is_pipe(t_shell *shell)
 			add_pid(&pipes.pids, pipes.pid);
 		if (0 == pipes.pid)
 			pipes_child_utils(&pipes, shell);
-		// TODO: execute the command
 		else
 			pipes_parent_utils(&pipes, shell);
 		pipes.pipex = pipes.pipex->next;
