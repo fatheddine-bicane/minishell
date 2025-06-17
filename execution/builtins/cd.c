@@ -26,6 +26,37 @@ char	*ft_home_path(t_list *my_envp)
 	return (NULL);
 }
 
+void	change_pwd(t_shell *shell)
+{
+	char	path[PATH_MAX];
+	t_list	*tmp;
+	t_list	*my_envp;
+
+	if (getcwd(path, sizeof(path)))
+	{
+		tmp = shell->my_envp;
+		while (tmp)
+		{
+			if (!ft_strncmp(tmp->content, "PWD=", 4))
+			{
+				free(tmp->content);
+				tmp->content = ft_strjoin("PWD=", path);
+				return ;
+			}
+			tmp = tmp->next;
+		}
+		my_envp = shell->my_envp;
+		if (NULL == tmp)
+			ft_lstadd_back(&my_envp, ft_lstnew(ft_strjoin("PWD=", path)));
+	}
+	else
+	{
+		ft_printf("LA WALO\n");
+		perror("getcwd() error");
+		shell->exit_status = 1;
+	}
+}
+
 void	ft_change_oldpwd(t_shell *shell, char *oldpwd)
 {
 	t_list	*tmp;
@@ -38,6 +69,7 @@ void	ft_change_oldpwd(t_shell *shell, char *oldpwd)
 		{
 			free(tmp->content);
 			tmp->content = oldpwd;
+			change_pwd(shell);
 			return ;
 		}
 		tmp = tmp->next;
@@ -45,6 +77,7 @@ void	ft_change_oldpwd(t_shell *shell, char *oldpwd)
 	my_envp = shell->my_envp;
 	if (NULL == tmp)
 		ft_lstadd_back(&my_envp, ft_lstnew(oldpwd));
+	change_pwd(shell);
 }
 
 char	*ft_set_oldpwd(void)
