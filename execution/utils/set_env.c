@@ -40,8 +40,8 @@ t_list	*ft_set_env(char **envp)
 	s_envp.my_envp = NULL;
 	if (NULL == (*envp))
 		return (envp_is_empty(&s_envp.my_envp), s_envp.my_envp);
-	s_envp.i = -1;
-	while (envp[++s_envp.i])
+	s_envp.i = 0;
+	while (envp[s_envp.i])
 	{
 		if (!ft_strncmp(envp[s_envp.i], "OLDPWD=", 7))
 		{
@@ -56,6 +56,7 @@ t_list	*ft_set_env(char **envp)
 		else if (!ft_strncmp(envp[s_envp.i], "_=", 2) && ++s_envp.i)
 			continue ;
 		ft_lstadd_back(&s_envp.my_envp, ft_lstnew(ft_strdup((envp[s_envp.i]))));
+		s_envp.i++;
 	}
 	return (s_envp.my_envp);
 }
