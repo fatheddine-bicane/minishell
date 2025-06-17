@@ -21,7 +21,7 @@ bool	is_heredoc_delimiter(char *limiter, char *src)
 
 static bool	break_of_loop(char *limiter, char **str)
 {
-	if (str == NULL)
+	if ((*str) == NULL)
 	{
 		ft_printf(YELLOW"warning: heredoc delimited by end-of-file\n"RESET);
 		return (true);
