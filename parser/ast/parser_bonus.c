@@ -12,7 +12,7 @@
 
 #include "../parser.h"
 
-t_cmd	*parse_program(t_token **token, int *status);
+t_cmd	*parse_program_bonus(t_token **token, int *status);
 t_cmd	*parse_cmd(t_token **token, int *status);
 t_cmd	*parse_redirect(t_token **token, int *status);
 t_cmd	*append_redirect(t_cmd *root, t_cmd *new);
@@ -24,7 +24,7 @@ t_cmd	*parse_group(t_token **token, int *status)
 
 	if (match_token(token, 1, T_LEFT_PAREN))
 	{
-		subshell = parse_program(token, status);
+		subshell = parse_program_bonus(token, status);
 		if (subshell == NULL || *status == -1)
 			return (NULL);
 		cmd = cmd_group_init(subshell, NULL);
