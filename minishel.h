@@ -63,7 +63,7 @@
 # endif
 /*-----------------------------------------------*/
 
-static volatile sig_atomic_t	g_signal_flag = 0;
+extern volatile sig_atomic_t	g_signal_flag;
 
 typedef enum e_exp_flags
 {

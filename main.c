@@ -12,6 +12,8 @@
 
 #include "minishel.h"
 
+volatile sig_atomic_t g_signal_flag = 0;
+
 void set_shell(t_shell *shell, int argc, char **argv, char **envp)
 {
 	(void)argc;
@@ -52,6 +54,8 @@ int main(int argc, char **argv, char **envp)
 		shell.prompt = custum_prompt(shell);
 		shell.rl = readline(shell.prompt);
 		free(shell.prompt);
+		if (g_signal_flag == 9999)
+			shell.exit_status = 130;
 		if (rl_faild(&shell))
 			continue ;
 		shell.ast_status = create_ast(shell.rl, &shell.cmd);
@@ -61,6 +65,7 @@ int main(int argc, char **argv, char **envp)
 			if (EXIT_SYNTAX_ERROR == shell.ast_status)
 			{
 				shell.exit_status = 2;
+				free(shell.rl);
 				continue ;
 			}
 			if (shell.cmd == NULL)

@@ -15,7 +15,7 @@
 void	sigint_handler(int signal)
 {
 	(void) signal;
-	g_signal_flag = SIGINT;
+	g_signal_flag = 9999;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();

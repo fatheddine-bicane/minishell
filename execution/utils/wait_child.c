@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 15:48:51 by fbicane           #+#    #+#             */
-/*   Updated: 2025/06/01 21:27:08 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/17 00:45:48 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ void	wait_child(pid_t pid, t_shell *shell)
 		if (2 == tmp)
 		{
 			shell->exit_status = 130;
-			g_signal_flag = 0;
+			/*g_signal_flag = 0;*/
 			printf("\n");
 		}
 		if (3 == tmp)
 		{
 			shell->exit_status = 131;
-			g_signal_flag = 0;
+			/*g_signal_flag = 0;*/
 			write(STDOUT_FILENO, "Quit: 3\n", 9);
 		}
 	}
