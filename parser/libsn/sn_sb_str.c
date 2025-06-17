@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
 bool	sb_append_str(t_str_builder *sb, const char *str, size_t len)
 {

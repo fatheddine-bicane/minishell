@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
 ssize_t	sn_istrchr(const char *s, char c)
 {

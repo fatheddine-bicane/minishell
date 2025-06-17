@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
 int	sn_vprintf_fd(va_list args, int fd, const char *format, ...)
 {

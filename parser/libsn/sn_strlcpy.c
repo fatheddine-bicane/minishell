@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
 size_t	sn_strlcpy(char *dst, const char *src, size_t size)
 {

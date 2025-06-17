@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
 void	*sn_memset(void *s, int c, size_t n)
 {

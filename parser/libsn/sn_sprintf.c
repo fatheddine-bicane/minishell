@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
 static t_str_builder	*inner_buff_init(char **buff, const char *fmt)
 {

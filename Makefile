@@ -3,7 +3,6 @@ FLAGS = -Wall -Wextra -Werror -g
 EXTRA_FLAGS = -lreadline
 NAME = minishell
 BNAME = minishell_bonus
-LIBSN_NAME = ./parser/libsn/libsn.a
 
 GREEN = \033[0;32m
 BLUE = \033[0;34m
@@ -66,29 +65,24 @@ all: $(NAME)
 %.o: %.c
 	@$(CC) $(FLAGS) -c $< -o $@
 
-$(NAME): $(LIBSN_NAME) $(OFILES)
+$(NAME): $(OFILES)
 	@rm -f $(BNAME)
-	@$(CC) $(FLAGS) $(OFILES) $(LIBSN_NAME) $(EXTRA_FLAGS) -o $(NAME)
+	@$(CC) $(FLAGS) $(OFILES) $(EXTRA_FLAGS) -o $(NAME)
 	@echo "$(GREEN)Minishel compiled successfully!$(RESET)"
 
 bonus: $(BNAME)
 
-$(BNAME): $(LIBSN_NAME) $(BOFILES)
+$(BNAME): $(BOFILES)
 	@rm -f $(NAME)
-	@$(CC) $(FLAGS) $(BOFILES) $(LIBSN_NAME) $(EXTRA_FLAGS) -o $(BNAME)
+	@$(CC) $(FLAGS) $(BOFILES) $(EXTRA_FLAGS) -o $(BNAME)
 	@echo "$(GREEN)Minishell bonus compiled successfully!$(RESET)"
-
-$(LIBSN_NAME):
-	@$(MAKE) -C ./parser/libsn all
 
 clean:
 	@rm -f $(OFILES) $(BOFILES)
-	@$(MAKE) -C ./parser clean
 	@echo "$(YELLOW)Cleaning object files$(RESET)"
 
 fclean: clean
 	@rm -f $(NAME) $(BNAME)
-	@$(MAKE) -C ./parser fclean
 	@echo "$(YELLOW)Cleaning executables$(RESET)"
 
 leaks:

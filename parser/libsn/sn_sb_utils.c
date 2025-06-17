@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
 bool	sb_ensure_size(t_str_builder *sb, size_t len)
 {

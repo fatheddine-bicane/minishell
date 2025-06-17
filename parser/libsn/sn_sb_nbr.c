@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
 bool	sb_append_nbr(t_str_builder *sb, int n)
 {

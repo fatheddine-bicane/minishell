@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsn.h"
+#include "../parser.h"
 
 int	sn_putnbr_hex(unsigned long num, int uppercase, int fd)
 {
