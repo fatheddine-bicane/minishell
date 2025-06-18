@@ -98,10 +98,9 @@ bool	word_split(char *ifs, char ***argvp, size_t *i)
 
 bool	should_split_words(char *src, char *expanded_src)
 {
-	char *eq = sn_strchr(expanded_src, '=');
 	if (src == NULL || expanded_src == NULL)
 		return (false);
-	if (src[0] != '$' && eq != NULL)
+	if (src[0] != '$' && sn_strchr(expanded_src, '=') != NULL)
 		return (false);
 	return (true);
 }
