@@ -17,7 +17,7 @@ bool	word_split(char *ifs, char ***args, size_t *i);
 size_t	word_count(char *src, char *sep);
 char	*get_ifs_var(t_list *envp);
 void	clean_args_leftover(char **args, size_t i);
-void	asterisk(void);
+bool	should_split_words(char *src, char *expanded_src);
 
 bool	extract_quote_param(t_shell *shell, t_str_builder *sb, char *str,
 		size_t len)
@@ -54,11 +54,15 @@ bool	param_extract(t_token *t, t_str_builder *sb, t_shell *shell, char **ifs)
 	size_t	len;
 
 	len = sn_strlen(t->lexeme);
-	if (t->type == T_STR_SINGLE)
+	if (t->type == T_STR_SINGLE || t->type == T_STR_DOUBLE)
 	{
 		if (len == 2)
 			return (sb_append_char(sb, '\0'));
-		return (sb_append_str(sb, t->lexeme + 1, len - 2));
+		if (t->type == T_STR_SINGLE)
+			return (sb_append_str(sb, t->lexeme + 1, len - 2));
+		if (t->prev && t->prev->prev && t->prev->prev->type == T_VAR)
+			*ifs = NULL;
+		return (extract_quote_param(shell, sb, t->lexeme + 1, len - 2));
 	}
 	if (t->type == T_VAR)
 	{
@@ -68,12 +72,6 @@ bool	param_extract(t_token *t, t_str_builder *sb, t_shell *shell, char **ifs)
 			return (true);
 		*ifs = get_ifs_var(shell->my_envp);
 		return (true);
-	}
-	if (t->type == T_STR_DOUBLE)
-	{
-		if (len == 2)
-			return (sb_append_char(sb, '\0'));
-		return (extract_quote_param(shell, sb, t->lexeme + 1, len - 2));
 	}
 	return (sb_append_str(sb, t->lexeme, len));
 }
@@ -146,16 +144,16 @@ bool	expand_params(char ***argvp, t_shell *shell)
 	{
 		src = argv[i];
 		argv[i] = param_scan(src, shell, &ifs);
-		free(src);
 		if (argv[i] == NULL)
-			return (clean_args_leftover(argv, ++i), false);
-		if (ifs != NULL && sn_strncmp(argv[0], "export", 6) != 0)
+			return (free(src), clean_args_leftover(argv, ++i), false);
+		if (ifs != NULL)
 		{
-			if (!word_split(ifs, argvp, &i))
-				return (clean_args_leftover(argv, i), false);
+			if (should_split_words(src, argv[i]) && !word_split(ifs, argvp, &i))
+				return (free(src), clean_args_leftover(argv, i), false);
 			argv = *argvp;
+			ifs = NULL;
 		}
-		ifs = NULL;
+		free(src);
 		i++;
 	}
 	return (true);
