@@ -31,9 +31,6 @@ void	set_shell(t_shell *shell, int argc, char **argv, char **envp)
 
 bool	reset_shell(t_shell *shell)
 {
-	t_shell	shell_tmp;
-
-	shell_tmp = (*shell);
 	shell->is_pipe = false;
 	shell->pids = NULL;
 	shell->redirections_status = true;
@@ -44,7 +41,7 @@ bool	reset_shell(t_shell *shell)
 	shell->herdocs_index = 0;
 	shell->is_group = false;
 	g_signal_flag = 0;
-	shell->prompt = custum_prompt(shell_tmp);
+	shell->prompt = custum_prompt(shell);
 	shell->rl = readline(shell->prompt);
 	free(shell->prompt);
 	if (g_signal_flag == 9999)

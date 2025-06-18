@@ -6,7 +6,7 @@
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 18:45:52 by fbicane           #+#    #+#             */
-/*   Updated: 2025/05/31 16:35:12 by fbicane          ###   ########.fr       */
+/*   Updated: 2025/06/18 10:37:04 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	change_pwd(t_shell *shell)
 	}
 	else
 	{
-		ft_printf("LA WALO\n");
 		perror("getcwd() error");
 		shell->exit_status = 1;
 	}
@@ -97,6 +96,8 @@ void	ft_cd(t_shell *shell)
 {
 	t_cd	cd;
 
+	if (false == protect_cwd_cd(shell))
+		return ;
 	cd.home_path = ft_home_path(shell->my_envp);
 	cd.oldpwd = ft_set_oldpwd();
 	cd.shell = shell;

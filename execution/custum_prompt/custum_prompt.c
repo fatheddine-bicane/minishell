@@ -12,25 +12,52 @@
 
 #include "../../minishel.h"
 
-static void	protect_cwd(t_prompt *prompt)
+void	change_pwd_protections(t_shell *shell)
+{
+	char	*path;
+	t_list	*tmp;
+	t_list	*my_envp;
+
+	path = ft_strdup("/");
+	tmp = shell->my_envp;
+	while (tmp)
+	{
+		if (!ft_strncmp(tmp->content, "PWD=", 4))
+		{
+			free(tmp->content);
+			tmp->content = ft_strjoin("PWD=", path);
+			free (path);
+			return ;
+		}
+		tmp = tmp->next;
+	}
+	my_envp = shell->my_envp;
+	if (NULL == tmp)
+	{
+		ft_lstadd_back(&my_envp, ft_lstnew(ft_strjoin("PWD=", path)));
+		free (path);
+	}
+}
+
+static void	protect_cwd(t_prompt *prompt, t_shell *shell)
 {
 	prompt->cwd = getcwd(NULL, 0);
 	if (!prompt->cwd && errno == ENOENT)
 	{
 		chdir("/");
-		ft_printf(RED"cd: error retrieving current directory: \n");
-		ft_printf("getcwd: cannot access parent directories: ");
+		change_pwd_protections(shell);
+		ft_printf(RED"getcwd: cannot access parent directories: ");
 		ft_printf("No such file or directory\n"RESET);
 	}
 	free(prompt->cwd);
 }
 
-void	non_0_exit_status(t_prompt *prompt, t_shell shell)
+void	non_0_exit_status(t_prompt *prompt, t_shell *shell)
 {
 	prompt->to_free = prompt->prompt;
 	prompt->prompt = ft_strjoin(prompt->prompt, RED " [");
 	free(prompt->to_free);
-	prompt->exit_stat = ft_itoa(shell.exit_status);
+	prompt->exit_stat = ft_itoa(shell->exit_status);
 	prompt->to_free = prompt->prompt;
 	prompt->prompt = ft_strjoin(prompt->prompt, prompt->exit_stat);
 	free(prompt->to_free);
@@ -52,11 +79,12 @@ void	set_folder_path(t_prompt *prompt)
 	prompt->to_free = prompt->prompt;
 }
 
-char	*custum_prompt(t_shell shell)
+char	*custum_prompt(t_shell *shell)
 {
 	t_prompt	prompt;
 
-	protect_cwd(&prompt);
+	protect_cwd(&prompt, shell);
+	ft_pwd(shell);
 	getcwd(prompt.path, sizeof(prompt.path));
 	prompt.i = 0;
 	prompt.slash_count = 3;
@@ -69,7 +97,7 @@ char	*custum_prompt(t_shell shell)
 		prompt.i++;
 	}
 	set_folder_path(&prompt);
-	if (shell.exit_status == 0)
+	if (shell->exit_status == 0)
 	{
 		prompt.to_free = prompt.prompt;
 		prompt.prompt = ft_strjoin(prompt.prompt, GREEN " [✔]>> " RESET);

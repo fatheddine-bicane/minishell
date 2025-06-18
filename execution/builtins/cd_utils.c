@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbicane <fbicane@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/07 10:04:08 by fbicane           #+#    #+#             */
-/*   Updated: 2025/04/07 10:14:16 by fbicane          ###   ########.fr       */
+/*   Created: 2025/06/18 10:36:49 by fbicane           #+#    #+#             */
+/*   Updated: 2025/06/18 10:37:01 by fbicane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishel.h"
 
-void	ft_env(t_shell *shell)
+bool	protect_cwd_cd(t_shell *shell)
 {
-	t_list	*my_envp;
+	char	*cwd;
 
-	my_envp = shell->my_envp;
-	while (my_envp)
+	cwd = getcwd(NULL, 0);
+	if (!cwd && errno == ENOENT)
 	{
-		if (my_envp->content)
-			printf("%s\n", (char *)my_envp->content);
-		my_envp = my_envp->next;
+		chdir("/");
+		change_pwd_protections(shell);
+		ft_printf(RED"getcwd: cannot access parent directories: ");
+		ft_printf("No such file or directory\n"RESET);
+		free(cwd);
+		return (false);
 	}
-	shell->exit_status = 0;
+	free(cwd);
+	return (true);
 }

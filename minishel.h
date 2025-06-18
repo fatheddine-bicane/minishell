@@ -115,7 +115,8 @@ typedef struct s_prompt
 	int		i;
 }	t_prompt;
 
-char	*custum_prompt(t_shell shell);
+char	*custum_prompt(t_shell *shell);
+void	change_pwd_protections(t_shell *shell);
 /*-----------------------------------------------*/
 
 // NOTE: builtins
@@ -141,6 +142,8 @@ typedef struct s_cd
 }	t_cd;
 void	ft_cd(t_shell *shell);
 void	cd_error(t_cd *cd, int error_mssg);
+void	change_pwd(t_shell *shell);
+bool	protect_cwd_cd(t_shell *shell);
 // INFO: export builtin
 void	ft_export(t_shell *shell);
 void	ft_export_utils_1(t_shell *shell, char *variable);
