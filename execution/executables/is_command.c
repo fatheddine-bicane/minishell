@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../minishel.h"
+#include <unistd.h>
 
 void	is_command_utils(struct stat *info, t_shell *shell)
 {
@@ -20,6 +21,16 @@ void	is_command_utils(struct stat *info, t_shell *shell)
 			shell->cmd->u_as.exec.argv[0]);
 		shell->exit_status = 126;
 		return ;
+	}
+	else
+	{
+		if (access(shell->cmd->u_as.exec.argv[0], X_OK))
+		{
+			ft_printf(RED"%s: permission denied\n"RESET,
+					shell->cmd->u_as.exec.argv[0]);
+			shell->exit_status = 126;
+			return ;
+		}
 	}
 }
 
