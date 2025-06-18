@@ -26,6 +26,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <string.h>
+# include <sys/stat.h>
 # include "./parser/parser.h"
 
 // INFO: std_files marcors
