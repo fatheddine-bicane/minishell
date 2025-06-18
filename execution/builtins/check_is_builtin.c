@@ -14,6 +14,8 @@
 
 bool	ft_is_builtin(char *command)
 {
+	if (1 == ft_strlen(command))
+		return (false);
 	if (0 == ft_strncmp(command, "echo", ft_strlen(command)))
 		return (true);
 	else if (0 == ft_strncmp(command, "cd", ft_strlen(command)))

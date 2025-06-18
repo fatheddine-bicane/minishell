@@ -19,7 +19,8 @@ void	ft_env(t_shell *shell)
 	my_envp = shell->my_envp;
 	while (my_envp)
 	{
-		printf("%s\n", (char *)my_envp->content);
+		if (my_envp->content)
+			printf("%s\n", (char *)my_envp->content);
 		my_envp = my_envp->next;
 	}
 	shell->exit_status = 0;
