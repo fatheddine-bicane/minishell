@@ -27,7 +27,7 @@ char	**ft_prep_envp(t_shell *shell)
 	i = 0;
 	while (my_envp)
 	{
-		if (my_envp->content) 
+		if (my_envp->content)
 		{
 			arr_envp[i] = ft_strdup((char *)my_envp->content);
 			i++;

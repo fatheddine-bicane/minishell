@@ -38,11 +38,7 @@ void	change_pwd(t_shell *shell)
 		while (tmp)
 		{
 			if (!ft_strncmp(tmp->content, "PWD=", 4))
-			{
-				free(tmp->content);
-				tmp->content = ft_strjoin("PWD=", path);
-				return ;
-			}
+				return (change_pwd_utils(&tmp, path));
 			tmp = tmp->next;
 		}
 		my_envp = shell->my_envp;

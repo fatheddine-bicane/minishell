@@ -84,7 +84,6 @@ char	*custum_prompt(t_shell *shell)
 	t_prompt	prompt;
 
 	protect_cwd(&prompt, shell);
-	ft_pwd(shell);
 	getcwd(prompt.path, sizeof(prompt.path));
 	prompt.i = 0;
 	prompt.slash_count = 3;

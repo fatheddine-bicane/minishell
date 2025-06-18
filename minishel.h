@@ -144,6 +144,7 @@ void	ft_cd(t_shell *shell);
 void	cd_error(t_cd *cd, int error_mssg);
 void	change_pwd(t_shell *shell);
 bool	protect_cwd_cd(t_shell *shell);
+void	change_pwd_utils(t_list **tmp, char *path);
 // INFO: export builtin
 void	ft_export(t_shell *shell);
 void	ft_export_utils_1(t_shell *shell, char *variable);

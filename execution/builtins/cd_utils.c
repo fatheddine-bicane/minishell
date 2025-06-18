@@ -29,3 +29,10 @@ bool	protect_cwd_cd(t_shell *shell)
 	free(cwd);
 	return (true);
 }
+
+void	change_pwd_utils(t_list **tmp, char *path)
+{
+	free((*tmp)->content);
+	(*tmp)->content = ft_strjoin("PWD=", path);
+	return ;
+}
