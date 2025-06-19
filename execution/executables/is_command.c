@@ -11,27 +11,27 @@
 /* ************************************************************************** */
 
 #include "../../minishel.h"
-#include <unistd.h>
 
-void	is_command_utils(struct stat *info, t_shell *shell)
+bool	have_permission(struct stat *info, t_shell *shell)
 {
 	if (S_ISDIR(info->st_mode))
 	{
 		ft_printf(RED"%s: Is a directory\n"RESET,
 			shell->cmd->u_as.exec.argv[0]);
 		shell->exit_status = 126;
-		return ;
+		return (false);
 	}
 	else
 	{
 		if (access(shell->cmd->u_as.exec.argv[0], X_OK))
 		{
 			ft_printf(RED"%s: permission denied\n"RESET,
-					shell->cmd->u_as.exec.argv[0]);
+				shell->cmd->u_as.exec.argv[0]);
 			shell->exit_status = 126;
-			return ;
+			return (false);
 		}
 	}
+	return (true);
 }
 
 void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
@@ -48,8 +48,9 @@ void	is_command(t_shell *shell, bool to_fork, pid_t pid_r)
 		run_bultins(shell);
 	else
 	{
-		if (0 == stat(shell->cmd->u_as.exec.argv[0], &info))
-			return (is_command_utils(&info, shell));
+		if (0 == stat(shell->cmd->u_as.exec.argv[0], &info)
+			&& false == have_permission(&info, shell))
+			return ;
 		else
 		{
 			if (to_fork)
